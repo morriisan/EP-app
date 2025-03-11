@@ -18,7 +18,11 @@ import { signUp } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-export function SignUp() {
+interface SignUpProps {
+	callbackURL?: string;
+}
+
+export function SignUp({ callbackURL = "/dashboard" }: SignUpProps) {
 	const [firstName, setFirstName] = useState("");
 	const [lastName, setLastName] = useState("");
 	const [email, setEmail] = useState("");
@@ -155,7 +159,7 @@ export function SignUp() {
 								password,
 								name: `${firstName} ${lastName}`,
 								//image: image ? await convertImageToBase64(image) : "",
-								callbackURL: "/dashboard",
+								callbackURL: callbackURL,
 								fetchOptions: {
 									onResponse: () => {
 										setLoading(false);

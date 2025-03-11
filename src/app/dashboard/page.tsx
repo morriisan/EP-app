@@ -2,12 +2,14 @@
 
 import { useSession } from "@/lib/auth-client";
 import { LogoutButton } from "@/components/LogoutButton";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 export default function Dashboard() {
   const { data: session } = useSession();
   
 
   return (
+    <ProtectedRoute>
     <div className="p-8">
       <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
 
@@ -24,5 +26,6 @@ export default function Dashboard() {
     <LogoutButton />
 
     </div>
+    </ProtectedRoute>
   );
 }

@@ -11,7 +11,7 @@ import { signIn } from "@/lib/auth-client";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-export default function SignIn() {
+export default function SignIn({ callbackURL = "/dashboard" }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -78,7 +78,7 @@ export default function SignIn() {
                 await signIn.email({ 
                   email, 
                   password,
-                  callbackURL: "/dashboard"
+                  callbackURL: callbackURL
                 });
                 setLoading(false);
               }}
@@ -104,7 +104,7 @@ export default function SignIn() {
                   onClick={async () => {
                     await signIn.social({
                       provider: "microsoft",
-                      callbackURL: "/dashboard"
+                      callbackURL: callbackURL
                     });
                   }}
                 >
@@ -128,7 +128,7 @@ export default function SignIn() {
                   onClick={async () => {
                     await signIn.social({
                       provider: "apple",
-                      callbackURL: "/dashboard"
+                      callbackURL: callbackURL
                     });
                   }}
                 >
@@ -150,10 +150,12 @@ export default function SignIn() {
                     "w-full gap-2"
                   )}
                   onClick={async () => {
+                    setLoading (true);
                     await signIn.social({
                       provider: "google",
-                      callbackURL: "/dashboard"
+                      callbackURL: callbackURL
                     });
+                    setLoading (false);
                   }}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="0.98em" height="1em" viewBox="0 0 256 262">
