@@ -24,8 +24,8 @@ export function SignUp() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [passwordConfirmation, setPasswordConfirmation] = useState("");
-	const [image, setImage] = useState<File | null>(null);
-	const [imagePreview, setImagePreview] = useState<string | null>(null);
+	//const [image, setImage] = useState<File | null>(null);
+	//const [imagePreview, setImagePreview] = useState<string | null>(null);
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 
@@ -154,7 +154,7 @@ export function SignUp() {
 								email,
 								password,
 								name: `${firstName} ${lastName}`,
-								image: image ? await convertImageToBase64(image) : "",
+								//image: image ? await convertImageToBase64(image) : "",
 								callbackURL: "/dashboard",
 								fetchOptions: {
 									onResponse: () => {
