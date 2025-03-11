@@ -3,7 +3,6 @@
 import { useSession } from "@/lib/auth-client";
 import { LogoutButton } from "@/components/LogoutButton";
 
-
 export default function Dashboard() {
   const { data: session } = useSession();
   
