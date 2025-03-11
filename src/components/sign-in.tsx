@@ -74,7 +74,9 @@ export default function SignIn() {
               className="w-full"
               disabled={loading}
               onClick={async () => {
+                setLoading(true);
                 await signIn.email({ email, password });
+                setLoading(false);
               }}
             >
               {loading ? (
