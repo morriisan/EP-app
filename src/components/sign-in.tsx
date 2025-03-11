@@ -75,7 +75,11 @@ export default function SignIn() {
               disabled={loading}
               onClick={async () => {
                 setLoading(true);
-                await signIn.email({ email, password });
+                await signIn.email({ 
+                  email, 
+                  password,
+                  callbackURL: "/dashboard"
+                });
                 setLoading(false);
               }}
             >
