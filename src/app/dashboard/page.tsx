@@ -6,6 +6,7 @@ import { LogoutButton } from "@/components/LogoutButton";
 
 export default function Dashboard() {
   const { data: session } = useSession();
+  
 
   return (
     <div className="p-8">
