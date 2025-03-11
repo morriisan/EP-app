@@ -60,7 +60,7 @@ This will populate the database with initial data.
 ```bash
 npm run dev
 ```
-t
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ## Project Structure
