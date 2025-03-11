@@ -42,6 +42,7 @@ export async function POST(request: Request) {
       data: {
         name,
         email,
+        emailVerified: false,
       },
     });
 

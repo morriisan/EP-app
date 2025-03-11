@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import Image from "next/image";
+//import Image from "next/image";
 import { Loader2, X } from "lucide-react";
 import { signUp } from "@/lib/auth-client";
 import { toast } from "sonner";
@@ -29,7 +29,7 @@ export function SignUp() {
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 
-	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+/* 	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
 		if (file) {
 			setImage(file);
@@ -39,7 +39,7 @@ export function SignUp() {
 			};
 			reader.readAsDataURL(file);
 		}
-	};
+	}; */
 
 	return (
 		<Card className="z-50 rounded-md rounded-t-none max-w-md">
@@ -112,7 +112,7 @@ export function SignUp() {
 							placeholder="Confirm Password"
 						/>
 					</div>
-					<div className="grid gap-2">
+				{/* 	<div className="grid gap-2">
 						<Label htmlFor="image">Profile Image (optional)</Label>
 						<div className="flex items-end gap-4">
 							{imagePreview && (
@@ -144,7 +144,7 @@ export function SignUp() {
 								)}
 							</div>
 						</div>
-					</div>
+					</div> */}
 					<Button
 						type="submit"
 						className="w-full"
