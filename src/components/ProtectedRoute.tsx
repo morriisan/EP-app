@@ -1,8 +1,6 @@
 "use client";
 
 import { useSession } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { AuthPanel } from "./AuthPanel";
 import { Button } from "@/components/ui/button";
 
@@ -12,19 +10,7 @@ interface ProtectedRouteProps {
 
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { data: session, isPending } = useSession();
-  const [showAuthPanel, setShowAuthPanel] = useState(false);
-  const router = useRouter();
-
-  useEffect(() => {
-    // If the session is loading, do nothing yet
-    if (isPending) return;
-    
-    // If the user is not authenticated, show the auth panel
-    if (!session) {
-      setShowAuthPanel(true);
-    }
-  }, [session, isPending]);
-
+  
   // If the session is still loading, show a loading state
   if (isPending) {
     return (
@@ -46,7 +32,6 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
       <p className="mb-6">You need to sign in to access this page.</p>
       <AuthPanel 
         trigger={<Button size="lg">Sign In</Button>}
-        onAuthenticated={() => setShowAuthPanel(false)}
       />
     </div>
   );
