@@ -7,6 +7,7 @@ import SignIn from "@/components/sign-in";
 import { SignUp } from "@/components/sign-up";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { usePathname } from "next/navigation";
+import { useSession } from "@/lib/auth-client";
 
 interface AuthPanelProps {
   trigger?: React.ReactNode;
@@ -23,11 +24,21 @@ export function AuthPanel({
   const [activeTab, setActiveTab] = useState("signin");
   const pathname = usePathname();
   const [currentPath, setCurrentPath] = useState("");
+  const { data: session } = useSession();
   
   // Capture the current path when the component mounts
   useEffect(() => {
     setCurrentPath(pathname);
   }, [pathname]);
+
+
+    // Call onAuthenticated when session changes to authenticated
+    useEffect(() => {
+        if (session && showAuth) {
+          setShowAuth(false);
+          onAuthenticated?.();
+        }
+      }, [session, showAuth, onAuthenticated]);
 
   // Use the provided callbackURL or fall back to the current path
   const redirectURL = callbackURL || currentPath || "/";
