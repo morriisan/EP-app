@@ -2,9 +2,10 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { UserTable } from "@/components/admin/UserTable";
 import { Pagination } from "@/components/admin/Pagination";
 import { SearchForm } from "@/components/admin/SearchForm";
+import { User } from "@/components/Interface/InterfaceUser";
 
 interface UserManagementTabProps {
-  users: any[];
+  users: User[];
   loading: boolean;
   page: number;
   totalPages: number;

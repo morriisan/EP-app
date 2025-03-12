@@ -71,14 +71,14 @@ export function EmailValidator({
     return () => {
       debouncedCheckEmail.cancel();
     };
-  }, [email]);
+  }, [email, touched, debouncedCheckEmail, emailRegex, onChange]);
 
   // Update when external value changes
   useEffect(() => {
     if (value !== email) {
       setEmail(value);
     }
-  }, [value]);
+  }, [value, email]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;

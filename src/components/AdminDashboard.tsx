@@ -7,10 +7,13 @@ import { toast } from "sonner";
 import { UserManagementTab } from "@/components/admin/UserManagementTab";
 import { CreateUserTab } from "@/components/admin/CreateUserTab";
 import { ImpersonationBanner } from "@/components/admin/ImpersonationBanner";
+import { User } from "@/components/Interface/InterfaceUser";
+
+
 
 export function AdminDashboard() {
   const { data: session } = useSession();
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -34,7 +37,7 @@ export function AdminDashboard() {
       });
       
       if (result.data) {
-        setUsers(result.data.users);
+        setUsers(result.data.users as User[]);
         setTotalPages(Math.ceil(result.data.total / pageSize));
         setPage(pageNum);
       }
@@ -179,7 +182,7 @@ export function AdminDashboard() {
     <div className="container mx-auto py-8">
       <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
       
-      {session && typeof (session as any).impersonatedBy !== 'undefined' && (
+      {session && typeof session === 'object' && 'impersonatedBy' in session && (
         <ImpersonationBanner onStopImpersonating={handleStopImpersonating} />
       )}
       

@@ -1,13 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-  banned?: boolean;
-}
+import { User } from "@/components/Interface/InterfaceUser";
 
 interface UserTableProps {
   users: User[];
