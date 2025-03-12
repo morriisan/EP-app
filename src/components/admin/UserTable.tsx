@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { User } from "@/components/Interface/InterfaceUser";
 
+
 interface UserTableProps {
   users: User[];
   loading: boolean;

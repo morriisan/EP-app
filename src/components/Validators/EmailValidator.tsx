@@ -58,6 +58,7 @@ export function EmailValidator({
   const debouncedCheckEmail = debounce(checkEmailExists, 500);
 
   // Validate email on change
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const valid = emailRegex.test(email);
     setIsValid(valid);
@@ -71,14 +72,15 @@ export function EmailValidator({
     return () => {
       debouncedCheckEmail.cancel();
     };
-  }, [email, touched, debouncedCheckEmail, emailRegex, onChange]);
+  }, [email]);
 
   // Update when external value changes
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (value !== email) {
       setEmail(value);
     }
-  }, [value, email]);
+  }, [value]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
