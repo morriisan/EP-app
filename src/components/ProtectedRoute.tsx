@@ -28,6 +28,9 @@ export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRout
         <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center">
           <h2 className="text-2xl font-bold mb-4">Admin Access Required</h2>
           <p className="mb-6">You need admin privileges to access this page.</p>
+          <AuthPanel 
+          trigger={<Button size="lg">Sign In</Button>}
+          />
         </div>
       );
     }

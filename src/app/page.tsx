@@ -1,4 +1,4 @@
-//import{ProtectedRoute} from "@/components/ProtectedRoute";
+import{ProtectedRoute} from "@/components/ProtectedRoute";
 import { AdminDashboard } from "@/components/AdminDashboard";
 
 export default function Home() {
@@ -9,7 +9,9 @@ export default function Home() {
     <div>
     <h1 className="text-2xl font-bold text-center mt-10" >welcome</h1>
 
-      <AdminDashboard />
+      <ProtectedRoute requireAdmin>
+        <AdminDashboard />
+      </ProtectedRoute>
     
 
 
