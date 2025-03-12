@@ -71,8 +71,16 @@ export function AuthPanel({
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
               className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 rounded-t-3xl p-6 shadow-xl z-50 max-w-md mx-auto"
               style={{ maxHeight: "90vh", overflowY: "auto" }}
+              
             >
-              <div className="w-12 h-1.5 bg-gray-300 dark:bg-gray-700 rounded-full mx-auto mb-6" />
+              <div
+              className=" mx-auto  cursor-pointer "
+              onClick={() => setShowAuth(false)}
+              >
+              <button 
+              className="w-12 h-1.5 bg-gray-300 dark:bg-gray-700 rounded-full mx-auto mb-5 cursor-pointer hover:bg-gray-400 dark:hover:bg-gray-800 px-4 py-1"
+               />
+               </div>
               
               <Tabs defaultValue="signin" value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="grid w-full grid-cols-2">
