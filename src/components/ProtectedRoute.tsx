@@ -6,9 +6,10 @@ import { Button } from "@/components/ui/button";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
+  requireAdmin?: boolean;
 }
 
-export function ProtectedRoute({ children }: ProtectedRouteProps) {
+export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRouteProps) {
   const { data: session, isPending } = useSession();
   
   // If the session is still loading, show a loading state
@@ -20,8 +21,16 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     );
   }
 
-  // If authenticated, show the children
+  // If authenticated, check if admin is required
   if (session) {
+    if (requireAdmin && session.user.role !== "admin") {
+      return (
+        <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center">
+          <h2 className="text-2xl font-bold mb-4">Admin Access Required</h2>
+          <p className="mb-6">You need admin privileges to access this page.</p>
+        </div>
+      );
+    }
     return <>{children}</>;
   }
 

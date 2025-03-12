@@ -1,4 +1,5 @@
-import{ProtectedRoute} from "@/components/ProtectedRoute";
+//import{ProtectedRoute} from "@/components/ProtectedRoute";
+import { AdminDashboard } from "@/components/AdminDashboard";
 
 export default function Home() {
   console.log("morri");
@@ -6,13 +7,10 @@ export default function Home() {
 
    
     <div>
-    <h1>welcome</h1>
+    <h1 className="text-2xl font-bold text-center mt-10" >welcome</h1>
 
-    <ProtectedRoute>
-      <div>
-        <h1>hei</h1>
-      </div>
-    </ProtectedRoute>
+      <AdminDashboard />
+    
 
 
    </div>
