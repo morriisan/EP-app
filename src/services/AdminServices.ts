@@ -122,7 +122,7 @@ export async function impersonateUser(userId: string): Promise<boolean> {
   try {
     await authClient.admin.impersonateUser({ userId });
     toast.success("Now impersonating user");
-    window.location.href = "/dashboard"; // Redirect to dashboard
+    window.location.href = "/"; // Redirect to home
     return true;
   } catch (error) {
     console.error("Error impersonating user:", error);
@@ -136,7 +136,7 @@ export async function stopImpersonating(): Promise<boolean> {
   try {
     await authClient.admin.stopImpersonating();
     toast.success("Stopped impersonating");
-    window.location.reload();
+    window.location.href = "/dashboard"; // Redirect to dashboard
     return true;
   } catch (error) {
     console.error("Error stopping impersonation:", error);

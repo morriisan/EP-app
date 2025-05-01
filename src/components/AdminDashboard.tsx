@@ -5,7 +5,6 @@ import { useSession } from "@/lib/auth-client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserManagementTab } from "@/components/admin/UserManagementTab";
 import { CreateUserTab } from "@/components/admin/CreateUserTab";
-import { ImpersonationBanner } from "@/components/admin/ImpersonationBanner";
 import { User } from "@/components/Interface/InterfaceUser";
 import { 
   fetchUsers, 
@@ -134,9 +133,7 @@ export function AdminDashboard() {
     <div className="container mx-auto py-8">
       <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
       
-      {session && typeof session === 'object' && 'impersonatedBy' in session && (
-        <ImpersonationBanner onStopImpersonating={handleStopImpersonating} />
-      )}
+
       
       <Tabs defaultValue="users">
         <TabsList className="mb-6">
