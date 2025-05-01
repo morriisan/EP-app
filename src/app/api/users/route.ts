@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { requireAdmin } from '@/lib/auth-middleware';
 
 // GET handler for fetching all users
-export async function GET() {
+export const GET = requireAdmin(async ( ) => {
   try {
     // Fetch all users from the database
     const users = await prisma.user.findMany({
@@ -20,10 +21,10 @@ export async function GET() {
       { status: 500 }
     );
   }
-}
+});
 
 // POST handler for creating a new user
-export async function POST(request: Request) {
+export const POST = requireAdmin(async (request: Request) => {
   try {
     // Parse the request body
     const body = await request.json();
@@ -36,8 +37,6 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-
-
 
 
     // Create a new user
@@ -59,4 +58,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-} 
+}); 

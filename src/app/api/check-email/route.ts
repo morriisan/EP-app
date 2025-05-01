@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { requireAdmin } from "@/lib/auth-middleware";
 
-export async function GET(request: Request) {
+export const GET = requireAdmin(async (request: Request) => {
   try {
     const { searchParams } = new URL(request.url);
     const email = searchParams.get("email");
@@ -19,7 +20,7 @@ export async function GET(request: Request) {
       where: {
         email: email.toLowerCase(),
       },
-      select: { id: true }, // Only select ID to minimize data transfer
+      select: { id: true }, //  select ID to minimize data transfer
     });
     
     
@@ -34,4 +35,4 @@ export async function GET(request: Request) {
       { status: 500 }
     );
   }
-} 
+}); 

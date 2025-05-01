@@ -1,18 +1,17 @@
-import{ProtectedRoute} from "@/components/ProtectedRoute";
-import { AdminDashboard } from "@/components/AdminDashboard";
+
+import { LogoutButton } from "@/components/LogoutButton";
+import { AuthPanel } from "@/components/AuthPanel";
 
 export default function Home() {
   console.log("morri");
   return (
 
    
-    <div>
-    <h1 className="text-2xl font-bold text-center mt-10" >welcome</h1>
+    <div className="flex flex-col items-center justify-center h-screen">
+      <h1 className="text-2xl font-bold text-center mt-10" >welcome</h1>
 
-      <ProtectedRoute requireAdmin>
-        <AdminDashboard />
-      </ProtectedRoute>
-    
+      <LogoutButton />
+      <AuthPanel />
 
 
    </div>

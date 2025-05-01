@@ -1,15 +1,22 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { authClient, useSession } from "@/lib/auth-client";
+import { useSession } from "@/lib/auth-client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { toast } from "sonner";
 import { UserManagementTab } from "@/components/admin/UserManagementTab";
 import { CreateUserTab } from "@/components/admin/CreateUserTab";
 import { ImpersonationBanner } from "@/components/admin/ImpersonationBanner";
 import { User } from "@/components/Interface/InterfaceUser";
-
-
+import { 
+  fetchUsers, 
+  createUser, 
+  banUser, 
+  unbanUser, 
+  changeRole, 
+  deleteUser, 
+  impersonateUser, 
+  stopImpersonating 
+} from "@/services/AdminServices";
 
 export function AdminDashboard() {
   const { data: session } = useSession();
@@ -19,41 +26,30 @@ export function AdminDashboard() {
   const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
 
+
+  useEffect(() => {
+    if (session?.user.role === "admin") {
+      handleFetchUsers();
+    }
+  }, [session]);
+  
   // Fetch users
-  const fetchUsers = async (pageNum = 1, search = "") => {
+  const handleFetchUsers = async (pageNum = 1, search = "") => {
     setLoading(true);
     try {
-      const pageSize = 10;
-      const result = await authClient.admin.listUsers({
-        query: {
-          limit: pageSize,
-          offset: (pageNum - 1) * pageSize,
-          ...(search ? {
-            searchField: "email",
-            searchOperator: "contains",
-            searchValue: search
-          } : {})
-        }
-      });
-      
-      if (result.data) {
-        setUsers(result.data.users as User[]);
-        setTotalPages(Math.ceil(result.data.total / pageSize));
-        setPage(pageNum);
-      }
+      const result = await fetchUsers(pageNum, search);
+      setUsers(result.users);
+      setTotalPages(result.totalPages);
+      setPage(pageNum);
     } catch (error) {
+      // Error is already handled in the service
       console.error("Error fetching users:", error);
-      toast.error("Failed to fetch users");
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    if (session?.user.role === "admin") {
-      fetchUsers();
-    }
-  }, [session]);
+ 
 
   // Create new user
   const handleCreateUser = async (userData: {
@@ -63,110 +59,66 @@ export function AdminDashboard() {
     role: string;
   }) => {
     setLoading(true);
-    
-    try {
-      await authClient.admin.createUser({
-        name: userData.name,
-        email: userData.email,
-        password: userData.password,
-        role: userData.role as "user" | "admin"
-      });
-      
-      toast.success("User created successfully");
-      fetchUsers(page, searchTerm);
-    } catch (error) {
-      console.error("Error creating user:", error);
-      toast.error("Failed to create user");
-    } finally {
-      setLoading(false);
+    const success = await createUser(userData);
+    if (success) {
+      handleFetchUsers(page, searchTerm);
     }
+    setLoading(false);
   };
 
   // Ban user
   const handleBanUser = async (userId: string) => {
-    try {
-      await authClient.admin.banUser({ userId });
-      toast.success("User banned successfully");
-      fetchUsers(page, searchTerm);
-    } catch (error) {
-      console.error("Error banning user:", error);
-      toast.error("Failed to ban user");
+    const success = await banUser(userId);
+    if (success) {
+      handleFetchUsers(page, searchTerm);
     }
   };
 
   // Unban user
   const handleUnbanUser = async (userId: string) => {
-    try {
-      await authClient.admin.unbanUser({ userId });
-      toast.success("User unbanned successfully");
-      fetchUsers(page, searchTerm);
-    } catch (error) {
-      console.error("Error unbanning user:", error);
-      toast.error("Failed to unban user");
+    const success = await unbanUser(userId);
+    if (success) {
+      handleFetchUsers(page, searchTerm);
     }
   };
 
   // Change user role
   const handleChangeRole = async (userId: string, role: string) => {
-    try {
-      await authClient.admin.setRole({ userId, role: role as "user" | "admin" });
-      toast.success("User role updated successfully");
-      fetchUsers(page, searchTerm);
-    } catch (error) {
-      console.error("Error changing user role:", error);
-      toast.error("Failed to change user role");
+    const success = await changeRole(userId, role);
+    if (success) {
+      handleFetchUsers(page, searchTerm);
     }
   };
 
   // Delete user
   const handleDeleteUser = async (userId: string) => {
-    if (!confirm("Are you sure you want to delete this user? This action cannot be undone.")) {
-      return;
-    }
-    
-    try {
-      await authClient.admin.removeUser({ userId });
-      toast.success("User deleted successfully");
-      fetchUsers(page, searchTerm);
-    } catch (error) {
-      console.error("Error deleting user:", error);
-      toast.error("Failed to delete user");
+    const success = await deleteUser(userId);
+    if (success) {
+      handleFetchUsers(page, searchTerm);
     }
   };
 
   // Impersonate user
   const handleImpersonateUser = async (userId: string) => {
-    try {
-      await authClient.admin.impersonateUser({ userId });
-      toast.success("Now impersonating user");
-      window.location.href = "/dashboard"; // Redirect to dashboard
-    } catch (error) {
-      console.error("Error impersonating user:", error);
-      toast.error("Failed to impersonate user");
-    }
+    await impersonateUser(userId);
+    // No need to fetch users as we're redirecting
   };
 
   // Stop impersonating
   const handleStopImpersonating = async () => {
-    try {
-      await authClient.admin.stopImpersonating();
-      toast.success("Stopped impersonating");
-      window.location.reload();
-    } catch (error) {
-      console.error("Error stopping impersonation:", error);
-      toast.error("Failed to stop impersonating");
-    }
+    await stopImpersonating();
+    // No need to fetch users as we're reloading the page
   };
 
   // Handle search
   const handleSearch = (term: string) => {
     setSearchTerm(term);
-    fetchUsers(1, term);
+    handleFetchUsers(1, term);
   };
 
   // Handle page change
   const handlePageChange = (newPage: number) => {
-    fetchUsers(newPage, searchTerm);
+    handleFetchUsers(newPage, searchTerm);
   };
 
   if (!session || (session.user.role !== "admin")) {

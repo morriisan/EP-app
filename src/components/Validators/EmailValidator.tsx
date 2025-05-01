@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CheckCircle, XCircle, Loader2 } from "lucide-react";
@@ -30,57 +30,63 @@ export function EmailValidator({
   const [checking, setChecking] = useState(false);
   const [touched, setTouched] = useState(false);
 
-  // Basic email validation regex
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  // Memoize regex to prevent recreations
+  const emailRegex = useMemo(() => /^[^\s@]+@[^\s@]+\.[^\s@]+$/, []);
 
   // Check if email exists in the database
-  const checkEmailExists = async (email: string) => {
-    if (!emailRegex.test(email)) {
+  const checkEmailExists = useCallback(async (emailToCheck: string) => {
+    if (!emailRegex.test(emailToCheck)) {
       return;
     }
 
     setChecking(true);
     try {
-      const response = await fetch(`/api/check-email?email=${encodeURIComponent(email)}`);
+      const response = await fetch(`/api/check-email?email=${encodeURIComponent(emailToCheck)}`);
       if (response.ok) {
         const data = await response.json();
         setExists(data.exists);
-        onChange(email, true, data.exists);
       }
     } catch (error) {
       console.error("Error checking email:", error);
     } finally {
       setChecking(false);
     }
-  };
+  }, [emailRegex]);
 
-  // Debounce the API call to avoid too many requests
-  const debouncedCheckEmail = debounce(checkEmailExists, 500);
+  // Debounce the API call - memoize to prevent recreation on each render
+  const debouncedCheckEmail = useMemo(
+    () => debounce(checkEmailExists, 500),
+    [checkEmailExists]
+  );
+
+  // Update when external value changes
+  useEffect(() => {
+    if (value !== email) {
+      setEmail(value);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
 
   // Validate email on change
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const valid = emailRegex.test(email);
     setIsValid(valid);
     
     if (valid && touched) {
       debouncedCheckEmail(email);
-    } else {
-      onChange(email, valid, false);
     }
     
     return () => {
       debouncedCheckEmail.cancel();
     };
-  }, [email]);
-
-  // Update when external value changes
   // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [email, touched]);
+
+  // Notify parent when validation status changes
   useEffect(() => {
-    if (value !== email) {
-      setEmail(value);
-    }
-  }, [value]);
+    onChange(email, isValid, exists);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [email, isValid, exists]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
