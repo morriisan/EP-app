@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import "@uploadthing/react/styles.css";
 import "./globals.css";
 import { ImpersonationFloatingButton } from "@/components/ImpersonationFloatingButton";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
