@@ -1,10 +1,9 @@
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
 
 const f = createUploadthing();
-
-//const auth = (req: Request) => ({ id: "fakeId" }); // Legg til auth
 
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
@@ -19,11 +18,17 @@ export const ourFileRouter = {
     .middleware(async ({ req }) => {
       // This code runs on your server before upload
       // If you throw, the user will not be able to upload
-        const session = await auth.api.getSession({ headers: req.headers });
-        if (!session || session.user.role !== "admin") throw new UploadThingError("Unauthorized");
+        try {
+          const session = await auth.api.getSession({ headers: req.headers });
+          if (!session || session.user.role !== "admin") throw new UploadThingError("Unauthorized_user");
+            return { userId: session.user.id };
+        } catch (error) {
+          console.error("Error getting session:", error);
+          throw new UploadThingError("Unauthorized_user");
+        }
         
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
-        return { userId: session.user.id };
+        
     })
 
     .onUploadComplete(async ({ metadata, file }) => {
@@ -31,8 +36,24 @@ export const ourFileRouter = {
       console.log("Upload complete for userId:", metadata.userId);
       console.log("file url", file.ufsUrl);
 
+      // Create a Media record in your database
+      try {
+        await prisma.media.create({
+          data: {
+            url: file.ufsUrl,
+            fileKey: file.key,
+            uploadedById: metadata.userId,
+            title: file.name,
+          // extend this to include tags         
+        },
+      });
       // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
-      return { uploadedBy: metadata.userId };
+      return { 
+        uploadedBy: metadata.userId};
+
+      } catch (error) {
+        console.error("Error creating media record:", error);
+      }
     }),
 } satisfies FileRouter;
 
