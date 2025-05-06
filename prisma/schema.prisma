@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
@@ -30,6 +27,11 @@ model User {
   banned     Boolean?
   banReason  String?
   banExpires DateTime?
+
+  // New relations for media features
+  media         Media[]
+  bookmarks     Bookmark[]
+  collections   Collection[]
 
   @@map("user")
 }
@@ -79,4 +81,53 @@ model Verification {
   updatedAt  DateTime?
 
   @@map("verification")
+}
+
+//models for media features
+model Media {
+  id            String     @id @default(cuid())
+  url           String
+  fileKey       String?
+  title         String?
+  uploadedAt    DateTime   @default(now())
+  uploadedById  String
+  uploadedBy    User       @relation(fields: [uploadedById], references: [id], onDelete: Cascade)
+  tags          Tag[]      @relation("MediaTags")
+  bookmarks     Bookmark[]
+
+  @@map("media")
+}
+
+model Tag {
+  id     String   @id @default(cuid())
+  name   String   @unique
+  media  Media[]  @relation("MediaTags")
+
+  @@map("tag")
+}
+
+model Bookmark {
+  id            String       @id @default(cuid())
+  userId        String
+  mediaId       String
+  createdAt     DateTime     @default(now())
+  collectionId  String?
+
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  media         Media        @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  collection    Collection?  @relation(fields: [collectionId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, mediaId])  // Prevent duplicate bookmarks
+  @@map("bookmark")
+}
+
+model Collection {
+  id         String      @id @default(cuid())
+  name       String
+  createdAt  DateTime    @default(now())
+  userId     String
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bookmarks  Bookmark[]
+
+  @@map("collection")
 }
