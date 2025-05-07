@@ -11,7 +11,6 @@ datasource db {
 }
 
 // User model definition
-
 model User {
   id            String    @id @default(cuid())
   name          String
@@ -90,8 +89,8 @@ model Media {
   fileKey       String?
   title         String?
   uploadedAt    DateTime   @default(now())
-  uploadedById  String
-  uploadedBy    User       @relation(fields: [uploadedById], references: [id], onDelete: Cascade)
+  uploadedById  String?
+  uploadedBy    User?       @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
   tags          Tag[]      @relation("MediaTags")
   bookmarks     Bookmark[]
 
