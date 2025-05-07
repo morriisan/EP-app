@@ -80,7 +80,7 @@ export async function GET(request: Request) {
   }
 }
 
-// PATCH: Update media (title and tags)
+// Update media (title and tags)
 export async function PATCH(request: Request) {
   try {
     const session = await auth.api.getSession({ headers: request.headers });

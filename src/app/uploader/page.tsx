@@ -2,8 +2,12 @@
 
 import {UploadDropzone } from "@/utils/uploadthing";
 import{MediaGallery} from "@/components/media/MediaGallery";
+import {useState} from "react";
 
 export default function Home() {
+  const [refreshKey, setRefreshKey] = useState(0);
+
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
 
@@ -13,6 +17,7 @@ export default function Home() {
         onClientUploadComplete={(res) => {
           console.log("Files: ", res);
           alert("Upload Completed");
+          setRefreshKey((prev) => prev + 1);
         }}
         onUploadError={(error: Error) => {
           // Do something with the error.
@@ -20,7 +25,7 @@ export default function Home() {
         }}
       />
 
-      <MediaGallery isAdmin={true}/>
+      <MediaGallery isAdmin={true} key={refreshKey}/>
     </main>
   );
 }

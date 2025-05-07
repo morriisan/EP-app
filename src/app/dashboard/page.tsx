@@ -1,7 +1,6 @@
 "use client";
 
 import { useSession } from "@/lib/auth-client";
-import { LogoutButton } from "@/components/LogoutButton";
 import { AdminDashboard } from "@/components/AdminDashboard";
 
 export default function Dashboard() {
@@ -18,7 +17,6 @@ export default function Dashboard() {
         </div>
       )}
 
-      <LogoutButton />
       <AdminDashboard />
     </div>
   );

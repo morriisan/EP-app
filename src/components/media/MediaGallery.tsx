@@ -72,7 +72,7 @@ export function MediaGallery({ isAdmin = false }: MediaGalleryProps) {
 
       if (!response.ok) throw new Error("Failed to update media");
       
-      await fetchMedia();
+      await Promise.all([fetchMedia(), fetchTags()]);
       setSelectedMedia(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update media");

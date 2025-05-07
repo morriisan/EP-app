@@ -74,11 +74,11 @@ export function AuthPanel({
               
             >
               <div
-              className=" mx-auto  cursor-pointer "
+              className=" flex justify-center items-center cursor-pointer "
               onClick={() => setShowAuth(false)}
               >
               <button 
-              className="w-12 h-1.5 bg-gray-300 dark:bg-gray-700 rounded-full mx-auto mb-5 cursor-pointer hover:bg-gray-400 dark:hover:bg-gray-800 px-4 py-1"
+              className="w-12 h-1.5 bg-gray-300 dark:bg-gray-700 rounded-full mb-5 cursor-pointer hover:bg-gray-400 dark:hover:bg-gray-800 px-4 py-1"
                />
                </div>
               
