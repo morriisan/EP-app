@@ -1,7 +1,4 @@
-import { requireAuth } from "@/lib/auth-utils"
-
-
-
+import { requireAdmin } from "@/lib/auth-utils"
 
 export default async function DashboardLayout({
     children,
@@ -9,7 +6,7 @@ export default async function DashboardLayout({
     children: React.ReactNode;
   }) {
     // This will either return the session or redirect if not admin
-    await requireAuth();
+    await requireAdmin();
     
     return <>{children}</>;
   }

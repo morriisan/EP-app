@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
-import { utapi } from "@/services/uploadthing";
+import { utapi } from "@/lib/uploadthing";
 
 // GET: Fetch all media or filter by tags
 export async function GET(request: Request) {

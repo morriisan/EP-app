@@ -26,7 +26,7 @@ export function MainNav() {
       { href: "/dashboard", label: "Dashboard" }
     ] : []),
     { 
-      href: user ? "/#" : "#", 
+      href: user ? "/myPage" : "#", 
       label: user ? "My Page" : "Login",
       component: !user ? <AuthPanel trigger={<span className="text-pink-900 hover:text-pink-700">Login</span>} /> : undefined
     },

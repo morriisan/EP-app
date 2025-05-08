@@ -1,12 +1,12 @@
 import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
 
-
-type RouteHandler = (req: Request, ...args: unknown[]) => Promise<Response>;
+type Session = Awaited<ReturnType<typeof auth.api.getSession>>;
+type RouteHandler = (req: Request, session: NonNullable<Session>, ...args: unknown[]) => Promise<Response>;
 
 export function requireAuth(handler: RouteHandler) {
-    return async function (req: Request, ...args: unknown[]) {
-      let session;
+    return async function (req: Request) {
+      let session: Session | null;
   
       try {
         session = await auth.api.getSession({
@@ -21,13 +21,13 @@ export function requireAuth(handler: RouteHandler) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
       }
   
-      return handler(req, ...args);
+      return handler(req, session);
     };
-  }
+}
 
 export function requireAdmin(handler: RouteHandler) {
-    return async function (req: Request, ...args: unknown[]) {
-      let session;
+    return async function (req: Request) {
+      let session: Session | null;
   
       try {
         session = await auth.api.getSession({
@@ -45,6 +45,6 @@ export function requireAdmin(handler: RouteHandler) {
         return NextResponse.json({ error: "Admin access required" }, { status: 403 });
       }
   
-      return handler(req, ...args);
+      return handler(req, session);
     };
   }
