@@ -4,6 +4,9 @@ import "@uploadthing/react/styles.css";
 import "./globals.css";
 import { ImpersonationFloatingButton } from "@/components/ImpersonationFloatingButton";
 import { MainNav } from "@/components/nav/MainNav";
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import { extractRouterConfig } from "uploadthing/server";
+import { ourFileRouter } from "@/app/api/uploadthing/core";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,17 +25,19 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <MainNav />
+        <NextSSRPlugin 
+          routerConfig={extractRouterConfig(ourFileRouter)}
+        />
         {children}
         <ImpersonationFloatingButton />
-        
       </body>
     </html>
   );

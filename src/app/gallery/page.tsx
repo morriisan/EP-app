@@ -1,5 +1,5 @@
-import { MediaGallery } from "@/components/media/MediaGallery";
+import { MediaGalleryServer } from "@/components/media/MediaGalleryServer";
 
 export default function MediaPage() {
-  return <MediaGallery />;
+  return <MediaGalleryServer />;
 }

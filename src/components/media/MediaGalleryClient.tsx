@@ -1,39 +1,41 @@
 "use client";
 
-
-
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Media, Tag } from "@/components/Interface/media";
 import { MediaCard } from "./MediaCard";
 import { MediaEditForm } from "./MediaEditForm";
 import { TagFilter } from "./TagFilter";
 
+interface MediaGalleryClientProps {
+  initialMedia: Media[];
+  initialTags: Tag[];
+  initialSelectedTags: string[];
+  isAdmin: boolean;
+}
 
-interface MediaGalleryProps {
-    isAdmin?: boolean;
-  }
-
-export function MediaGallery({ isAdmin = false }: MediaGalleryProps) {
-  const [media, setMedia] = useState<Media[]>([]);
+export function MediaGalleryClient({ 
+  initialMedia, 
+  initialTags,
+  initialSelectedTags,
+  isAdmin 
+}: MediaGalleryClientProps) {
+  const [media, setMedia] = useState<Media[]>(initialMedia);
   const [selectedMedia, setSelectedMedia] = useState<Media | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [selectedTags, setSelectedTags] = useState<string[]>(initialSelectedTags);
+  const [allTags, setAllTags] = useState<Tag[]>(initialTags);
   const [error, setError] = useState<string | null>(null);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [allTags, setAllTags] = useState<Tag[]>([]);
 
-  //  fetch tags
-  const fetchTags = async () => {
-    const response = await fetch('/api/media?type=tags');
-    if (!response.ok) throw new Error("Failed to fetch tags");
-    const tags = await response.json();
-    setAllTags(tags);
-  };
-
-  // Fetch media
-  const fetchMedia = async () => {
+  const handleTagSelect = async (tagName: string) => {
+    const newSelectedTags = selectedTags.includes(tagName)
+      ? selectedTags.filter(t => t !== tagName)
+      : [...selectedTags, tagName];
+    
+    setSelectedTags(newSelectedTags);
+    
     try {
-      const queryParams = selectedTags.length > 0 
-        ? `?tags=${selectedTags.join(',')}` 
+      // Fetch media with updated tag filtering
+      const queryParams = newSelectedTags.length > 0 
+        ? `?tags=${newSelectedTags.join(',')}` 
         : '';
       const response = await fetch(`/api/media${queryParams}`);
       if (!response.ok) throw new Error("Failed to fetch media");
@@ -41,25 +43,7 @@ export function MediaGallery({ isAdmin = false }: MediaGalleryProps) {
       setMedia(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch media");
-    } finally {
-      setLoading(false);
     }
-  };
-
-  useEffect(() => {
-    fetchTags(); // Fetch tags once when component mounts
-  }, []);
-
-  useEffect(() => {
-    fetchMedia(); // Fetch media when selected tags change
-  }, [selectedTags]);
-
-  const handleTagSelect = (tagName: string) => {
-    setSelectedTags(prev => 
-      prev.includes(tagName)
-        ? prev.filter(t => t !== tagName)
-        : [...prev, tagName]
-    );
   };
 
   const handleUpdate = async (mediaId: string, title: string, tags: string[]) => {
@@ -72,7 +56,19 @@ export function MediaGallery({ isAdmin = false }: MediaGalleryProps) {
 
       if (!response.ok) throw new Error("Failed to update media");
       
-      await Promise.all([fetchMedia(), fetchTags()]);
+      // Fetch updated media and tags
+      const [mediaResponse, tagsResponse] = await Promise.all([
+        fetch(`/api/media${selectedTags.length > 0 ? `?tags=${selectedTags.join(',')}` : ''}`),
+        fetch('/api/media?type=tags')
+      ]);
+      
+      if (!mediaResponse.ok || !tagsResponse.ok) throw new Error("Failed to refresh data");
+      
+      const mediaData = await mediaResponse.json();
+      const tagsData = await tagsResponse.json();
+      
+      setMedia(mediaData);
+      setAllTags(tagsData);
       setSelectedMedia(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update media");
@@ -89,21 +85,17 @@ export function MediaGallery({ isAdmin = false }: MediaGalleryProps) {
 
       if (!response.ok) throw new Error("Failed to delete media");
       
-      await fetchMedia();
+      // Remove deleted media from state
+      setMedia(prev => prev.filter(item => item.id !== mediaId));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to delete media");
     }
   };
 
-  if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6">
-        {isAdmin ? "Media Management" : "Gallery"}
-      </h1>
-
+    <>
       <TagFilter
         tags={allTags}
         selectedTags={selectedTags}
@@ -131,6 +123,6 @@ export function MediaGallery({ isAdmin = false }: MediaGalleryProps) {
           onCancel={() => setSelectedMedia(null)}
         />
       )}
-    </div>
+    </>
   );
 } 

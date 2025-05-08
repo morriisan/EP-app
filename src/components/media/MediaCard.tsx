@@ -5,6 +5,7 @@ import { BookmarkButton } from "./BookmarkButton";
 import { CollectionManager } from "./CollectionManager";
 import { Button } from "@/components/ui/button";
 import { FolderPlusIcon } from "lucide-react";
+import { useSession } from "@/lib/auth-client";
 
 interface MediaCardProps {
   media: Media;
@@ -25,19 +26,48 @@ export function MediaCard({
 }: MediaCardProps) {
   const [isBookmarked, setIsBookmarked] = useState(initialIsBookmarked);
   const [showCollections, setShowCollections] = useState(false);
+  const { data: session } = useSession();
+
+  // Add this useEffect to check bookmark status when component mounts
+  useEffect(() => {
+    const checkBookmarkStatus = async () => {
+      if (!session) return;
+      
+      try {
+        const response = await fetch(`/api/bookmarks?mediaId=${media.id}`);
+        if (response.ok) {
+          const data = await response.json();
+          setIsBookmarked(data.isBookmarked);
+        }
+      } catch (error) {
+        console.error('Error checking bookmark status:', error);
+      }
+    };
+    
+    checkBookmarkStatus();
+  }, [media.id, session]);
+
 
   const handleBookmarkChange = async () => {
     try {
       const newStatus = !isBookmarked;
-      const action = newStatus ? 'add' : 'remove';
       
-      const response = await fetch(`/api/bookmarks/toggle`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mediaId: media.id, action }),
+      console.log('bookmarking!')
+
+      
+      const response = await fetch('/api/bookmarks', {
+        method: newStatus ? 'POST' : 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mediaId: media.id }),
+
       });
       
-      if (!response.ok) throw new Error('Failed to update bookmark');
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Server response:", errorText);
+        throw new Error(`Failed to update bookmark: ${errorText}`);
+      }
+      
       setIsBookmarked(newStatus);
     } catch (error) {
       console.error('Error updating bookmark:', error);
