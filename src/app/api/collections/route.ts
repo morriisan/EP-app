@@ -1,46 +1,32 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { collectionService } from "@/services/collectionService";
+import { requireAuth } from "@/lib/auth-middleware";
 
 // Get all collections for a user
-export async function GET(req: Request) {
-  const session = await auth.api.getSession({ headers: req.headers });
-  if (!session) {
-    return new NextResponse("Unauthorized", { status: 401 });
-  }
-
+export const GET = requireAuth(async (req: Request, session) => {
   try {
-    const collections = await prisma.collection.findMany({
-      where: {
-        userId: session.user.id,
-      },
-    });
-
+    const collections = await collectionService.getUserCollections(session.user.id);
     return NextResponse.json(collections);
   } catch (error) {
+    console.error('Error fetching collections:', error);
     return new NextResponse("Error fetching collections", { status: 500 });
   }
-}
+});
 
 // Create a new collection
-export async function POST(req: Request) {
-  const session = await auth.api.getSession({ headers: req.headers });
-  if (!session) {
-    return new NextResponse("Unauthorized", { status: 401 });
-  }
-
-  const { name } = await req.json();
-
+export const POST = requireAuth(async (req: Request, session) => {
   try {
-    const collection = await prisma.collection.create({
-      data: {
-        name,
-        userId: session.user.id,
-      },
-    });
+    const { name } = await req.json();
+    
+    if (!name) {
+      return new NextResponse("Collection name is required", { status: 400 });
+    }
 
+    const collection = await collectionService.createCollection(session.user.id, name);
     return NextResponse.json(collection);
   } catch (error) {
+    console.error('Error creating collection:', error);
     return new NextResponse("Error creating collection", { status: 500 });
   }
-} 
+}); 

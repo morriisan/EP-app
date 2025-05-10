@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSession } from "@/lib/auth-client";
+import { Check } from "lucide-react";
 
 interface Collection {
   id: string;
@@ -12,12 +13,16 @@ interface Collection {
 
 interface CollectionManagerProps {
   mediaId: string;
-  onCollectionChange: () => void;
+  initialCollections?: { id: string; name: string; }[];
+  onCollectionChange: (collections: { id: string; name: string; }[]) => void;
 }
 
-export function CollectionManager({ mediaId, onCollectionChange }: CollectionManagerProps) {
+export function CollectionManager({ mediaId, initialCollections, onCollectionChange }: CollectionManagerProps) {
   const { data: session } = useSession();
   const [collections, setCollections] = useState<Collection[]>([]);
+  const [selectedCollections, setSelectedCollections] = useState<string[]>(
+    initialCollections?.map(c => c.id) || []
+  );
   const [newCollectionName, setNewCollectionName] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -47,8 +52,9 @@ export function CollectionManager({ mediaId, onCollectionChange }: CollectionMan
       });
 
       if (!response.ok) throw new Error('Failed to create collection');
+      const newCollection = await response.json();
+      setCollections(prev => [...prev, newCollection]);
       setNewCollectionName("");
-      await fetchCollections();
     } catch (error) {
       console.error('Error creating collection:', error);
     } finally {
@@ -56,19 +62,32 @@ export function CollectionManager({ mediaId, onCollectionChange }: CollectionMan
     }
   };
 
-  const addToCollection = async (collectionId: string) => {
+  const toggleCollection = async (collectionId: string) => {
     setLoading(true);
     try {
-      const response = await fetch('/api/bookmarks', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mediaId, collectionId }),
+      const isRemoving = selectedCollections.includes(collectionId);
+      const endpoint = `/api/bookmarks/${mediaId}/collections/${collectionId}`;
+      
+      const response = await fetch(endpoint, {
+        method: isRemoving ? 'DELETE' : 'POST',
+        headers: { 'Content-Type': 'application/json' }
       });
 
-      if (!response.ok) throw new Error('Failed to add to collection');
-      onCollectionChange();
+      if (!response.ok) throw new Error(isRemoving ? 'Failed to remove from collection' : 'Failed to add to collection');
+      
+      const updatedCollections = isRemoving
+        ? selectedCollections.filter(id => id !== collectionId)
+        : [...selectedCollections, collectionId];
+      
+      setSelectedCollections(updatedCollections);
+      
+      // Update parent with full collection objects
+      const updatedCollectionObjects = collections.filter(c => 
+        updatedCollections.includes(c.id)
+      );
+      onCollectionChange(updatedCollectionObjects);
     } catch (error) {
-      console.error('Error adding to collection:', error);
+      console.error('Error toggling collection:', error);
     } finally {
       setLoading(false);
     }
@@ -90,17 +109,21 @@ export function CollectionManager({ mediaId, onCollectionChange }: CollectionMan
       </div>
 
       <div className="space-y-2">
-        {collections.map((collection) => (
-          <Button
-            key={collection.id}
-            variant="outline"
-            className="w-full justify-start"
-            onClick={() => addToCollection(collection.id)}
-            disabled={loading}
-          >
-            {collection.name}
-          </Button>
-        ))}
+        {collections.map((collection) => {
+          const isSelected = selectedCollections.includes(collection.id);
+          return (
+            <Button
+              key={collection.id}
+              variant={isSelected ? "default" : "outline"}
+              className="w-full justify-between"
+              onClick={() => toggleCollection(collection.id)}
+              disabled={loading}
+            >
+              {collection.name}
+              {isSelected && <Check className="h-4 w-4" />}
+            </Button>
+          );
+        })}
       </div>
     </div>
   );

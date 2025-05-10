@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CheckCircle, XCircle, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { debounce } from "lodash"; // You'll need to install this: npm install lodash
+import { useDebounceFunction } from "@/hooks/useDebounce";
 
 interface EmailValidatorProps {
   value: string;
@@ -53,11 +53,8 @@ export function EmailValidator({
     }
   }, [emailRegex]);
 
-  // Debounce the API call - memoize to prevent recreation on each render
-  const debouncedCheckEmail = useMemo(
-    () => debounce(checkEmailExists, 500),
-    [checkEmailExists]
-  );
+  // Use the new debounce hook
+  const debouncedCheckEmail = useDebounceFunction(checkEmailExists, 200);
 
   // Update when external value changes
   useEffect(() => {

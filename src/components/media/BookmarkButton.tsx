@@ -8,10 +8,16 @@ import { useSession } from "@/lib/auth-client";
 interface BookmarkButtonProps {
   mediaId: string;
   isBookmarked: boolean;
-  onBookmarkChange: () => void;
+  collections?: { id: string; name: string; }[];
+  onBookmarkChange: (bookmarkData: { isBookmarked: boolean; collections: any[] }) => void;
 }
 
-export function BookmarkButton({ mediaId, isBookmarked, onBookmarkChange }: BookmarkButtonProps) {
+export function BookmarkButton({ 
+  mediaId, 
+  isBookmarked, 
+  collections = [],
+  onBookmarkChange 
+}: BookmarkButtonProps) {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
 
@@ -26,7 +32,8 @@ export function BookmarkButton({ mediaId, isBookmarked, onBookmarkChange }: Book
       });
 
       if (!response.ok) throw new Error('Failed to update bookmark');
-      onBookmarkChange();
+      const data = await response.json();
+      onBookmarkChange(data);
     } catch (error) {
       console.error('Error updating bookmark:', error);
     } finally {
@@ -42,7 +49,9 @@ export function BookmarkButton({ mediaId, isBookmarked, onBookmarkChange }: Book
       size="icon"
       onClick={handleBookmark}
       disabled={loading}
-      className={isBookmarked ? "text-yellow-500" : ""}
+      className={`bg-black/50 hover:bg-black/70 backdrop-blur-sm cursor-pointer ${
+        isBookmarked ? "text-yellow-500 hover:text-yellow-500" : "text-white"
+      }`}
     >
       {isBookmarked ? <BookmarkIcon /> : <BookmarkPlusIcon />}
     </Button>

@@ -19,9 +19,9 @@ export async function GET(req: Request) {
 
   try {
     const isBookmarked = await bookmarkService.checkBookmarkStatus(session.user.id, mediaId);
-    return NextResponse.json({ isBookmarked });
+    return NextResponse.json(isBookmarked);
   } catch (error) {
-    console.log("Error checking bookmark status", error);
+    console.error('Error checking bookmark status:', error);
     return new NextResponse("Error checking bookmark status", { status: 500 });
   }
 }
@@ -30,22 +30,24 @@ export async function GET(req: Request) {
 export const POST = requireAuth(async (req: Request, session) => {
   try {
     const { mediaId, collectionId } = await req.json();
-
     if (!mediaId) {
       return new NextResponse("Media ID is required", { status: 400 });
     }
 
     // First check if bookmark already exists
-    const exists = await bookmarkService.checkBookmarkStatus(session.user.id, mediaId);
+    const bookmarkStatus = await bookmarkService.checkBookmarkStatus(session.user.id, mediaId);
     
-    if (exists) {
-      // If bookmark already exists, return success
-      return NextResponse.json({ message: "Bookmark already exists" }, { status: 200 });
+    if (bookmarkStatus.isBookmarked) {
+      // If bookmark already exists, return the current status
+      return NextResponse.json(bookmarkStatus);
     }
     
     // Only create if it doesn't exist
     const bookmark = await bookmarkService.createBookmark(session.user.id, mediaId, collectionId);
-    return NextResponse.json(bookmark);
+    return NextResponse.json({
+      isBookmarked: true,
+      collections: bookmark.collections.map(bc => bc.collection)
+    });
   } catch (error) {
     console.error("Error creating bookmark:", error);
     return new NextResponse("Error creating bookmark", { status: 500 });
