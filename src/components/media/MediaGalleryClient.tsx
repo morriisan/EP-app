@@ -102,7 +102,7 @@ export function MediaGalleryClient({
         onTagSelect={handleTagSelect}
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 ">
         {media.map((item) => (
           <MediaCard
             key={item.id}

@@ -3,7 +3,7 @@
 import { Collection } from "@/components/Interface/media";
 import { Button } from "@/components/ui/button";
 import { MediaCard } from "./MediaCard";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface CollectionsListProps {
   initialCollections: Collection[];
@@ -11,6 +11,15 @@ interface CollectionsListProps {
 
 export function CollectionsList({ initialCollections }: CollectionsListProps) {
   const [selectedCollection, setSelectedCollection] = useState<Collection | null>(null);
+
+  // Select the first collection by default 
+  useEffect(() => {
+    if (initialCollections.length > 0 && !selectedCollection) {
+      setSelectedCollection(initialCollections[0]);
+    }
+  //  only run when initialCollections changes
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialCollections]);
 
   if (initialCollections.length === 0) return <div>No collections yet</div>;
 

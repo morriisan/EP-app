@@ -9,13 +9,16 @@ interface BookmarkButtonProps {
   mediaId: string;
   isBookmarked: boolean;
   collections?: { id: string; name: string; }[];
-  onBookmarkChange: (bookmarkData: { isBookmarked: boolean; collections: any[] }) => void;
+  onBookmarkChange: (bookmarkData: { 
+    isBookmarked: boolean; 
+    collections: { id: string; name: string; }[] 
+  }) => void;
 }
 
 export function BookmarkButton({ 
   mediaId, 
   isBookmarked, 
-  collections = [],
+  
   onBookmarkChange 
 }: BookmarkButtonProps) {
   const { data: session } = useSession();

@@ -1,7 +1,7 @@
 "use client";
 
 import { Media } from "@/components/Interface/media";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 interface MediaEditFormProps {
   media: Media;

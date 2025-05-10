@@ -1,10 +1,10 @@
 "use client";
 
 import { UploadButton } from "@/utils/uploadthing";
-import { useRouter } from "next/navigation";
+
 
 export function UploaderClient() {
-  const router = useRouter();
+  
   
   return (
     <div className="mb-8">

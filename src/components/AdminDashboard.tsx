@@ -14,7 +14,6 @@ import {
   changeRole, 
   deleteUser, 
   impersonateUser, 
-  stopImpersonating 
 } from "@/services/AdminServices";
 
 export function AdminDashboard() {
@@ -103,12 +102,7 @@ export function AdminDashboard() {
     // No need to fetch users as we're redirecting
   };
 
-  // Stop impersonating
-  const handleStopImpersonating = async () => {
-    await stopImpersonating();
-    // No need to fetch users as we're reloading the page
-  };
-
+ 
   // Handle search
   const handleSearch = (term: string) => {
     setSearchTerm(term);

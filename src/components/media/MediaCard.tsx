@@ -14,6 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
+
 interface MediaCardProps {
   media: Media;
   onEdit?: (media: Media) => void;
@@ -36,6 +37,7 @@ export function MediaCard({
   const [isBookmarked, setIsBookmarked] = useState(initialIsBookmarked);
   const [collections, setCollections] = useState(initialCollections);
   const [showCollections, setShowCollections] = useState(false);
+  const [showFullImage, setShowFullImage] = useState(false);
   const { data: session } = useSession();
 
   // Debounce the mediaId to prevent multiple rapid requests
@@ -62,7 +64,7 @@ export function MediaCard({
     }
   }, [debouncedMediaId, checkBookmarkStatus]);
 
-  const handleBookmarkChange = async (bookmarkData: { isBookmarked: boolean; collections: any[] }) => {
+  const handleBookmarkChange = async (bookmarkData: { isBookmarked: boolean; collections: { id: string; name: string; }[] }) => {
     setIsBookmarked(bookmarkData.isBookmarked);
     setCollections(bookmarkData.collections);
   };
@@ -70,7 +72,7 @@ export function MediaCard({
   return (
     <div className="relative group">
       <div className="border rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow duration-200">
-        <div className="relative aspect-square">
+        <div className="relative aspect-square cursor-pointer" onClick={() => setShowFullImage(true)}>
           <Image
             src={media.url}
             alt={media.title || "Uploaded media"}
@@ -81,8 +83,8 @@ export function MediaCard({
           />
 
           {/* Tags overlay with blur effect */}
-          <div className="absolute bottom-0 left-0 right-0 p-2 ">
-            <div className="flex flex-wrap gap-1">
+          <div className="absolute bottom-0 left-0 right-0 p-2">
+            <div className="flex flex-wrap gap-1" onClick={(e) => e.stopPropagation()}>
               {media.tags.map((tag) => (
                 <button
                   key={tag.id}
@@ -97,22 +99,25 @@ export function MediaCard({
 
           {/* Action buttons overlay */}
           <div className="absolute top-2 right-2 flex gap-2 transition-opacity duration-200">
-            <BookmarkButton
-              mediaId={media.id}
-              isBookmarked={isBookmarked}
-              collections={collections}
-              onBookmarkChange={handleBookmarkChange}
-              
-            />
+            <div onClick={(e) => e.stopPropagation()}>
+              <BookmarkButton
+                mediaId={media.id}
+                isBookmarked={isBookmarked}
+                collections={collections}
+                onBookmarkChange={handleBookmarkChange}
+              />
+            </div>
             {isBookmarked && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setShowCollections(true)}
-                className="bg-black/50 hover:bg-black/70 text-white backdrop-blur-sm"
-              >
-                <FolderPlusIcon className="h-4 w-4" />
-              </Button>
+              <div onClick={(e) => e.stopPropagation()}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowCollections(true)}
+                  className="bg-black/50 hover:bg-black/70 text-white backdrop-blur-sm"
+                >
+                  <FolderPlusIcon className="h-4 w-4" />
+                </Button>
+              </div>
             )}
           </div>
         </div>
@@ -147,6 +152,7 @@ export function MediaCard({
         )}
       </div>
 
+      {/* Collections Dialog */}
       <Dialog open={showCollections} onOpenChange={setShowCollections}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -159,6 +165,25 @@ export function MediaCard({
               setCollections(updatedCollections);
             }}
           />
+        </DialogContent>
+      </Dialog>
+
+      {/* Full Image Dialog */}
+      <Dialog open={showFullImage} onOpenChange={setShowFullImage}>
+        <DialogContent className="w-auto max-w-[1200px] flex items-center justify-center p-0 border-none">
+          <DialogHeader className="sr-only">
+            <DialogTitle>{media.title || "Image Preview"}</DialogTitle>
+          </DialogHeader>
+          <div className="relative">
+            <Image
+              src={media.url}
+              alt={media.title || "Uploaded media"}
+              width={1200}
+              height={8000}
+              className="max-h-[100vh] w-auto max-w-[100vw] object-contain "
+              priority
+            />
+          </div>
         </DialogContent>
       </Dialog>
     </div>

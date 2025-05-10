@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { collectionService } from "@/services/collectionService";
 import { requireAuth } from "@/lib/auth-middleware";
 

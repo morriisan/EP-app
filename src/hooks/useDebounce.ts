@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { debounce } from 'lodash';
+import { debounce, DebouncedFunc } from 'lodash';
 
 // Hook for debouncing values (like in MediaCard)
 export function useDebounceValue<T>(value: T, delay: number): T {
@@ -23,10 +23,10 @@ export function useDebounceValue<T>(value: T, delay: number): T {
 }
 
 // Hook for debouncing functions (like in EmailValidator)
-export function useDebounceFunction<T extends (...args: any[]) => any>(
-  callback: T,
+export function useDebounceFunction<TArgs extends unknown[], TReturn>(
+  callback: (...args: TArgs) => TReturn,
   delay: number
-) {
+): DebouncedFunc<(...args: TArgs) => TReturn> {
   return useMemo(
     () => debounce(callback, delay),
     [callback, delay]

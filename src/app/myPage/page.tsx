@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { auth } from "@/lib/auth";
+
 import { bookmarkService } from "@/services/bookmarkService";
 import { collectionService } from "@/services/collectionService";
 import { BookmarkedMedia } from "@/components/media/BookmarkedMedia";

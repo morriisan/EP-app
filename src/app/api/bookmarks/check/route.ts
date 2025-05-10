@@ -12,7 +12,10 @@ export async function GET(req: Request) {
   try {
     const bookmarkedMedia = await bookmarkService.getAllBookmarkedMedia(session.user.id);
     return NextResponse.json(bookmarkedMedia);
-  } catch (error) {
-    return new NextResponse("Error fetching bookmarked media", { status: 500 });
+  } catch  {
+    return NextResponse.json(
+      { error: "Error fetching bookmarked media" },
+      { status: 500 }
+    );
   }
-} 
+}
