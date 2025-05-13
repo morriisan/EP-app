@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useSession } from "@/lib/auth-client";
 import { Check } from "lucide-react";
 import useSWR, { mutate } from "swr";
+import { toast } from "sonner";
 
 interface Collection {
   id: string;
@@ -40,14 +41,18 @@ export function CollectionManager({ mediaId, initialCollections, onCollectionCha
       if (!response.ok) throw new Error('Failed to create collection');
       await mutate('/api/collections'); // Revalidate collections data
       setNewCollectionName("");
+      toast.success("Collection created successfully");
     } catch (error) {
       console.error('Error creating collection:', error);
+      toast.error("Failed to create collection");
     }
   };
 
   const toggleCollection = async (collectionId: string) => {
+    const isRemoving = selectedCollections.includes(collectionId);
+    const collectionName = collections.find(c => c.id === collectionId)?.name;
+    
     try {
-      const isRemoving = selectedCollections.includes(collectionId);
       const endpoint = `/api/bookmarks/${mediaId}/collections/${collectionId}`;
       
       const response = await fetch(endpoint, {
@@ -68,8 +73,17 @@ export function CollectionManager({ mediaId, initialCollections, onCollectionCha
         updatedCollections.includes(c.id)
       ) || [];
       onCollectionChange(updatedCollectionObjects);
+
+      toast.success(isRemoving 
+        ? `Removed from ${collectionName}`
+        : `Added to ${collectionName}`
+      );
     } catch (error) {
       console.error('Error toggling collection:', error);
+      toast.error(isRemoving 
+        ? "Failed to remove from collection"
+        : "Failed to add to collection"
+      );
     }
   };
 

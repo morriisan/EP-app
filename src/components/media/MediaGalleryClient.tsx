@@ -51,6 +51,7 @@ export function MediaGalleryClient({
       // Mutate both media and tags data
       await Promise.all([
         mutate(`/api/media${queryParams}`),
+        mutate('/api/media'),
         mutate('/api/media?type=tags')
       ]);
       
@@ -73,6 +74,7 @@ export function MediaGalleryClient({
       // Mutate both media and tags data
       await Promise.all([
         mutate(`/api/media${queryParams}`),
+        mutate('/api/media'),
         mutate('/api/media?type=tags')
       ]);
     } catch (err) {

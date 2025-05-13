@@ -17,8 +17,9 @@ export function UploaderClient() {
           setTimeout(() => {
             // Mutate both media and tags data
             Promise.all([
-              mutate('/api/media'),
-              mutate('/api/media?type=tags')
+              mutate('/api/media'), 
+              mutate('/api/media?type=tags'), 
+              mutate('/api/media?tags=') 
             ]);
           }, 500);
         }}

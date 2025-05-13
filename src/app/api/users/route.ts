@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth-middleware';
 
 // GET handler for fetching all users
-export const GET = requireAdmin(async ( ) => {
+export const GET = requireAdmin(async () => {
   try {
     // Fetch all users from the database
     const users = await prisma.user.findMany({
@@ -37,7 +37,6 @@ export const POST = requireAdmin(async (request: Request) => {
         { status: 400 }
       );
     }
-
 
     // Create a new user
     const user = await prisma.user.create({
