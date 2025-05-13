@@ -5,7 +5,7 @@ export default function MediaPage() {
   return (
     <main className="container mx-auto py-8">
       <Suspense fallback={<div>Loading gallery...</div>}>
-        <MediaGalleryServer />
+        <MediaGalleryServer isAdmin={false}/>
       </Suspense>
     </main>
   );
