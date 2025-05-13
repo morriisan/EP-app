@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSession } from "@/lib/auth-client";
 import { Check } from "lucide-react";
+import useSWR, { mutate } from "swr";
 
 interface Collection {
   id: string;
@@ -17,33 +18,18 @@ interface CollectionManagerProps {
   onCollectionChange: (collections: { id: string; name: string; }[]) => void;
 }
 
+const fetcher = (url: string) => fetch(url).then(res => res.json());
+
 export function CollectionManager({ mediaId, initialCollections, onCollectionChange }: CollectionManagerProps) {
   const { data: session } = useSession();
-  const [collections, setCollections] = useState<Collection[]>([]);
+  const { data: collections = [], isLoading } = useSWR<Collection[]>('/api/collections', fetcher);
   const [selectedCollections, setSelectedCollections] = useState<string[]>(
     initialCollections?.map(c => c.id) || []
   );
   const [newCollectionName, setNewCollectionName] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    fetchCollections();
-  }, []);
-
-  const fetchCollections = async () => {
-    try {
-      const response = await fetch('/api/collections');
-      if (!response.ok) throw new Error('Failed to fetch collections');
-      const data = await response.json();
-      setCollections(data);
-    } catch (error) {
-      console.error('Error fetching collections:', error);
-    }
-  };
 
   const createCollection = async () => {
     if (!newCollectionName.trim()) return;
-    setLoading(true);
     try {
       const response = await fetch('/api/collections', {
         method: 'POST',
@@ -52,18 +38,14 @@ export function CollectionManager({ mediaId, initialCollections, onCollectionCha
       });
 
       if (!response.ok) throw new Error('Failed to create collection');
-      const newCollection = await response.json();
-      setCollections(prev => [...prev, newCollection]);
+      await mutate('/api/collections'); // Revalidate collections data
       setNewCollectionName("");
     } catch (error) {
       console.error('Error creating collection:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
   const toggleCollection = async (collectionId: string) => {
-    setLoading(true);
     try {
       const isRemoving = selectedCollections.includes(collectionId);
       const endpoint = `/api/bookmarks/${mediaId}/collections/${collectionId}`;
@@ -82,14 +64,12 @@ export function CollectionManager({ mediaId, initialCollections, onCollectionCha
       setSelectedCollections(updatedCollections);
       
       // Update parent with full collection objects
-      const updatedCollectionObjects = collections.filter(c => 
+      const updatedCollectionObjects = collections?.filter(c => 
         updatedCollections.includes(c.id)
-      );
+      ) || [];
       onCollectionChange(updatedCollectionObjects);
     } catch (error) {
       console.error('Error toggling collection:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -103,7 +83,7 @@ export function CollectionManager({ mediaId, initialCollections, onCollectionCha
           onChange={(e) => setNewCollectionName(e.target.value)}
           placeholder="New collection name"
         />
-        <Button onClick={createCollection} disabled={loading}>
+        <Button onClick={createCollection} disabled={isLoading}>
           Create
         </Button>
       </div>
@@ -117,7 +97,7 @@ export function CollectionManager({ mediaId, initialCollections, onCollectionCha
               variant={isSelected ? "default" : "outline"}
               className="w-full justify-between"
               onClick={() => toggleCollection(collection.id)}
-              disabled={loading}
+              disabled={isLoading}
             >
               {collection.name}
               {isSelected && <Check className="h-4 w-4" />}

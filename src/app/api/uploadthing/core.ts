@@ -39,7 +39,7 @@ export const ourFileRouter = {
       // Create a Media record in your database
       try {
         await prisma.media.create({
-          data: {
+          data: { 
             url: file.ufsUrl,
             fileKey: file.key,
             uploadedById: metadata.userId,

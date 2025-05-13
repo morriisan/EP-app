@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSession } from "@/lib/auth-client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserManagementTab } from "@/components/admin/UserManagementTab";
 import { CreateUserTab } from "@/components/admin/CreateUserTab";
 import { User } from "@/components/Interface/InterfaceUser";
+import useSWR from "swr";
 import { 
-  fetchUsers, 
   createUser, 
   banUser, 
   unbanUser, 
@@ -16,38 +16,27 @@ import {
   impersonateUser, 
 } from "@/services/AdminServices";
 
+interface UsersResponse {
+  users: User[];
+  totalPages: number;
+}
+
+const fetcher = (url: string) => fetch(url).then(res => res.json());
+
 export function AdminDashboard() {
   const { data: session } = useSession();
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Use SWR for fetching users with pagination and search
+  const { data, isLoading: loading, mutate: mutateUsers } = useSWR<UsersResponse>(
+    session?.user.role === "admin" ? `/api/users?page=${page}&search=${searchTerm}` : null,
+    fetcher,
+    { fallbackData: { users: [], totalPages: 1 } }
+  );
 
-  useEffect(() => {
-    if (session?.user.role === "admin") {
-      handleFetchUsers();
-    }
-  }, [session]);
-  
-  // Fetch users
-  const handleFetchUsers = async (pageNum = 1, search = "") => {
-    setLoading(true);
-    try {
-      const result = await fetchUsers(pageNum, search);
-      setUsers(result.users);
-      setTotalPages(result.totalPages);
-      setPage(pageNum);
-    } catch (error) {
-      // Error is already handled in the service
-      console.error("Error fetching users:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
- 
+  const users = data?.users || [];
+  const totalPages = data?.totalPages || 1;
 
   // Create new user
   const handleCreateUser = async (userData: {
@@ -56,19 +45,17 @@ export function AdminDashboard() {
     password: string;
     role: string;
   }) => {
-    setLoading(true);
     const success = await createUser(userData);
     if (success) {
-      handleFetchUsers(page, searchTerm);
+      mutateUsers(); // Revalidate users data
     }
-    setLoading(false);
   };
 
   // Ban user
   const handleBanUser = async (userId: string) => {
     const success = await banUser(userId);
     if (success) {
-      handleFetchUsers(page, searchTerm);
+      mutateUsers(); // Revalidate users data
     }
   };
 
@@ -76,7 +63,7 @@ export function AdminDashboard() {
   const handleUnbanUser = async (userId: string) => {
     const success = await unbanUser(userId);
     if (success) {
-      handleFetchUsers(page, searchTerm);
+      mutateUsers(); // Revalidate users data
     }
   };
 
@@ -84,7 +71,7 @@ export function AdminDashboard() {
   const handleChangeRole = async (userId: string, role: string) => {
     const success = await changeRole(userId, role);
     if (success) {
-      handleFetchUsers(page, searchTerm);
+      mutateUsers(); // Revalidate users data
     }
   };
 
@@ -92,26 +79,25 @@ export function AdminDashboard() {
   const handleDeleteUser = async (userId: string) => {
     const success = await deleteUser(userId);
     if (success) {
-      handleFetchUsers(page, searchTerm);
+      mutateUsers(); // Revalidate users data
     }
   };
 
   // Impersonate user
   const handleImpersonateUser = async (userId: string) => {
     await impersonateUser(userId);
-    // No need to fetch users as we're redirecting
+    // No need to mutate as we're redirecting
   };
 
- 
   // Handle search
   const handleSearch = (term: string) => {
     setSearchTerm(term);
-    handleFetchUsers(1, term);
+    setPage(1); // Reset to first page when searching
   };
 
   // Handle page change
   const handlePageChange = (newPage: number) => {
-    handleFetchUsers(newPage, searchTerm);
+    setPage(newPage);
   };
 
   if (!session || (session.user.role !== "admin")) {
@@ -126,8 +112,6 @@ export function AdminDashboard() {
   return (
     <div className="container mx-auto py-8">
       <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
-      
-
       
       <Tabs defaultValue="users">
         <TabsList className="mb-6">

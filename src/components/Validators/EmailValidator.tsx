@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CheckCircle, XCircle, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useDebounceFunction } from "@/hooks/useDebounce";
+import { useDebounceValue } from "@/hooks/useDebounce";
+import useSWR from "swr";
 
 interface EmailValidatorProps {
   value: string;
@@ -16,6 +17,12 @@ interface EmailValidatorProps {
   className?: string;
 }
 
+interface EmailCheckResponse {
+  exists: boolean;
+}
+
+const fetcher = (url: string) => fetch(url).then(res => res.json());
+
 export function EmailValidator({
   value,
   onChange,
@@ -25,36 +32,26 @@ export function EmailValidator({
   className,
 }: EmailValidatorProps) {
   const [email, setEmail] = useState(value);
-  const [isValid, setIsValid] = useState(false);
-  const [exists, setExists] = useState(false);
-  const [checking, setChecking] = useState(false);
   const [touched, setTouched] = useState(false);
 
   // Memoize regex to prevent recreations
   const emailRegex = useMemo(() => /^[^\s@]+@[^\s@]+\.[^\s@]+$/, []);
+  const isValid = emailRegex.test(email);
 
-  // Check if email exists in the database
-  const checkEmailExists = useCallback(async (emailToCheck: string) => {
-    if (!emailRegex.test(emailToCheck)) {
-      return;
+  // Debounce email for API calls
+  const debouncedEmail = useDebounceValue(email, 200);
+
+  // Use SWR for email existence checking
+  const { data, isValidating } = useSWR<EmailCheckResponse>(
+    touched && isValid ? `/api/check-email?email=${encodeURIComponent(debouncedEmail)}` : null,
+    fetcher,
+    { 
+      revalidateOnFocus: false,
+      dedupingInterval: 10000 // Cache results for 10 seconds
     }
+  );
 
-    setChecking(true);
-    try {
-      const response = await fetch(`/api/check-email?email=${encodeURIComponent(emailToCheck)}`);
-      if (response.ok) {
-        const data = await response.json();
-        setExists(data.exists);
-      }
-    } catch (error) {
-      console.error("Error checking email:", error);
-    } finally {
-      setChecking(false);
-    }
-  }, [emailRegex]);
-
-  // Use the new debounce hook
-  const debouncedCheckEmail = useDebounceFunction(checkEmailExists, 200);
+  const exists = data?.exists ?? false;
 
   // Update when external value changes
   useEffect(() => {
@@ -63,21 +60,6 @@ export function EmailValidator({
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
-
-  // Validate email on change
-  useEffect(() => {
-    const valid = emailRegex.test(email);
-    setIsValid(valid);
-    
-    if (valid && touched) {
-      debouncedCheckEmail(email);
-    }
-    
-    return () => {
-      debouncedCheckEmail.cancel();
-    };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [email, touched]);
 
   // Notify parent when validation status changes
   useEffect(() => {
@@ -97,7 +79,7 @@ export function EmailValidator({
         <Label htmlFor="email" className="flex items-center gap-2">
           {label}
           {required && <span className="text-red-500">*</span>}
-          {checking && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+          {isValidating && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
         </Label>
       )}
       <div className="relative">
