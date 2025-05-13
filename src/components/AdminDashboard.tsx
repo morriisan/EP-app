@@ -7,7 +7,9 @@ import { UserManagementTab } from "@/components/admin/UserManagementTab";
 import { CreateUserTab } from "@/components/admin/CreateUserTab";
 import { User } from "@/components/Interface/InterfaceUser";
 import useSWR from "swr";
+import { toast } from "sonner";
 import { 
+  fetchUsers,
   createUser, 
   banUser, 
   unbanUser, 
@@ -21,18 +23,19 @@ interface UsersResponse {
   totalPages: number;
 }
 
-const fetcher = (url: string) => fetch(url).then(res => res.json());
-
 export function AdminDashboard() {
   const { data: session } = useSession();
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Use SWR for fetching users with pagination and search
+  // Use SWR with fetchUsers
   const { data, isLoading: loading, mutate: mutateUsers } = useSWR<UsersResponse>(
-    session?.user.role === "admin" ? `/api/users?page=${page}&search=${searchTerm}` : null,
-    fetcher,
-    { fallbackData: { users: [], totalPages: 1 } }
+    session?.user.role === "admin" ? ['users', page, searchTerm] : null,
+    () => fetchUsers(page, searchTerm),
+    { 
+      fallbackData: { users: [], totalPages: 1 },
+      revalidateOnFocus: false
+    }
   );
 
   const users = data?.users || [];
@@ -45,48 +48,74 @@ export function AdminDashboard() {
     password: string;
     role: string;
   }) => {
-    const success = await createUser(userData);
-    if (success) {
-      mutateUsers(); // Revalidate users data
+    try {
+      await createUser(userData);
+      toast.success("User created successfully");
+      mutateUsers();
+    } catch (error) {
+      toast.error("Failed to create user");
+      console.error("Error creating user:", error);
     }
   };
 
   // Ban user
   const handleBanUser = async (userId: string) => {
-    const success = await banUser(userId);
-    if (success) {
-      mutateUsers(); // Revalidate users data
+    try {
+      await banUser(userId);
+      toast.success("User banned successfully");
+      mutateUsers();
+    } catch (error) {
+      toast.error("Failed to ban user");
+      console.error("Error banning user:", error);
     }
   };
 
   // Unban user
   const handleUnbanUser = async (userId: string) => {
-    const success = await unbanUser(userId);
-    if (success) {
-      mutateUsers(); // Revalidate users data
+    try {
+      await unbanUser(userId);
+      toast.success("User unbanned successfully");
+      mutateUsers();
+    } catch (error) {
+      toast.error("Failed to unban user");
+      console.error("Error unbanning user:", error);
     }
   };
 
   // Change user role
   const handleChangeRole = async (userId: string, role: string) => {
-    const success = await changeRole(userId, role);
-    if (success) {
-      mutateUsers(); // Revalidate users data
+    try {
+      await changeRole(userId, role);
+      toast.success("User role updated successfully");
+      mutateUsers();
+    } catch (error) {
+      toast.error("Failed to change user role");
+      console.error("Error changing user role:", error);
     }
   };
 
   // Delete user
   const handleDeleteUser = async (userId: string) => {
-    const success = await deleteUser(userId);
-    if (success) {
-      mutateUsers(); // Revalidate users data
+    try {
+      await deleteUser(userId);
+      toast.success("User deleted successfully");
+      mutateUsers();
+    } catch (error) {
+      toast.error("Failed to delete user");
+      console.error("Error deleting user:", error);
     }
   };
 
   // Impersonate user
   const handleImpersonateUser = async (userId: string) => {
-    await impersonateUser(userId);
-    // No need to mutate as we're redirecting
+    try {
+      await impersonateUser(userId);
+      toast.success("Now impersonating user");
+      // No need to mutate as we're redirecting
+    } catch (error) {
+      toast.error("Failed to impersonate user");
+      console.error("Error impersonating user:", error);
+    }
   };
 
   // Handle search
