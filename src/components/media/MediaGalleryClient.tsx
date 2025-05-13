@@ -5,6 +5,8 @@ import { Media, Tag } from "@/components/Interface/media";
 import { MediaCard } from "./MediaCard";
 import { MediaEditForm } from "./MediaEditForm";
 import { TagFilter } from "./TagFilter";
+import { UploaderClient } from "./UploaderClient";
+import useSWR, { mutate } from "swr";
 
 interface MediaGalleryClientProps {
   initialMedia: Media[];
@@ -13,17 +15,20 @@ interface MediaGalleryClientProps {
   isAdmin: boolean;
 }
 
+const fetcher = (url: string) => fetch(url).then(res => res.json());
+
 export function MediaGalleryClient({ 
   initialMedia, 
   initialTags,
   initialSelectedTags,
   isAdmin 
 }: MediaGalleryClientProps) {
-  const [media, setMedia] = useState<Media[]>(initialMedia);
   const [selectedMedia, setSelectedMedia] = useState<Media | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>(initialSelectedTags);
-  const [allTags, setAllTags] = useState<Tag[]>(initialTags);
-  const [error, setError] = useState<string | null>(null);
+
+  const queryParams = selectedTags.length > 0 ? `?tags=${selectedTags.join(',')}` : '';
+  const { data: media = initialMedia, error: mediaError } = useSWR(`/api/media${queryParams}`, fetcher);
+  const { data: allTags = initialTags, error: tagsError } = useSWR('/api/media?type=tags', fetcher);
 
   const handleTagSelect = async (tagName: string) => {
     const newSelectedTags = selectedTags.includes(tagName)
@@ -31,19 +36,6 @@ export function MediaGalleryClient({
       : [...selectedTags, tagName];
     
     setSelectedTags(newSelectedTags);
-    
-    try {
-      // Fetch media with updated tag filtering
-      const queryParams = newSelectedTags.length > 0 
-        ? `?tags=${newSelectedTags.join(',')}` 
-        : '';
-      const response = await fetch(`/api/media${queryParams}`);
-      if (!response.ok) throw new Error("Failed to fetch media");
-      const data = await response.json();
-      setMedia(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch media");
-    }
   };
 
   const handleUpdate = async (mediaId: string, title: string, tags: string[]) => {
@@ -56,22 +48,15 @@ export function MediaGalleryClient({
 
       if (!response.ok) throw new Error("Failed to update media");
       
-      // Fetch updated media and tags
-      const [mediaResponse, tagsResponse] = await Promise.all([
-        fetch(`/api/media${selectedTags.length > 0 ? `?tags=${selectedTags.join(',')}` : ''}`),
-        fetch('/api/media?type=tags')
+      // Mutate both media and tags data
+      await Promise.all([
+        mutate(`/api/media${queryParams}`),
+        mutate('/api/media?type=tags')
       ]);
       
-      if (!mediaResponse.ok || !tagsResponse.ok) throw new Error("Failed to refresh data");
-      
-      const mediaData = await mediaResponse.json();
-      const tagsData = await tagsResponse.json();
-      
-      setMedia(mediaData);
-      setAllTags(tagsData);
       setSelectedMedia(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update media");
+      console.error(err instanceof Error ? err.message : "Failed to update media");
     }
   };
 
@@ -85,17 +70,21 @@ export function MediaGalleryClient({
 
       if (!response.ok) throw new Error("Failed to delete media");
       
-      // Remove deleted media from state
-      setMedia(prev => prev.filter(item => item.id !== mediaId));
+      // Mutate both media and tags data
+      await Promise.all([
+        mutate(`/api/media${queryParams}`),
+        mutate('/api/media?type=tags')
+      ]);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete media");
+      console.error(err instanceof Error ? err.message : "Failed to delete media");
     }
   };
 
-  if (error) return <div>Error: {error}</div>;
+  if (mediaError || tagsError) return <div>Error loading data</div>;
 
   return (
     <>
+      {isAdmin && <UploaderClient />}
       <TagFilter
         tags={allTags}
         selectedTags={selectedTags}
@@ -103,7 +92,7 @@ export function MediaGalleryClient({
       />
 
       <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 ">
-        {media.map((item) => (
+        {media.map((item: Media) => (
           <MediaCard
             key={item.id}
             media={item}
@@ -115,7 +104,6 @@ export function MediaGalleryClient({
         ))}
       </div>
 
-      {/* Edit modal only available in admin view */}
       {isAdmin && selectedMedia && (
         <MediaEditForm
           media={selectedMedia}
