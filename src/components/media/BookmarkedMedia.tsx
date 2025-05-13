@@ -1,7 +1,7 @@
 "use client";
 
 import { Media } from "@/components/Interface/media";
-import { MediaCard } from "./MediaCard";
+import { MediaCard } from "@/components/media/MediaCard";
 
 interface BookmarkedMediaProps {
   initialMedia: {

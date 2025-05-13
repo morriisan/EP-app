@@ -32,6 +32,9 @@ model User {
   bookmarks     Bookmark[]
   collections   Collection[]
 
+  bookings         Booking[]          // Their bookings
+  reviewedBookings Booking[]   @relation("BookingReviews") // Bookings they've reviewed as admin
+  bookingHistory   BookingHistory[]   
   @@map("user")
 }
 
@@ -139,4 +142,53 @@ model BookmarkCollection {
 
   @@id([bookmarkId, collectionId])
   @@map("bookmark_collection")
+}
+
+model Booking {
+  id            String         @id @default(cuid())
+  userId        String
+  user          User          @relation(fields: [userId], references: [id])
+  date          DateTime      @db.Date   // Only store date, must be unique
+  description   String?
+  status        BookingStatus  @default(PENDING)
+  waitlistPos   Int?          // only used when status = WAITLISTED
+  
+  // Admin response tracking
+  reviewedById  String?
+  reviewedBy    User?         @relation("BookingReviews", fields: [reviewedById], references: [id])
+  reviewNote    String?       // For admin to add notes/reasons for approval/rejection
+  
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([date])
+}
+
+enum BookingStatus {
+  PENDING      
+  WAITLISTED   
+  APPROVED     
+  REJECTED     
+  CANCELLED    
+}
+
+model BookingHistory {
+  id              String         @id @default(cuid())
+  userId          String
+  user            User          @relation(fields: [userId], references: [id])
+  date            DateTime      @db.Date
+  description     String?
+  status          BookingStatus  // Keep original booking status
+  originalBookingId String
+  
+  // Tracking info
+  movedToHistoryAt DateTime    @default(now())
+  reason          String      // "CANCELLED" or "PAST_DATE"
+  
+  // Original booking details
+  waitlistPos     Int?
+  reviewedById    String?      // ID of admin who reviewed the original booking
+  reviewNote      String?      // Admin's review note from original booking
+
+  @@map("booking_history")
 }

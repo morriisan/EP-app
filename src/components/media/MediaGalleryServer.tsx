@@ -1,5 +1,5 @@
 import { mediaService } from "@/services/mediaService";
-import { MediaGalleryClient } from "./MediaGalleryClient";
+import { MediaGalleryClient } from "@/components/media/MediaGalleryClient";
 
 interface MediaGalleryServerProps {
   isAdmin?: boolean;
@@ -13,7 +13,7 @@ export async function MediaGalleryServer({
   // Fetch tags (server-side)
   const allTags = await mediaService.getAllTags();
   
-  // Fetch media with tag filtering (server-side)
+  // Fetch media with tag filtering 
   const media = await mediaService.getAllMedia(selectedTagsParam);
 
   return (

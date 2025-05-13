@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import { Media } from "@/components/Interface/media";
 import { useState } from "react";
