@@ -7,6 +7,7 @@ import { MediaEditForm } from "./MediaEditForm";
 import { TagFilter } from "./TagFilter";
 import { UploaderClient } from "./UploaderClient";
 import useSWR, { mutate } from "swr";
+import { toast } from "sonner";
 
 interface MediaGalleryClientProps {
   initialMedia: Media[];
@@ -55,9 +56,11 @@ export function MediaGalleryClient({
         mutate('/api/media?type=tags')
       ]);
       
+      toast.success("Media updated successfully");
       setSelectedMedia(null);
     } catch (err) {
       console.error(err instanceof Error ? err.message : "Failed to update media");
+      toast.error("Failed to update media");
     }
   };
 
@@ -77,8 +80,11 @@ export function MediaGalleryClient({
         mutate('/api/media'),
         mutate('/api/media?type=tags')
       ]);
+
+      toast.success("Media deleted successfully");
     } catch (err) {
       console.error(err instanceof Error ? err.message : "Failed to delete media");
+      toast.error("Failed to delete media");
     }
   };
 

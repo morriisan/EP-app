@@ -2,6 +2,7 @@
 
 import { UploadButton } from "@/utils/uploadthing";
 import { mutate } from "swr";
+import { toast } from "sonner";
 
 export function UploaderClient() {
   return (
@@ -11,7 +12,7 @@ export function UploaderClient() {
         endpoint="imageUploader"
         onClientUploadComplete={(res) => {
           console.log("Files: ", res);
-          alert("Upload Completed");
+          toast.success("Upload completed successfully");
           
           // Add a delay before refreshing to allow the database operation to complete
           setTimeout(() => {
@@ -24,7 +25,7 @@ export function UploaderClient() {
           }, 500);
         }}
         onUploadError={(error: Error) => {
-          alert(`ERROR! ${error.message}`);
+          toast.error(`Upload failed: ${error.message}`);
         }}
       />
     </div>
