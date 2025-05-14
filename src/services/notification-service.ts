@@ -15,43 +15,77 @@ type BookingWithUser = Booking & {
   user: Pick<User, "name" | "email">;
 };
 
+// Helper function to add delay between requests
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+// Helper function to send email with retry logic
+async function sendEmailWithRetry(emailConfig: any, retries = 3, delayMs = 1000) {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const result = await resend.emails.send(emailConfig);
+      return result;
+    } catch (error: any) {
+      // Check if it's a rate limit error (429)
+      if (error.statusCode === 429) {
+        if (attempt === retries) {
+          throw error; // If we're out of retries, throw the error
+        }
+        // Wait longer for each retry
+        await delay(delayMs * attempt);
+        continue;
+      }
+      throw error; // For other errors, throw immediately
+    }
+  }
+}
+
 export const notificationService = {
   // Send notification when a booking is created
   async sendBookingCreatedNotification(booking: BookingWithUser) {
-    const adminEmail = process.env.ADMIN_EMAIL;
+    const adminEmail = "morrisan2001@gmail.com";
     if (!adminEmail) throw new Error("Admin email not configured");
 
-    // Email to admin
-    await resend.emails.send({
-      from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
-      to: adminEmail,
-      subject: "New Booking Request",
-      react: React.createElement(NewBookingEmailAdmin, {
-        userName: booking.user.name,
-        userEmail: booking.user.email,
-        date: booking.date,
-        status: booking.status,
-        description: booking.description || undefined,
-      }),
-    });
+    try {
+      // Email to admin
+      await sendEmailWithRetry({
+        from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
+        to: adminEmail,
+        subject: "New Booking Request",
+        react: React.createElement(NewBookingEmailAdmin, {
+          userName: booking.user.name,
+          userEmail: booking.user.email,
+          date: booking.date,
+          status: booking.status,
+          description: booking.description || undefined,
+        }),
+      });
 
-    // Email to user
-    await resend.emails.send({
-      from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
-      to: booking.user.email,
-      subject: "Booking Request Received",
-      react: React.createElement(BookingRequestReceivedEmail, {
-        userName: booking.user.name,
-        userEmail: booking.user.email,
-        date: booking.date,
-        status: booking.status,
-      }),
-    });
+      // Add delay before sending user email
+      await delay(1000);
+
+      // Email to user
+      await sendEmailWithRetry({
+        from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
+        to: booking.user.email,
+        subject: "Booking Request Received",
+        react: React.createElement(BookingRequestReceivedEmail, {
+          userName: booking.user.name,
+          userEmail: booking.user.email,
+          date: booking.date,
+          status: booking.status,
+        }),
+      });
+
+      console.log('Successfully sent emails to:', { admin: adminEmail, user: booking.user.email });
+    } catch (error) {
+      console.error('Failed to send emails:', error);
+      throw error;
+    }
   },
 
   // Send notification when a booking is reviewed
   async sendBookingReviewedNotification(booking: BookingWithUser) {
-    await resend.emails.send({
+    await sendEmailWithRetry({
       from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
       to: booking.user.email,
       subject: `Booking ${booking.status === "APPROVED" ? "Approved" : "Rejected"}`,
@@ -67,7 +101,7 @@ export const notificationService = {
 
   // Send notification when someone joins waitlist
   async sendWaitlistNotification(booking: BookingWithUser) {
-    await resend.emails.send({
+    await sendEmailWithRetry({
       from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
       to: booking.user.email,
       subject: "Added to Waitlist",
@@ -83,7 +117,7 @@ export const notificationService = {
 
   // Send notification when a spot becomes available
   async sendSpotAvailableNotification(booking: BookingWithUser) {
-    await resend.emails.send({
+    await sendEmailWithRetry({
       from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
       to: booking.user.email,
       subject: "Spot Available",

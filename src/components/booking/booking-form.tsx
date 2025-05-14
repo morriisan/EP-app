@@ -10,9 +10,11 @@ import { format } from 'date-fns';
 interface BookingFormProps {
   date: Date;
   onSuccess: () => void;
+  waitlistCount?: number;
+  isPending: boolean;
 }
 
-export function BookingForm({ date, onSuccess }: BookingFormProps) {
+export function BookingForm({ date, onSuccess, waitlistCount, isPending }: BookingFormProps) {
   const [description, setDescription] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -42,7 +44,14 @@ export function BookingForm({ date, onSuccess }: BookingFormProps) {
         throw new Error(error.error || 'Failed to create booking');
       }
 
-      toast.success('Booking submitted successfully!');
+      const booking = await res.json();
+      
+      if (booking.status === 'WAITLISTED') {
+        toast.success(`Added to waitlist! You are #${booking.waitlistPos} in line.`);
+      } else {
+        toast.success('Booking submitted successfully!');
+      }
+
       setDescription('');
       onSuccess();
     } catch (error) {
@@ -54,6 +63,11 @@ export function BookingForm({ date, onSuccess }: BookingFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {waitlistCount && waitlistCount > 0 && (
+        <div className="text-sm text-yellow-600 mb-4">
+          Currently {waitlistCount} {waitlistCount === 1? 'person' : 'people'} on waitlist
+        </div>
+      )}
       <div className="space-y-2">
         <Label htmlFor="description">Description (optional)</Label>
         <Textarea
@@ -67,7 +81,7 @@ export function BookingForm({ date, onSuccess }: BookingFormProps) {
 
       <div className="flex justify-end">
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Submitting...' : 'Book Now'}
+          {isSubmitting ? 'Submitting...' : isPending ? 'Join Waitlist' : 'Book Now'}
         </Button>
       </div>
     </form>

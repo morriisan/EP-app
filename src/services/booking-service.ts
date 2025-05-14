@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { Booking, User } from "@prisma/client";
-import { addDays, startOfDay } from "date-fns";
+import { addDays, startOfDay, format } from "date-fns";
 
 export type BookingWithUser = Booking & {
   user: Pick<User, "id" | "name" | "email">;
@@ -269,23 +269,27 @@ export const bookingService = {
   },
 
   // Get available dates in a range
-  async getAvailableDates(startDate: Date, endDate: Date) {
+  async getCalendarDates(startDate: Date, endDate: Date) {
     const bookings = await this.getBookingsInRange(startDate, endDate);
-    const bookedDates = new Set(
-      bookings
-        .filter((b) => b.status === "APPROVED")
-        .map((b) => b.date.toISOString().split('T')[0])
-    );
+    const dateMap = new Map();
 
-    const dates: Date[] = [];
-    let currentDate = startDate;
-    while (currentDate <= endDate) {
-      if (!bookedDates.has(currentDate.toISOString().split('T')[0])) {
-        dates.push(new Date(currentDate));
+    // Group bookings by date
+    bookings.forEach(booking => {
+      const dateKey = format(booking.date, 'yyyy-MM-dd');
+      if (!dateMap.has(dateKey)) {
+        dateMap.set(dateKey, {
+          date: booking.date,
+          status: booking.status,
+          waitlistCount: bookings.filter(b => 
+            format(b.date, 'yyyy-MM-dd') === dateKey && 
+            b.status === 'WAITLISTED'
+          ).length
+        });
       }
-      currentDate = addDays(currentDate, 1);
-    }
+    });
 
-    return dates;
+    return Array.from(dateMap.values());
   },
+
+
 }; 

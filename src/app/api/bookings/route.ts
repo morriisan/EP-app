@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAuth } from "@/lib/auth-middleware";
 import { bookingService } from "@/services/booking-service";
+import { notificationService } from "@/services/notification-service";
 
 // Create a new booking
 export const POST = requireAuth(async (req: Request, session) => {
@@ -23,6 +24,18 @@ export const POST = requireAuth(async (req: Request, session) => {
       new Date(date),
       description
     );
+
+    // Send notifications based on booking status
+    try {
+      if (booking.status === 'WAITLISTED') {
+        await notificationService.sendWaitlistNotification(booking);
+      } else {
+        await notificationService.sendBookingCreatedNotification(booking);
+      }
+    } catch (error) {
+      console.error("Error sending notifications:", error);
+      // Continue with the response even if notification fails
+    }
 
     return NextResponse.json(booking);
   } catch (error) {
@@ -64,14 +77,6 @@ export const GET = requireAuth(async (req: Request, session) => {
       return NextResponse.json(bookings);
     }
 
-    // Get available dates in a range
-    if (startDate && endDate) {
-      const availableDates = await bookingService.getAvailableDates(
-        new Date(startDate),
-        new Date(endDate)
-      );
-      return NextResponse.json(availableDates);
-    }
 
     return NextResponse.json(
       { error: "Invalid query parameters" },

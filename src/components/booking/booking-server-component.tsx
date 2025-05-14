@@ -53,8 +53,15 @@ export async function BookingServerComponent() {
           <BookingCalendar 
             bookedDates={calendarData
               .filter(day => !day.isAvailable && day.status)
-              .map(day => new Date(day.date))
-            }
+              .map(day => ({
+                date: new Date(day.date),
+                status: day.status || 'PENDING',
+                waitlistCount: day.waitlistCount
+              }))}
+            userBookings={userBookings.map(booking => ({
+              date: new Date(booking.date),
+              status: booking.status
+            }))}
           />
         </div>
       </div>

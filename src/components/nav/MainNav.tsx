@@ -43,7 +43,7 @@ export function MainNav() {
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="md:flex space-x-8">
+        <div className="hidden md:flex items-center space-x-6">
           {navLinks.map((link) => (
             link.component ? (
               <div key={link.href} onClick={(e) => e.preventDefault()}>
