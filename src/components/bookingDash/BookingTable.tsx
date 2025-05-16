@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 
 interface Booking {
   id: string;
@@ -33,6 +34,7 @@ export function BookingTable() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [reviewNotes, setReviewNotes] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
+  const [bookingToReject, setBookingToReject] = useState<string | null>(null);
 
   useEffect(() => {
     fetchBookings();
@@ -73,6 +75,7 @@ export function BookingTable() {
       toast.success(`Booking ${status.toLowerCase()} successfully`);
       fetchBookings(); // Refresh the list
       setReviewNotes(prev => ({ ...prev, [bookingId]: '' }));
+      setBookingToReject(null);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to review booking');
     }
@@ -83,112 +86,124 @@ export function BookingTable() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Booking Management</CardTitle>
-        <CardDescription>
-          Review and manage booking requests
-        </CardDescription>
-      </CardHeader>
-      
-      <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Date</TableHead>
-              <TableHead>User</TableHead>
-              <TableHead>Description</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Review Note</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {bookings.length === 0 ? (
+    <>
+      <ConfirmationDialog
+        open={!!bookingToReject}
+        onOpenChange={(open) => !open && setBookingToReject(null)}
+        onConfirm={() => bookingToReject && handleReview(bookingToReject, 'REJECTED')}
+        title="Reject Booking"
+        description="Are you sure you want to reject this booking? This action cannot be undone. The user will be notified of this rejection."
+        confirmText="Reject"
+        variant="destructive"
+      />
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Booking Management</CardTitle>
+          <CardDescription>
+            Review and manage booking requests
+          </CardDescription>
+        </CardHeader>
+        
+        <CardContent>
+          <Table>
+            <TableHeader>
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">
-                  No bookings found
-                </TableCell>
+                <TableHead>Date</TableHead>
+                <TableHead>User</TableHead>
+                <TableHead>Description</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Review Note</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
-            ) : (
-              bookings.map((booking) => (
-                <TableRow key={booking.id}>
-                  <TableCell className="font-medium">
-                    {new Date(booking.date).toLocaleDateString()}
+            </TableHeader>
+            <TableBody>
+              {bookings.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center text-muted-foreground">
+                    No bookings found
                   </TableCell>
-                  <TableCell>
-                    <div className="flex flex-col">
-                      <span className="font-medium">{booking.user.name}</span>
-                      <span className="text-sm text-muted-foreground">{booking.user.email}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {booking.description ? (
-                      <p className="text-sm max-w-[200px] break-words">
-                        {booking.description}
-                      </p>
-                    ) : (
-                      <span className="text-sm text-muted-foreground">-</span>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <span className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${
-                      booking.status === 'PENDING' 
-                        ? 'bg-yellow-50 text-yellow-800 ring-yellow-600/20'
-                        : booking.status === 'APPROVED' 
-                        ? 'bg-green-50 text-green-700 ring-green-600/20'
-                        : 'bg-red-50 text-red-700 ring-red-600/20'
-                    }`}>
-                      {booking.status}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <Textarea
-                      placeholder="Add a review note..."
-                      value={reviewNotes[booking.id] || ''}
-                      onChange={(e) => setReviewNotes(prev => ({
-                        ...prev,
-                        [booking.id]: e.target.value
-                      }))}
-                      className="min-h-[60px] resize-none"
-                      disabled={booking.status === 'REJECTED'}
-                    />
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {booking.status === 'PENDING' && (
-                      <div className="flex justify-end gap-2">
+                </TableRow>
+              ) : (
+                bookings.map((booking) => (
+                  <TableRow key={booking.id}>
+                    <TableCell className="font-medium">
+                      {new Date(booking.date).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-col">
+                        <span className="font-medium">{booking.user.name}</span>
+                        <span className="text-sm text-muted-foreground">{booking.user.email}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {booking.description ? (
+                        <p className="text-sm max-w-[200px] break-words">
+                          {booking.description}
+                        </p>
+                      ) : (
+                        <span className="text-sm text-muted-foreground">-</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <span className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${
+                        booking.status === 'PENDING' 
+                          ? 'bg-yellow-50 text-yellow-800 ring-yellow-600/20'
+                          : booking.status === 'APPROVED' 
+                          ? 'bg-green-50 text-green-700 ring-green-600/20'
+                          : 'bg-red-50 text-red-700 ring-red-600/20'
+                      }`}>
+                        {booking.status}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <Textarea
+                        placeholder="Add a review note..."
+                        value={reviewNotes[booking.id] || ''}
+                        onChange={(e) => setReviewNotes(prev => ({
+                          ...prev,
+                          [booking.id]: e.target.value
+                        }))}
+                        className="min-h-[60px] resize-none"
+                        disabled={booking.status === 'REJECTED'}
+                      />
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {booking.status === 'PENDING' && (
+                        <div className="flex justify-end gap-2">
+                          <Button
+                            onClick={() => handleReview(booking.id, 'APPROVED')}
+                            variant="default"
+                            size="sm"
+                          >
+                            Approve
+                          </Button>
+                          <Button
+                            onClick={() => setBookingToReject(booking.id)}
+                            variant="destructive"
+                            size="sm"
+                          >
+                            Reject
+                          </Button>
+                        </div>
+                      )}
+                      {booking.status === 'APPROVED' && (
                         <Button
-                          onClick={() => handleReview(booking.id, 'APPROVED')}
-                          variant="default"
-                          size="sm"
-                        >
-                          Approve
-                        </Button>
-                        <Button
-                          onClick={() => handleReview(booking.id, 'REJECTED')}
+                          onClick={() => setBookingToReject(booking.id)}
                           variant="destructive"
                           size="sm"
                         >
                           Reject
                         </Button>
-                      </div>
-                    )}
-                    {booking.status === 'APPROVED' && (
-                      <Button
-                        onClick={() => handleReview(booking.id, 'REJECTED')}
-                        variant="destructive"
-                        size="sm"
-                      >
-                        Reject
-                      </Button>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+    </>
   );
 } 

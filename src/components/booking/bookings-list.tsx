@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { BookingWithUser } from "@/services/booking-service";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 
 interface BookingsListProps {
   bookings: BookingWithUser[];
@@ -14,6 +15,7 @@ interface BookingsListProps {
 export function BookingsList({ bookings: initialBookings, userId }: BookingsListProps) {
   const [bookings, setBookings] = useState(initialBookings);
   const [cancelingId, setCancelingId] = useState<string | null>(null);
+  const [bookingToCancel, setBookingToCancel] = useState<string | null>(null);
 
   const cancelBooking = async (bookingId: string) => {
     setCancelingId(bookingId);
@@ -37,6 +39,7 @@ export function BookingsList({ bookings: initialBookings, userId }: BookingsList
       toast.error(error instanceof Error ? error.message : "Failed to cancel booking");
     } finally {
       setCancelingId(null);
+      setBookingToCancel(null);
     }
   };
 
@@ -66,63 +69,75 @@ export function BookingsList({ bookings: initialBookings, userId }: BookingsList
   }
 
   return (
-    <div className="space-y-4">
-      {bookings.map((booking) => (
-        <div
-          key={booking.id}
-          className={`border rounded-lg p-4 space-y-2 ${
-            isBookingInPast(booking.date) ? 'bg-gray-50' : ''
-          }`}
-        >
-          <div className="flex items-center justify-between">
-            <div className="text-lg font-medium">
-              {format(new Date(booking.date), "MMMM d, yyyy")}
-              {isBookingInPast(booking.date) && (
-                <span className="ml-2 text-sm text-gray-500">(Past)</span>
-              )}
+    <>
+      <ConfirmationDialog
+        open={!!bookingToCancel}
+        onOpenChange={(open) => !open && setBookingToCancel(null)}
+        onConfirm={() => bookingToCancel && cancelBooking(bookingToCancel)}
+        title="Cancel Booking"
+        description="Are you sure you want to cancel this booking? This action cannot be undone."
+        confirmText="Cancel Booking"
+        variant="destructive"
+      />
+
+      <div className="space-y-4">
+        {bookings.map((booking) => (
+          <div
+            key={booking.id}
+            className={`border rounded-lg p-4 space-y-2 ${
+              isBookingInPast(booking.date) ? 'bg-gray-50' : ''
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <div className="text-lg font-medium">
+                {format(new Date(booking.date), "MMMM d, yyyy")}
+                {isBookingInPast(booking.date) && (
+                  <span className="ml-2 text-sm text-gray-500">(Past)</span>
+                )}
+              </div>
+              <span className={`px-2 py-1 rounded-full text-sm font-medium ${getStatusColor(booking.status)}`}>
+                {booking.status}
+              </span>
             </div>
-            <span className={`px-2 py-1 rounded-full text-sm font-medium ${getStatusColor(booking.status)}`}>
-              {booking.status}
-            </span>
-          </div>
 
-          <div className="text-sm text-gray-600">
-            <div>Name: {booking.user.name}</div>
-            <div>Email: {booking.user.email}</div>
-          </div>
-
-          {booking.description && (
-            <p className="text-black">
-              <span className="font-medium">Description:</span> {booking.description}
-            </p>
-          )}
-
-          {booking.reviewNote && (
-            <p className="text-sm bg-gray-50 p-2 rounded">
-              <span className="font-medium">Admin Note:</span> {booking.reviewNote}
-            </p>
-          )}
-
-          {booking.waitlistPos && (
-            <p className="text-sm text-purple-600">
-              Waitlist Position: #{booking.waitlistPos}
-            </p>
-          )}
-
-          {booking.status !== "CANCELLED" && (
-            <div className="pt-2">
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => cancelBooking(booking.id)}
-                disabled={!!cancelingId}
-              >
-                {cancelingId === booking.id ? "Cancelling..." : "Cancel Booking"}
-              </Button>
+            <div className="text-sm text-gray-600">
+              <div>Name: {booking.user.name}</div>
+              <div>Email: {booking.user.email}</div>
             </div>
-          )}
-        </div>
-      ))}
-    </div>
+
+            {booking.description && (
+              <p className="text-black">
+                <span className="font-medium">Description:</span> {booking.description}
+              </p>
+            )}
+
+            {booking.reviewNote && (
+              <p className="text-sm bg-gray-50 p-2 rounded">
+                <span className="font-medium">Admin Note:</span> {booking.reviewNote}
+              </p>
+            )}
+
+            {booking.waitlistPos && (
+              <p className="text-sm text-purple-600">
+                Waitlist Position: #{booking.waitlistPos}
+              </p>
+            )}
+
+            {booking.status !== "CANCELLED" && (
+              <div className="pt-2">
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => setBookingToCancel(booking.id)}
+                  disabled={!!cancelingId}
+                >
+                  {cancelingId === booking.id ? "Cancelling..." : "Cancel Booking"}
+                </Button>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </>
   );
 } 
