@@ -172,7 +172,7 @@ export function MediaCard({
 
       {/* Full Image Dialog */}
       <Dialog open={showFullImage} onOpenChange={setShowFullImage}>
-        <DialogContent className="w-auto max-w-[1200px] flex items-center justify-center p-0 border-none">
+        <DialogContent className="w-fit max-w-[95vw] flex items-center justify-center p-0 border-none ">
           <DialogHeader className="sr-only">
             <DialogTitle>{media.title || "Image Preview"}</DialogTitle>
           </DialogHeader>
@@ -181,8 +181,8 @@ export function MediaCard({
               src={media.url}
               alt={media.title || "Uploaded media"}
               width={1200}
-              height={8000}
-              className="max-h-[100vh] w-auto max-w-[100vw] object-contain "
+              height={800}
+              className="max-h-[95vh] object-contain"
               priority
             />
           </div>

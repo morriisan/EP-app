@@ -2,6 +2,36 @@ import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth-middleware";
 import { bookingService } from "@/services/booking-service";
 
+// Admin: Get all bookings or booking history
+export const GET = requireAdmin(async (req: Request) => {
+  try {
+    const { searchParams } = new URL(req.url);
+    const type = searchParams.get('type');
+    const status = searchParams.get('status');
+
+    if (type === 'history') {
+      const history = await bookingService.getAllBookingHistory();
+      return NextResponse.json(history);
+    } else {
+      const bookings = await bookingService.getAllBookings();
+      
+      // Filter by status if specified
+      if (status) {
+        const filteredBookings = bookings.filter(booking => booking.status === status);
+        return NextResponse.json(filteredBookings);
+      }
+      
+      return NextResponse.json(bookings);
+    }
+  } catch (error) {
+    console.error("Error fetching bookings:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch bookings" },
+      { status: 500 }
+    );
+  }
+});
+
 // Admin: Review a booking (approve/reject)
 export const POST = requireAdmin(async (req: Request, session) => {
   try {

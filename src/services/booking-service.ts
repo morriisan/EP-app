@@ -7,6 +7,25 @@ export type BookingWithUser = Booking & {
 };
 
 export const bookingService = {
+  // Get all bookings for admin
+  async getAllBookings() {
+    return prisma.booking.findMany({
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+      orderBy: [
+        { status: 'asc' },
+        { date: 'desc' },
+      ],
+    });
+  },
+
   // Get all bookings for a specific date
   async getBookingsByDate(date: Date) {
     return prisma.booking.findMany({
@@ -161,7 +180,7 @@ export const bookingService = {
     status: "APPROVED" | "REJECTED",
     reviewNote?: string
   ) {
-    return prisma.booking.update({
+    const booking = await prisma.booking.update({
       where: { id: bookingId },
       data: {
         status,
@@ -178,10 +197,18 @@ export const bookingService = {
         },
       },
     });
+
+    // Move rejected bookings to history
+    if (status === "REJECTED") {
+      await this.moveToHistory(booking, "REJECTED");
+      return booking;
+    }
+
+    return booking;
   },
 
   // Move a booking to history
-  async moveToHistory(booking: Booking, reason: "CANCELLED" | "PAST_DATE") {
+  async moveToHistory(booking: Booking, reason: "CANCELLED" | "PAST_DATE" | "REJECTED") {
     return prisma.$transaction([
       prisma.bookingHistory.create({
         data: {
@@ -256,6 +283,24 @@ export const bookingService = {
     });
   },
 
+  // Get all booking history records (admin only)
+  async getAllBookingHistory() {
+    return prisma.bookingHistory.findMany({
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+      orderBy: [
+        { movedToHistoryAt: 'desc' },
+      ],
+    });
+  },
+
   // Get all history for a specific date
   async getBookingHistoryByDate(date: Date) {
     return prisma.bookingHistory.findMany({
@@ -291,5 +336,61 @@ export const bookingService = {
     return Array.from(dateMap.values());
   },
 
+  // Promote a waitlisted booking to pending
+  async promoteWaitlistedBooking(bookingId: string) {
+    const booking = await prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    if (!booking) {
+      throw new Error('Booking not found');
+    }
+
+    if (booking.status !== 'WAITLISTED') {
+      throw new Error('Booking is not in waitlist');
+    }
+
+    // Check if there's already a pending or approved booking for this date
+    const existingBooking = await prisma.booking.findFirst({
+      where: {
+        date: booking.date,
+        status: {
+          in: ['PENDING', 'APPROVED']
+        },
+        id: { not: bookingId }
+      },
+    });
+
+    if (existingBooking) {
+      throw new Error('Another booking is already pending or approved for this date');
+    }
+
+    // Update the booking status to pending and remove waitlist position
+    return prisma.booking.update({
+      where: { id: bookingId },
+      data: {
+        status: 'PENDING',
+        waitlistPos: null,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+  },
 
 }; 

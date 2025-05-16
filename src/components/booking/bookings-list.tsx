@@ -92,7 +92,9 @@ export function BookingsList({ bookings: initialBookings, userId }: BookingsList
           </div>
 
           {booking.description && (
-            <p className="text-gray-600">{booking.description}</p>
+            <p className="text-black">
+              <span className="font-medium">Description:</span> {booking.description}
+            </p>
           )}
 
           {booking.reviewNote && (

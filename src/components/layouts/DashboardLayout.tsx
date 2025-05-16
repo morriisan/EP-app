@@ -14,7 +14,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
   const sidebarLinks = [
     { href: "/dashboard", label: "Dashboard" },
-    { href: "/dashboard/appointments", label: "Appointments" },
+    { href: "/dashboard/bookingDash", label: "Appointments" },
     { href: "/dashboard/settings", label: "Settings" },
     // Add more links as needed
   ];

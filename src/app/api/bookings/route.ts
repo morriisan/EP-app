@@ -77,7 +77,6 @@ export const GET = requireAuth(async (req: Request, session) => {
       return NextResponse.json(bookings);
     }
 
-
     return NextResponse.json(
       { error: "Invalid query parameters" },
       { status: 400 }
