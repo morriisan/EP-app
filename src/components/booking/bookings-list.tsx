@@ -9,10 +9,9 @@ import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 
 interface BookingsListProps {
   bookings: BookingWithUser[];
-  userId: string;
 }
 
-export function BookingsList({ bookings: initialBookings, userId }: BookingsListProps) {
+export function BookingsList({ bookings: initialBookings }: BookingsListProps) {
   const [bookings, setBookings] = useState(initialBookings);
   const [cancelingId, setCancelingId] = useState<string | null>(null);
   const [bookingToCancel, setBookingToCancel] = useState<string | null>(null);
@@ -63,7 +62,7 @@ export function BookingsList({ bookings: initialBookings, userId }: BookingsList
   if (bookings.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500">
-        You don't have any bookings yet.
+        You don&apos;t have any bookings yet.
       </div>
     );
   }

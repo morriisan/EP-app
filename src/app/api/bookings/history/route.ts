@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { requireAuth, requireAdmin } from "@/lib/auth-middleware";
 import { bookingService } from "@/services/booking-service";
-import { headers } from "next/headers";
+
 
 // Get user's booking history
 export const GET = requireAuth(async (req: Request, session) => {
@@ -26,7 +25,7 @@ export const GET = requireAuth(async (req: Request, session) => {
 });
 
 // Move past bookings to history (admin only)
-export const POST = requireAdmin(async (request: Request) => {
+export const POST = requireAdmin(async () => {
   try {
     const movedCount = await bookingService.movePastBookingsToHistory();
     return NextResponse.json({ 

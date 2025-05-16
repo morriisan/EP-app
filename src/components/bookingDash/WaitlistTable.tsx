@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useSession } from '@/lib/auth-client';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -28,15 +27,15 @@ interface WaitlistedBooking {
   isDateAvailable?: boolean;
 }
 
+interface BookingResponse {
+  id: string;
+  status: 'PENDING' | 'APPROVED' | 'WAITLISTED' | 'REJECTED';
+}
+
 export function WaitlistTable() {
-  const { data: session } = useSession();
   const [waitlistedBookings, setWaitlistedBookings] = useState<WaitlistedBooking[]>([]);
   const [loading, setLoading] = useState(true);
   const [promoting, setPromoting] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetchWaitlistedBookings();
-  }, []);
 
   const checkDateAvailability = async (date: string) => {
     try {
@@ -45,7 +44,7 @@ export function WaitlistTable() {
       const bookings = await response.json();
       
       // Date is available if there are no PENDING or APPROVED bookings
-      return !bookings.some((booking: any) => 
+      return !bookings.some((booking: BookingResponse) => 
         booking.status === 'PENDING' || booking.status === 'APPROVED'
       );
     } catch (error) {
@@ -54,7 +53,7 @@ export function WaitlistTable() {
     }
   };
 
-  const fetchWaitlistedBookings = async () => {
+  const fetchWaitlistedBookings = useCallback(async () => {
     try {
       // Get waitlisted bookings
       const response = await fetch('/api/bookings/admin?status=WAITLISTED');
@@ -71,11 +70,16 @@ export function WaitlistTable() {
 
       setWaitlistedBookings(bookingsWithAvailability);
     } catch (error) {
-      toast.error('Failed to load waitlisted bookings');
+      console.error('Error fetching waitlisted bookings:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to load waitlisted bookings');
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchWaitlistedBookings();
+  }, [fetchWaitlistedBookings]);
 
   const handlePromote = async (bookingId: string) => {
     setPromoting(bookingId);

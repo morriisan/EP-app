@@ -2,10 +2,9 @@
 
 import { useState } from 'react';
 import { Calendar } from "@/components/ui/calendar";
-import { format, addMonths } from 'date-fns';
+import { format } from 'date-fns';
 import { BookingForm } from '@/components/booking/booking-form';
-import { CalendarDay } from '@/services/calendar-service';
-import { cn } from "@/lib/utils";
+
 
 interface BookingCalendarProps {
   bookedDates: Array<{

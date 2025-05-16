@@ -73,7 +73,6 @@ export async function BookingServerComponent() {
             <h2 className="text-xl font-semibold mb-4">Your Bookings</h2>
             <BookingsList 
               bookings={userBookings}
-              userId={session.user.id}
             />
           </div>
         </div>

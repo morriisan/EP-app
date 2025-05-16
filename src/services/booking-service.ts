@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { Booking, User } from "@prisma/client";
-import { addDays, startOfDay, format } from "date-fns";
+import { format } from "date-fns";
 
 export type BookingWithUser = Booking & {
   user: Pick<User, "id" | "name" | "email">;

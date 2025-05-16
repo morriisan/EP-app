@@ -44,7 +44,7 @@ export function BookingDialog({ isOpen, onClose, date }: BookingDialogProps) {
       setDescription('');
       onClose();
     } catch (error) {
-      toast.error('Failed to create booking');
+      toast.error(error instanceof Error ? error.message : 'Failed to create booking');
     } finally {
       setIsSubmitting(false);
     }

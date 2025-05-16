@@ -12,7 +12,7 @@ import * as React from 'react';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export const POST = requireAuth(async (req: Request, session) => {
+export const POST = requireAuth(async (req: Request) => {
   try {
     const body = await req.json();
     const { type, data } = body;

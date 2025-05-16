@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSession } from '@/lib/auth-client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -30,7 +29,6 @@ interface Booking {
 }
 
 export function BookingTable() {
-  const { data: session } = useSession();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [reviewNotes, setReviewNotes] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
@@ -47,7 +45,8 @@ export function BookingTable() {
       const data = await response.json();
       setBookings(data);
     } catch (error) {
-      toast.error('Failed to load bookings');
+      console.error('Error fetching bookings:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to load bookings');
     } finally {
       setLoading(false);
     }

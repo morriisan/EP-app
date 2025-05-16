@@ -15,18 +15,32 @@ type BookingWithUser = Booking & {
   user: Pick<User, "name" | "email">;
 };
 
+interface EmailConfig {
+  from: string;
+  to: string;
+  subject: string;
+  react: React.ReactElement;
+}
+
+interface ResendError {
+  statusCode: number;
+  message: string;
+  name: string;
+}
+
 // Helper function to add delay between requests
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 // Helper function to send email with retry logic
-async function sendEmailWithRetry(emailConfig: any, retries = 3, delayMs = 1000) {
+async function sendEmailWithRetry(emailConfig: EmailConfig, retries = 3, delayMs = 1000) {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
       const result = await resend.emails.send(emailConfig);
       return result;
-    } catch (error: any) {
+    } catch (error) {
+      const resendError = error as ResendError;
       // Check if it's a rate limit error (429)
-      if (error.statusCode === 429) {
+      if (resendError.statusCode === 429) {
         if (attempt === retries) {
           throw error; // If we're out of retries, throw the error
         }

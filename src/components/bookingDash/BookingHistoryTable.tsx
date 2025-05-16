@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSession } from '@/lib/auth-client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -28,7 +27,6 @@ interface BookingHistory {
 }
 
 export function BookingHistoryTable() {
-  const { data: session } = useSession();
   const [bookingHistory, setBookingHistory] = useState<BookingHistory[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -39,11 +37,15 @@ export function BookingHistoryTable() {
   const fetchBookingHistory = async () => {
     try {
       const response = await fetch('/api/bookings/admin?type=history');
-      if (!response.ok) throw new Error('Failed to fetch booking history');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to fetch booking history');
+      }
       const data = await response.json();
       setBookingHistory(data);
     } catch (error) {
-      toast.error('Failed to load booking history');
+      console.error('Error fetching booking history:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to load booking history');
     } finally {
       setLoading(false);
     }
