@@ -18,6 +18,28 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: {
+    default: "Engel Paradis",
+    template: "%s | Engel Paradis"
+  },
+  description: "Elegant bryllupsplanlegging og arrangementer for alle. Spesialisert på sør-asiatiske og muslimske bryllupstradisjoner.",
+  keywords: ["wedding planning", "bryllup", "wedding", "muslim wedding", "south asian wedding", "norwegian wedding", "selskapls lokale", "bryllupslokale", 
+    "bryllupslokale i oslo", "bryllupslokale i bergen", "bryllupslokale i trondheim", "bryllupslokale i stavanger", "bryllupslokale i oslo", "bryllupslokale i bergen", 
+    "bryllupslokale i trondheim", "bryllupslokale i stavanger", "bryllup i norge", "bryllups dekor"],
+  authors: [{ name: "Engel Paradis" }],
+  creator: "Engel Paradis",
+  openGraph: {
+    type: "website",
+    locale: "no_NO",
+    url: "https://engelparadis.no",
+    title: "Engel Paradis | Elegant Wedding Planning",
+    description: "Elegant bryllupsplanlegging og arrangementer for alle",
+    siteName: "Engel Paradis"
+  }
+};
 
 export default function RootLayout({
   children,
