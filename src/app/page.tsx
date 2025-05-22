@@ -1,5 +1,3 @@
-import { LogoutButton } from "@/components/LogoutButton";
-import { AuthPanel } from "@/components/AuthPanel";
 
 export default function Home() {
   return (
