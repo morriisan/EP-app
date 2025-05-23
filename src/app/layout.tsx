@@ -10,7 +10,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Footer } from '@/components/Footer';
 import { Metadata } from "next";
-import Script from 'next/script';
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
