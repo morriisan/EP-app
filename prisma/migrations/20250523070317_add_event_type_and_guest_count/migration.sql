@@ -7,10 +7,31 @@
   - Added the required column `guestCount` to the `booking_history` table without a default value. This is not possible if the table is not empty.
 
 */
--- AlterTable
-ALTER TABLE "Booking" ADD COLUMN     "eventType" TEXT NOT NULL,
-ADD COLUMN     "guestCount" INTEGER NOT NULL;
+-- Step 1: Add columns as nullable with defaults
+ALTER TABLE "Booking" 
+ADD COLUMN IF NOT EXISTS "eventType" TEXT,
+ADD COLUMN IF NOT EXISTS "guestCount" INTEGER;
 
--- AlterTable
-ALTER TABLE "booking_history" ADD COLUMN     "eventType" TEXT NOT NULL,
-ADD COLUMN     "guestCount" INTEGER NOT NULL;
+ALTER TABLE "booking_history" 
+ADD COLUMN IF NOT EXISTS "eventType" TEXT,
+ADD COLUMN IF NOT EXISTS "guestCount" INTEGER;
+
+-- Step 2: Update existing records with default values
+UPDATE "Booking"
+SET "eventType" = 'WEDDING',
+    "guestCount" = 100
+WHERE "eventType" IS NULL OR "guestCount" IS NULL;
+
+UPDATE "booking_history"
+SET "eventType" = 'WEDDING',
+    "guestCount" = 100
+WHERE "eventType" IS NULL OR "guestCount" IS NULL;
+
+-- Step 3: Make columns required after data is updated
+ALTER TABLE "Booking"
+ALTER COLUMN "eventType" SET NOT NULL,
+ALTER COLUMN "guestCount" SET NOT NULL;
+
+ALTER TABLE "booking_history"
+ALTER COLUMN "eventType" SET NOT NULL,
+ALTER COLUMN "guestCount" SET NOT NULL;
