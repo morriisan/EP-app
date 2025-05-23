@@ -52,7 +52,11 @@ export function MainNav() {
     { 
       href: user ? "/myPage" : "#", 
       label: user ? "My Page" : "Login",
-      component: !user ? <AuthPanel trigger={<span className="text-pink-900 hover:text-pink-700 dark:text-pink-300 dark:hover:text-pink-400">Login</span>} /> : undefined
+      component: !user ? <AuthPanel trigger={
+        <span className="text-pink-900 hover:text-pink-700 dark:text-pink-300 dark:hover:text-pink-400 w-full text-left">
+          Login
+        </span>
+      } /> : undefined
     },
     ...(user ? [
       {
@@ -157,10 +161,7 @@ export function MainNav() {
             <div className="flex flex-col p-4 space-y-4">
               {navLinks.map((link) => (
                 link.component ? (
-                  <div key={link.href} onClick={(e) => {
-                    e.preventDefault();
-                    setIsMobileMenuOpen(false);
-                  }}>
+                  <div key={link.href} className="cursor-pointer">
                     {link.component}
                   </div>
                 ) : (
