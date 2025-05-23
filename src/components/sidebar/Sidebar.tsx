@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import { X, Menu } from "lucide-react";
 
 interface SidebarLink {
   href: string;
@@ -93,24 +93,23 @@ export function Sidebar({ links, userName, userEmail }: SidebarProps) {
     <>
       {/* Mobile Menu Button */}
       <motion.div 
-        className="fixed left-4 top-20 z-40"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        className="fixed -left-10 hover:left-0 top-20 z-40 transition-all duration-300"
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
       >
         <button
           onClick={() => setShowSidebar(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg 
-            border border-gray-100 dark:border-gray-700
+          className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800
+            border-y border-r border-gray-100 dark:border-gray-700
             hover:border-pink-200 dark:hover:border-pink-800
-            hover:shadow-pink-100/50 dark:hover:shadow-pink-900/50
+            hover:bg-pink-50 dark:hover:bg-pink-900/10
+            rounded-r-lg
             transition-all duration-300"
         >
           <div className="flex flex-col gap-1 items-start">
-            <div className="w-6 h-0.5 bg-gray-600 dark:bg-gray-300 rounded-full" />
-            <div className="w-4 h-0.5 bg-pink-600 dark:bg-pink-400 rounded-full" />
-            <div className="w-6 h-0.5 bg-gray-600 dark:bg-gray-300 rounded-full" />
+            <Menu className="h-6 w-6" />
           </div>
-          <span className="text-sm font-medium bg-gradient-to-r from-gray-800 to-pink-800 
+          <span className="text-sm font-medium  bg-pink-800 
             dark:from-gray-200 dark:to-pink-200 bg-clip-text text-transparent">
             Menu
           </span>
