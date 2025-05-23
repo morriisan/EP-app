@@ -13,13 +13,13 @@ export function Footer() {
           <Link href="/" className="text-pink-900 hover:text-pink-700">
             Hjem
           </Link>
-          <Link href="/galleri" className="text-pink-900 hover:text-pink-700">
+          <Link href="/gallery" className="text-pink-900 hover:text-pink-700">
             Galleri
           </Link>
-          <Link href="/bokdato" className="text-pink-900 hover:text-pink-700">
+          <Link href="/booking" className="text-pink-900 hover:text-pink-700">
             Bokdato
           </Link>
-          <Link href="/min-side" className="text-pink-900 hover:text-pink-700">
+          <Link href="/myPage" className="text-pink-900 hover:text-pink-700">
             Min side
           </Link>
         </nav>

@@ -13,7 +13,7 @@ export function MyPageLayout({ children }: MyPageLayoutProps) {
   const user = session?.user;
 
   const sidebarLinks = [
-    { href: "/myPage", label: "Overview" },
+    { href: "/myPage", label: "Bookmarkes" },
     { href: "/myPage/booking", label: "My Bookings" },
     { href: "/myPage/history", label: "Booking History" },
     // Add more links as needed
