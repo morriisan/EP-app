@@ -23,6 +23,18 @@ export function MainNav() {
   }, []);
 
   useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const nav = document.querySelector('nav');
+      if (isMobileMenuOpen && nav && !nav.contains(event.target as Node)) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
@@ -161,7 +173,12 @@ export function MainNav() {
             <div className="flex flex-col p-4 space-y-4">
               {navLinks.map((link) => (
                 link.component ? (
-                  <div key={link.href} className="cursor-pointer">
+                  <div key={link.href} onClick={(e) => {
+                    e.preventDefault();
+                    if (!link.component) {
+                      setIsMobileMenuOpen(false);
+                    }
+                  }}>
                     {link.component}
                   </div>
                 ) : (
