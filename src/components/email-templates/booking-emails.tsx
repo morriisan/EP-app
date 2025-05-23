@@ -223,7 +223,7 @@ export const WaitlistEmail: React.FC<Readonly<BookingEmailProps>> = ({
 }) => (
   <EmailWrapper>
     <h2 style={{ color: '#d87093', fontSize: '20px', marginBottom: '20px', textAlign: 'center' }}>
-    Dear {userName}, your booking for Added to Waitlist
+    Dear {userName}
     </h2>
     <div style={{ backgroundColor: '#f9f9f9', padding: '20px', borderRadius: '8px', textAlign: 'center' }}>
       <p style={{ fontSize: '16px', margin: '15px 0' }}>

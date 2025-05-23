@@ -87,15 +87,8 @@ export function AuthPanel({
               </div>
               
               <Tabs defaultValue="signin">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="signin">Sign In</TabsTrigger>
-                  <TabsTrigger value="signup">Sign Up</TabsTrigger>
-                </TabsList>
                 <TabsContent value="signin">
                   <SignIn callbackURL={redirectURL} />
-                </TabsContent>
-                <TabsContent value="signup">
-                  <SignUp callbackURL={redirectURL} />
                 </TabsContent>
               </Tabs>
             </motion.div>
