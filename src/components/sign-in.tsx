@@ -102,7 +102,8 @@ export default function SignIn({ callbackURL = "/dashboard" }) {
             "w-full gap-2 flex items-center",
             "justify-between flex-col"
           )}>
-            <Button
+            {/* Microsoft Sign In Button */}
+            {/* <Button
                 variant="outline"
                 className={cn(
                   "w-full gap-2"
@@ -126,7 +127,8 @@ export default function SignIn({ callbackURL = "/dashboard" }) {
 				></path>
 			</svg>
                 Sign in with Microsoft
-              </Button><Button
+              </Button> */}
+           {/*  <Button
                 variant="outline"
                 className={cn(
                   "w-full gap-2"
@@ -150,7 +152,8 @@ export default function SignIn({ callbackURL = "/dashboard" }) {
 				></path>
 			</svg>
                 Sign in with Apple
-              </Button><Button
+              </Button> */}
+              <Button
                 variant="outline"
                 className={cn(
                   "w-full gap-2"
