@@ -1,12 +1,29 @@
 import { Suspense } from "react";
 import { bookingService } from "@/services/booking-service";
 import { requireAuth } from "@/lib/auth-utils";
+import { BookingStatus } from "@prisma/client";
 
-function BookingHistoryList({ bookings }: { bookings: any[] }) {
+type BookingReason = "CANCELLED" | "PAST_DATE" | "REJECTED";
+
+interface BookingHistory {
+  id: string;
+  userId: string;
+  date: Date;
+  description: string | null;
+  status: BookingStatus;
+  originalBookingId: string;
+  movedToHistoryAt: Date;
+  reason: BookingReason;
+  waitlistPos: number | null;
+  reviewedById: string | null;
+  reviewNote: string | null;
+}
+
+function BookingHistoryList({ bookings }: { bookings: BookingHistory[] }) {
   if (bookings.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500">
-        You don't have any booking history yet.
+        You don&apos;t have any booking history yet.
       </div>
     );
   }
@@ -60,8 +77,8 @@ function BookingHistoryList({ bookings }: { bookings: any[] }) {
 export default async function BookingHistoryPage() {
   const session = await requireAuth();
   
-  // Fetch user's booking history
-  const bookingHistory = await bookingService.getUserBookingHistory(session.user.id);
+  // Fetch user's booking history and cast it to the correct type
+  const bookingHistory = (await bookingService.getUserBookingHistory(session.user.id)) as BookingHistory[];
 
   return (
     <div className="space-y-8">

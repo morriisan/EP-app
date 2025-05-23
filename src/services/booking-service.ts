@@ -107,8 +107,6 @@ export const bookingService = {
 
   // Create a new booking
   async createBooking(userId: string, date: Date, description?: string) {
-   
-
     const existingBooking = await prisma.booking.findFirst({
       where: {
         date: date,
@@ -117,8 +115,8 @@ export const bookingService = {
         },
       },
     });
-
     const status = existingBooking ? "WAITLISTED" : "PENDING";
+
     let waitlistPos: number | null = null;
 
     if (status === "WAITLISTED") {

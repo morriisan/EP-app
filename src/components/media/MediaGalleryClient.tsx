@@ -91,7 +91,7 @@ export function MediaGalleryClient({
   if (mediaError || tagsError) return <div>Error loading data</div>;
 
   return (
-    <>
+    <div className="space-y-8">
       {isAdmin && <UploaderClient />}
       <TagFilter
         tags={allTags}
@@ -99,7 +99,7 @@ export function MediaGalleryClient({
         onTagSelect={handleTagSelect}
       />
 
-      <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 ">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ">
         {media.map((item: Media) => (
           <MediaCard
             key={item.id}
@@ -119,6 +119,6 @@ export function MediaGalleryClient({
           onCancel={() => setSelectedMedia(null)}
         />
       )}
-    </>
+    </div>
   );
 } 

@@ -8,15 +8,15 @@ interface TagFilterProps {
 
 export function TagFilter({ tags, selectedTags, onTagSelect }: TagFilterProps) {
   return (
-    <div className="flex flex-wrap gap-2 mb-6">
+    <div className="flex flex-wrap gap-2 justify-center mb-8">
       {tags.map((tag) => (
         <button
           key={tag.id}
           onClick={() => onTagSelect(tag.name)}
-          className={`px-3 py-1 rounded-full text-sm transition ${
+          className={`px-5 py-2 rounded-md text-sm transition duration-300 hover:scale-105 ${
             selectedTags.includes(tag.name)
-              ? "bg-blue-500 text-white"
-              : "bg-gray-200 text-gray-700 hover:bg-gray-300 "
+              ? "bg-pink-600 text-white shadow-md"
+              : "bg-pink-100 text-pink-800 hover:bg-pink-200 border border-pink-300"
           }`}
         >
           {tag.name}

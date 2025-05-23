@@ -14,9 +14,8 @@ export function MyPageLayout({ children }: MyPageLayoutProps) {
 
   const sidebarLinks = [
     { href: "/myPage", label: "Overview" },
-    { href: "/myPage/bookings", label: "My Bookings" },
-    { href: "/myPage/profile", label: "Profile" },
-    { href: "/myPage/notifications", label: "Notifications" },
+    { href: "/myPage/booking", label: "My Bookings" },
+    { href: "/myPage/history", label: "Booking History" },
     // Add more links as needed
   ];
 

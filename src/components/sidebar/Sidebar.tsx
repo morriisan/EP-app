@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 
 interface SidebarLink {
   href: string;
@@ -127,6 +128,7 @@ export function Sidebar({ links, userName, userEmail }: SidebarProps) {
               exit={{ opacity: 0 }}
               className="fixed inset-0 bg-black z-40"
               onClick={() => setShowSidebar(false)}
+              role="presentation"
             />
 
             {/* Sidebar Panel */}
@@ -136,6 +138,8 @@ export function Sidebar({ links, userName, userEmail }: SidebarProps) {
               exit={{ x: "-100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
               className="fixed top-0 left-0 h-full bg-white dark:bg-gray-900 shadow-xl z-50 w-64"
+              role="navigation"
+              aria-label="Mobile sidebar"
             >
               {/* Close Handle */}
               <div className="flex justify-end p-4">
@@ -143,21 +147,9 @@ export function Sidebar({ links, userName, userEmail }: SidebarProps) {
                   variant="ghost"
                   className="text-gray-500 hover:text-gray-700"
                   onClick={() => setShowSidebar(false)}
+                  aria-label="Close sidebar"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
+                  <X className="h-6 w-6" />
                 </Button>
               </div>
 

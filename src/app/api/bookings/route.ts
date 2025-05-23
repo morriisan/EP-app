@@ -16,9 +16,6 @@ export const POST = requireAuth(async (req: Request, session) => {
       );
     }
 
-    console.log('API received date:', date);
-    console.log('API creating Date object:', new Date(date));
-
     const booking = await bookingService.createBooking(
       session.user.id,
       new Date(date),
@@ -34,7 +31,6 @@ export const POST = requireAuth(async (req: Request, session) => {
       }
     } catch (error) {
       console.error("Error sending notifications:", error);
-      // Continue with the response even if notification fails
     }
 
     return NextResponse.json(booking);

@@ -1,17 +1,15 @@
 "use client";
 
-import { UploadButton } from "@/utils/uploadthing";
+import { UploadDropzone } from "@/utils/uploadthing";
 import { mutate } from "swr";
 import { toast } from "sonner";
 
 export function UploaderClient() {
   return (
     <div className="mb-8">
-      <h1 className="text-2xl font-bold mb-4">Upload Media</h1>
-      <UploadButton
+      <UploadDropzone
         endpoint="imageUploader"
-        onClientUploadComplete={(res) => {
-          console.log("Files: ", res);
+        onClientUploadComplete={() => {
           toast.success("Upload completed successfully");
           
           // Add a delay before refreshing to allow the database operation to complete

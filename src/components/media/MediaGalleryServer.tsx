@@ -17,17 +17,22 @@ export async function MediaGalleryServer({
   const media = await mediaService.getAllMedia(selectedTagsParam);
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6">
-        {isAdmin ? "Media Management" : "Gallery"}
-      </h1>
+    <div className="container mx-auto py-12 px-2">
+      
+        <h1 className="text-4xl md:text-5xl text-center font-light tracking-wider text-pink-800 mb-8">
+          {isAdmin ? "Media Management" : "Gallery"}
+        </h1>
+        <p className="text-lg text-pink-700 text-center mb-12 font-light">
+          Browse our gallery of magical moments and inspiring events
+        </p>
 
-      <MediaGalleryClient 
-        initialMedia={media} 
-        initialTags={allTags}
-        initialSelectedTags={selectedTagsParam}
-        isAdmin={isAdmin}
-      />
+        <MediaGalleryClient 
+          initialMedia={media} 
+          initialTags={allTags}
+          initialSelectedTags={selectedTagsParam}
+          isAdmin={isAdmin}
+        />
+      
     </div>
   );
 }

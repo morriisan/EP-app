@@ -21,7 +21,7 @@ export function AuthPanel({
   callbackURL
 }: AuthPanelProps) {
   const [showAuth, setShowAuth] = useState(false);
-  const [activeTab, setActiveTab] = useState("signin");
+  //const [activeTab, setActiveTab] = useState("signin");
   const pathname = usePathname();
   const [currentPath, setCurrentPath] = useState("");
   const { data: session } = useSession();
