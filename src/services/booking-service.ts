@@ -106,7 +106,13 @@ export const bookingService = {
   },
 
   // Create a new booking
-  async createBooking(userId: string, date: Date, description?: string) {
+  async createBooking(
+    userId: string, 
+    date: Date, 
+    eventType: string,
+    guestCount: number,
+    description?: string
+  ) {
     const existingBooking = await prisma.booking.findFirst({
       where: {
         date: date,
@@ -136,6 +142,8 @@ export const bookingService = {
       data: {
         userId,
         date: date,
+        eventType,
+        guestCount,
         description,
         status,
         waitlistPos,
@@ -212,6 +220,8 @@ export const bookingService = {
         data: {
           userId: booking.userId,
           date: booking.date,
+          eventType: booking.eventType,
+          guestCount: booking.guestCount,
           description: booking.description,
           status: booking.status,
           originalBookingId: booking.id,

@@ -7,7 +7,7 @@ import { notificationService } from "@/services/notification-service";
 export const POST = requireAuth(async (req: Request, session) => {
   try {
     const body = await req.json();
-    const { date, description } = body;
+    const { date, eventType, guestCount, description } = body;
 
     if (!date) {
       return NextResponse.json(
@@ -16,9 +16,25 @@ export const POST = requireAuth(async (req: Request, session) => {
       );
     }
 
+    if (!eventType) {
+      return NextResponse.json(
+        { error: "Event type is required" },
+        { status: 400 }
+      );
+    }
+
+    if (!guestCount || guestCount < 1) {
+      return NextResponse.json(
+        { error: "Valid guest count is required" },
+        { status: 400 }
+      );
+    }
+
     const booking = await bookingService.createBooking(
       session.user.id,
       new Date(date),
+      eventType,
+      guestCount,
       description
     );
 
