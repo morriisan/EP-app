@@ -148,10 +148,12 @@ model Booking {
   id            String         @id @default(cuid())
   userId        String
   user          User          @relation(fields: [userId], references: [id])
-  date          DateTime      @db.Date   // Only store date, must be unique
+  date          DateTime      @db.Date   // Only store date
+  eventType     String        // Type of event (wedding, engagement, etc.)
+  guestCount    Int          // Number of expected guests
   description   String?
   status        BookingStatus  @default(PENDING)
-  waitlistPos   Int?          // only used when status = WAITLISTED
+  waitlistPos   Int?          
   
   // Admin response tracking
   reviewedById  String?
@@ -177,6 +179,8 @@ model BookingHistory {
   userId          String
   user            User          @relation(fields: [userId], references: [id])
   date            DateTime      @db.Date
+  eventType       String        // Type of event (wedding, engagement, etc.)
+  guestCount      Int          // Number of expected guests
   description     String?
   status          BookingStatus  // Keep original booking status
   originalBookingId String
@@ -192,3 +196,4 @@ model BookingHistory {
 
   @@map("booking_history")
 }
+
