@@ -56,31 +56,6 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <Script
-          id="fb-sdk"
-          strategy="lazyOnload"
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.fbAsyncInit = function() {
-                FB.init({
-                  appId: '${process.env.NEXT_PUBLIC_FACEBOOK_APP_ID}',
-                  cookie: true,
-                  xfbml: true,
-                  version: 'v18.0'
-                });
-                FB.AppEvents.logPageView();
-              };
-
-              (function(d, s, id){
-                var js, fjs = d.getElementsByTagName(s)[0];
-                if (d.getElementById(id)) {return;}
-                js = d.createElement(s); js.id = id;
-                js.src = "https://connect.facebook.net/en_US/sdk.js";
-                fjs.parentNode.insertBefore(js, fjs);
-              }(document, 'script', 'facebook-jssdk'));
-            `
-          }}
-        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-pink-50 dark:bg-slate-900 transition-colors duration-200`}
