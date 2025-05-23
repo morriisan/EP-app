@@ -1,4 +1,5 @@
 import { requireAuth } from "@/lib/auth-utils";
+import { MyPageLayout as PageLayout } from "@/components/layouts/MyPageLayout";
 
 export default async function MyPageLayout({
     children,
@@ -6,6 +7,6 @@ export default async function MyPageLayout({
     children: React.ReactNode;
 }) {
     void await requireAuth();
-    return <>{children}</>;
+    return <PageLayout>{children}</PageLayout>;
 }
 

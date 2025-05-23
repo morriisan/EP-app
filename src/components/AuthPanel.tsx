@@ -46,7 +46,7 @@ export function AuthPanel({
   return (
     <>
       {/* Trigger button */}
-      <div onClick={() => setShowAuth(true)}>
+      <div onClick={() => setShowAuth(true)} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && setShowAuth(true)}>
         {trigger}
       </div>
 
@@ -61,6 +61,7 @@ export function AuthPanel({
               exit={{ opacity: 0 }}
               className="fixed inset-0 bg-black z-40"
               onClick={() => setShowAuth(false)}
+              role="presentation"
             />
             
             {/* Auth panel */}
@@ -71,18 +72,21 @@ export function AuthPanel({
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
               className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 rounded-t-3xl p-6 shadow-xl z-50 max-w-md mx-auto"
               style={{ maxHeight: "90vh", overflowY: "auto" }}
-              
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="auth-panel-title"
             >
               <div
-              className=" flex justify-center items-center cursor-pointer "
-              onClick={() => setShowAuth(false)}
+                className="flex justify-center items-center cursor-pointer"
+                onClick={() => setShowAuth(false)}
               >
-              <button 
-              className="w-12 h-1.5 bg-gray-300 dark:bg-gray-700 rounded-full mb-5 cursor-pointer hover:bg-gray-400 dark:hover:bg-gray-800 px-4 py-1"
-               />
-               </div>
+                <button 
+                  className="w-12 h-1.5 bg-gray-300 dark:bg-gray-700 rounded-full mb-5 cursor-pointer hover:bg-gray-400 dark:hover:bg-gray-800 px-4 py-1"
+                  aria-label="Close authentication panel"
+                />
+              </div>
               
-              <Tabs defaultValue="signin" value={activeTab} onValueChange={setActiveTab}>
+              <Tabs defaultValue="signin">
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="signin">Sign In</TabsTrigger>
                   <TabsTrigger value="signup">Sign Up</TabsTrigger>

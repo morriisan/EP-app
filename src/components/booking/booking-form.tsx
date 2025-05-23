@@ -12,14 +12,17 @@ interface BookingFormProps {
   onSuccess: () => void;
   waitlistCount?: number;
   isPending: boolean;
+  isLoggedIn: boolean;
 }
 
-export function BookingForm({ date, onSuccess, waitlistCount, isPending }: BookingFormProps) {
+export function BookingForm({ date, onSuccess, waitlistCount, isPending, isLoggedIn }: BookingFormProps) {
   const [description, setDescription] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isLoggedIn) return;
+    
     setIsSubmitting(true);
     
     try {
@@ -62,26 +65,31 @@ export function BookingForm({ date, onSuccess, waitlistCount, isPending }: Booki
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-8">
       {waitlistCount && waitlistCount > 0 && (
-        <div className="text-sm text-yellow-600 mb-4">
+        <div className="text-sm text-yellow-600 dark:text-yellow-400 mb-6">
           Currently {waitlistCount} {waitlistCount === 1? 'person' : 'people'} on waitlist
         </div>
       )}
-      <div className="space-y-2">
-        <Label htmlFor="description">Description (optional)</Label>
+      <div className="space-y-4">
+        <Label htmlFor="description" className="text-base font-medium text-gray-900 dark:text-black">Description (optional)</Label>
         <Textarea
           id="description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          placeholder="Add any special requirements or notes..."
-          className="min-h-[100px]"
+          placeholder={isLoggedIn ? "Add any special requirements or notes..." : "Please sign in to make a booking"}
+          disabled={!isLoggedIn}
+          className="w-full min-h-[100px] text-base p-4 bg-white  text-gray-900 dark:text-gray-100 border-0 focus:ring-2 focus:ring-pink-500 dark:focus:ring-pink-400 placeholder:text-gray-400 dark:placeholder:text-gray-500"
         />
       </div>
 
-      <div className="flex justify-end">
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Submitting...' : isPending ? 'Join Waitlist' : 'Book Now'}
+      <div className="flex justify-end pt-4">
+        <Button 
+          type="submit" 
+          disabled={isSubmitting || !isLoggedIn}
+          className={`px-8 py-2.5 text-base bg-pink-500 hover:bg-pink-600 dark:bg-pink-500 dark:hover:bg-pink-600 text-white ${!isLoggedIn ? 'opacity-50 dark:opacity-40 cursor-not-allowed' : ''}`}
+        >
+          {!isLoggedIn ? 'Please Sign In' : isSubmitting ? 'Submitting...' : isPending ? 'Join Waitlist' : 'Book Now'}
         </Button>
       </div>
     </form>

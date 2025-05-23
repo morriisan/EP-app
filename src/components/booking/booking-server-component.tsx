@@ -7,7 +7,6 @@ import { calendarService } from "@/services/calendar-service";
 import { headers } from "next/headers";
 import { AuthPanel } from "@/components/AuthPanel";
 
-
 export async function BookingServerComponent() {
   // Get the current session (if any) - but don't require it
   const session = await auth.api.getSession({
@@ -25,77 +24,87 @@ export async function BookingServerComponent() {
     : [];
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      {/* Calendar Section - Public */}
-      <div className="space-y-6">
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">Available Dates</h2>
-          <div className="mb-4 text-sm text-gray-600">
-            <ul className="space-y-1">
-              <li className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded bg-green-100"></div>
-                Available
-              </li>
-              <li className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded bg-red-100"></div>
-                Booked
-              </li>
-              <li className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded bg-orange-100"></div>
-                Waitlist Available
-              </li>
-              <li className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded bg-gray-50"></div>
-                Past Dates
-              </li>
-            </ul>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        {/* Calendar Section - Public */}
+        <div>
+          <div className="bg-white dark:bg-pink-100 rounded-xl shadow-sm">
+            <div className="p-6 border-b border-pink-50/10">
+              <h2 className="text-xl font-semibold text-pink-800 dark:text-pink-300">Available Dates</h2>
+              <div className="mt-4 flex flex-wrap gap-3 text-sm text-gray-600 dark:text-gray-300">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded bg-green-100 dark:bg-green-800/50"></div>
+                  <span>Available</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded bg-red-100 dark:bg-red-800/50"></div>
+                  <span>Booked</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded bg-orange-100 dark:bg-orange-800/50"></div>
+                  <span>Waitlist Available</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded bg-gray-50 dark:bg-gray-700/50"></div>
+                  <span>Past Dates</span>
+                </div>
+              </div>
+            </div>
+            <div className="p-2 flex justify-center items-center">
+              <BookingCalendar 
+                bookedDates={calendarData
+                  .filter(day => !day.isAvailable && day.status)
+                  .map(day => ({
+                    date: new Date(day.date),
+                    status: day.status || 'PENDING',
+                    waitlistCount: day.waitlistCount
+                  }))}
+                userBookings={userBookings.map(booking => ({
+                  date: new Date(booking.date),
+                  status: booking.status
+                }))}
+                isLoggedIn={!!session?.user}
+              />
+            </div>
           </div>
-          <BookingCalendar 
-            bookedDates={calendarData
-              .filter(day => !day.isAvailable && day.status)
-              .map(day => ({
-                date: new Date(day.date),
-                status: day.status || 'PENDING',
-                waitlistCount: day.waitlistCount
-              }))}
-            userBookings={userBookings.map(booking => ({
-              date: new Date(booking.date),
-              status: booking.status
-            }))}
-          />
         </div>
+
+        {/* User's Bookings Section - Only shown when logged in */}
+        {session?.user ? (
+          <div>
+            <div className="bg-white rounded-xl shadow-sm">
+              <div className="p-6">
+                <h2 className="text-xl font-semibold text-pink-800 dark:text-pink-300">Your Bookings</h2>
+              </div>
+              <div className="p-6">
+                <BookingsList 
+                  bookings={userBookings}
+                />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <div className="bg-white dark:bg-gray-900/40 rounded-xl shadow-sm">
+              <div className="p-6  border-pink-50/10">
+                <h2 className="text-xl font-semibold text-pink-800 dark:text-pink-300">Make a Booking</h2>
+              </div>
+              <div className="p-6">
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
+                  Please sign in to make a booking or manage your existing bookings.
+                </p>
+                <AuthPanel 
+                  trigger={
+                    <button className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-pink-500 text-white hover:bg-pink-600 dark:bg-pink-500 dark:hover:bg-pink-600 h-10 px-8">
+                      Sign In
+                    </button>
+                  }
+                />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-
-      {/* User's Bookings Section - Only shown when logged in */}
-      {session?.user && (
-        <div className="space-y-6">
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold mb-4">Your Bookings</h2>
-            <BookingsList 
-              bookings={userBookings}
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Login prompt - Only shown when not logged in */}
-      {!session?.user && (
-        <div className="space-y-6">
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold mb-4">Make a Booking</h2>
-            <p className="text-gray-600 mb-4">
-              Please sign in to make a booking or manage your existing bookings.
-            </p>
-            <AuthPanel 
-              trigger={
-                <button className="inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors">
-                  Sign In
-                </button>
-              }
-            />
-          </div>
-        </div>
-      )}
     </div>
   );
 } 

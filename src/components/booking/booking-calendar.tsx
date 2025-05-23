@@ -16,9 +16,10 @@ interface BookingCalendarProps {
     date: Date;
     status: string;
   }>;
+  isLoggedIn: boolean;
 }
 
-export function BookingCalendar({ bookedDates: initialBookedDates, userBookings }: BookingCalendarProps) {
+export function BookingCalendar({ bookedDates: initialBookedDates, userBookings, isLoggedIn }: BookingCalendarProps) {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [bookedDates, setBookedDates] = useState(initialBookedDates);
 
@@ -88,7 +89,7 @@ export function BookingCalendar({ bookedDates: initialBookedDates, userBookings 
         mode="single"
         selected={selectedDate}
         onSelect={handleDateSelect}
-        className="rounded-md border"
+        className="rounded-md dark:bg-white dark:text-black"
         disabled={(date) => isDateInPast(date) || hasUserBooking(date)}
         modifiers={{
           userBooked: (date) => hasUserBooking(date) && !isDatePending(date),
@@ -99,7 +100,7 @@ export function BookingCalendar({ bookedDates: initialBookedDates, userBookings 
         }}
         modifiersClassNames={{
           userBooked: 'bg-red-300 cursor-not-allowed',
-          userBookedPending: 'bg-red-400 cursor-not-allowed ',
+          userBookedPending: 'bg-red-400 cursor-not-allowed',
           booked: 'bg-red-100 text-gray-500 cursor-not-allowed',
           pending: 'bg-yellow-100 text-gray-900 cursor-pointer',
           waitlist: 'bg-blue-100 text-gray-500 cursor-not-allowed',
@@ -108,19 +109,22 @@ export function BookingCalendar({ bookedDates: initialBookedDates, userBookings 
       />
 
       {selectedDate && (
-        <div className="bg-gray-50 rounded-lg p-6">
-          <h3 className="text-lg font-medium mb-4">
+        <div className="bg-gray-100 rounded-lg p-8 mt-6 dark:text-black">
+          <h3 className="text-xl font-medium mb-8 text-gray-900 dark:text-black">
             Book for {format(selectedDate, 'MMMM d, yyyy')}
             {isDatePending(selectedDate) && !hasUserBooking(selectedDate) && (
-              <span className="ml-2 text-sm text-yellow-600">(Will be waitlisted)</span>
+              <span className="ml-2 text-sm text-yellow-600 dark:text-yellow-400">(Will be waitlisted)</span>
             )}
           </h3>
-          <BookingForm 
-            date={selectedDate}
-            onSuccess={() => setSelectedDate(undefined)}
-            waitlistCount={getDateBooking(selectedDate)?.waitlistCount}
-            isPending={isDatePending(selectedDate)}
-          />
+          <div className="w-full">
+            <BookingForm 
+              date={selectedDate}
+              onSuccess={() => setSelectedDate(undefined)}
+              waitlistCount={getDateBooking(selectedDate)?.waitlistCount}
+              isPending={isDatePending(selectedDate)}
+              isLoggedIn={isLoggedIn}
+            />
+          </div>
         </div>
       )}
     </div>

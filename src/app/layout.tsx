@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "no_NO",
-    url: "https://engelparadis.no",
+    url: "https://engelparadis.com",
     title: "Engel Paradis | Elegant Wedding Planning",
     description: "Elegant bryllupsplanlegging og arrangementer for alle",
     siteName: "Engel Paradis"

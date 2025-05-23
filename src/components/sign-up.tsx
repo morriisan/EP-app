@@ -54,7 +54,34 @@ export function SignUp({ callbackURL = "/dashboard" }: SignUpProps) {
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
-				<div className="grid gap-4">
+				<form 
+					onSubmit={async (e) => {
+						e.preventDefault();
+						setLoading(true);
+						await signUp.email({
+							email,
+							password,
+							name: `${firstName} ${lastName}`,
+							//image: image ? await convertImageToBase64(image) : "",
+							callbackURL: callbackURL,
+							fetchOptions: {
+								onResponse: () => {
+									setLoading(false);
+								},
+								onRequest: () => {
+									setLoading(true);
+								},
+								onError: (ctx) => {
+									toast.error(ctx.error.message);
+								},
+								onSuccess: async () => {
+									router.push("/dashboard");
+								},
+							},
+						});
+					}}
+					className="grid gap-4"
+				>
 					<div className="grid grid-cols-2 gap-4">
 						<div className="grid gap-2">
 							<Label htmlFor="first-name">First name</Label>
@@ -66,7 +93,9 @@ export function SignUp({ callbackURL = "/dashboard" }: SignUpProps) {
 									setFirstName(e.target.value);
 								}}
 								value={firstName}
+								aria-describedby="first-name-description"
 							/>
+							<span id="first-name-description" className="sr-only">Enter your first name</span>
 						</div>
 						<div className="grid gap-2">
 							<Label htmlFor="last-name">Last name</Label>
@@ -78,7 +107,9 @@ export function SignUp({ callbackURL = "/dashboard" }: SignUpProps) {
 									setLastName(e.target.value);
 								}}
 								value={lastName}
+								aria-describedby="last-name-description"
 							/>
+							<span id="last-name-description" className="sr-only">Enter your last name</span>
 						</div>
 					</div>
 					<div className="grid gap-2">
@@ -92,7 +123,9 @@ export function SignUp({ callbackURL = "/dashboard" }: SignUpProps) {
 								setEmail(e.target.value);
 							}}
 							value={email}
+							aria-describedby="email-description"
 						/>
+						<span id="email-description" className="sr-only">Enter your email address for your account</span>
 					</div>
 					<div className="grid gap-2">
 						<Label htmlFor="password">Password</Label>
@@ -103,10 +136,13 @@ export function SignUp({ callbackURL = "/dashboard" }: SignUpProps) {
 							onChange={(e) => setPassword(e.target.value)}
 							autoComplete="new-password"
 							placeholder="Password"
+							required
+							aria-describedby="password-description"
 						/>
+						<span id="password-description" className="sr-only">Create a secure password for your account</span>
 					</div>
 					<div className="grid gap-2">
-						<Label htmlFor="password">Confirm Password</Label>
+						<Label htmlFor="password_confirmation">Confirm Password</Label>
 						<Input
 							id="password_confirmation"
 							type="password"
@@ -114,7 +150,10 @@ export function SignUp({ callbackURL = "/dashboard" }: SignUpProps) {
 							onChange={(e) => setPasswordConfirmation(e.target.value)}
 							autoComplete="new-password"
 							placeholder="Confirm Password"
+							required
+							aria-describedby="confirm-password-description"
 						/>
+						<span id="confirm-password-description" className="sr-only">Re-enter your password to confirm</span>
 					</div>
 				{/* 	<div className="grid gap-2">
 						<Label htmlFor="image">Profile Image (optional)</Label>
@@ -149,33 +188,11 @@ export function SignUp({ callbackURL = "/dashboard" }: SignUpProps) {
 							</div>
 						</div>
 					</div> */}
-					<Button
-						type="submit"
-						className="w-full"
+					<Button 
+						type="submit" 
+						className="w-full" 
 						disabled={loading}
-						onClick={async () => {
-							await signUp.email({
-								email,
-								password,
-								name: `${firstName} ${lastName}`,
-								//image: image ? await convertImageToBase64(image) : "",
-								callbackURL: callbackURL,
-								fetchOptions: {
-									onResponse: () => {
-										setLoading(false);
-									},
-									onRequest: () => {
-										setLoading(true);
-									},
-									onError: (ctx) => {
-										toast.error(ctx.error.message);
-									},
-									onSuccess: async () => {
-										router.push("/dashboard");
-									},
-								},
-							});
-						}}
+						aria-label={loading ? "Creating account..." : "Create your account"}
 					>
 						{loading ? (
 							<Loader2 size={16} className="animate-spin" />
@@ -183,7 +200,7 @@ export function SignUp({ callbackURL = "/dashboard" }: SignUpProps) {
 							"Create an account"
 						)}
 					</Button>
-				</div>
+				</form>
 			</CardContent>
 			<CardFooter>
 				<div className="flex justify-center w-full border-t py-4">

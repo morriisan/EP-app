@@ -1,31 +1,16 @@
 "use client";
 
-
-
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Calendar } from "@/components/ui/calendar";
 
 export default function Home() {
- 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button>Open Dialog</Button>
-        </DialogTrigger>
-        <DialogContent >
-          <DialogHeader>
-            <DialogTitle>Test Dialog</DialogTitle>
-          </DialogHeader>
-          <div>This is a test dialog</div>
-        </DialogContent>
-      </Dialog>
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="w-[350px]">
+        <Calendar
+          mode="single"
+          className="rounded-md border"
+        />
+      </div>
     </div>
   );
 }
