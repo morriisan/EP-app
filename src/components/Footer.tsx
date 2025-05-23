@@ -1,33 +1,55 @@
+'use client';
+
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 
 export function Footer() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640); // Using 640px as breakpoint (sm)
+    };
+    
+    // Initial check
+    checkMobile();
+
+    // Add event listener
+    window.addEventListener('resize', checkMobile);
+
+    // Cleanup
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <footer className="mt-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-start py-8">
-        <div className="flex flex-col space-y-2">
-          <h3 className="text-xl text-pink-800 font-light">Engel Paradis AS</h3>
-          <p className="text-sm text-pink-800">Elegant bryllupsplanlegging og arrangementer</p>
-          <div className="text-sm text-black">
-            <p>Telefon: +47 900 52 670</p>
-            <p>Adresse: Haavard martinsens vei 19</p>
-            <p>0978 Oslo, Norge</p>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className={`flex ${isMobile ? 'flex-col space-y-6' : 'justify-between items-start'}`}>
+          <div className="flex flex-col space-y-2">
+            <h3 className="text-xl text-pink-800 font-light">Engel Paradis AS</h3>
+            <p className="text-sm text-pink-800">Elegant bryllupsplanlegging og arrangementer</p>
+            <div className="text-sm text-black">
+              <p>Telefon: +47 900 52 670</p>
+              <p>Adresse: Haavard martinsens vei 19</p>
+              <p>0978 Oslo, Norge</p>
+            </div>
           </div>
+          
+          <nav className={`flex ${isMobile ? 'flex-col space-y-4' : 'space-x-8'}`}>
+            <Link href="/" className="text-pink-900 hover:text-pink-700">
+              Hjem
+            </Link>
+            <Link href="/gallery" className="text-pink-900 hover:text-pink-700">
+              Galleri
+            </Link>
+            <Link href="/booking" className="text-pink-900 hover:text-pink-700">
+              Bokdato
+            </Link>
+            <Link href="/myPage" className="text-pink-900 hover:text-pink-700">
+              Min side
+            </Link>
+          </nav>
         </div>
-        
-        <nav className="flex space-x-8">
-          <Link href="/" className="text-pink-900 hover:text-pink-700">
-            Hjem
-          </Link>
-          <Link href="/gallery" className="text-pink-900 hover:text-pink-700">
-            Galleri
-          </Link>
-          <Link href="/booking" className="text-pink-900 hover:text-pink-700">
-            Bokdato
-          </Link>
-          <Link href="/myPage" className="text-pink-900 hover:text-pink-700">
-            Min side
-          </Link>
-        </nav>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 pt-4 border-t border-pink-100 pb-8">

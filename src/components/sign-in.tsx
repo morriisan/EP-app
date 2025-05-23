@@ -4,18 +4,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
+//import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
-import { Loader2, Key } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { signIn } from "@/lib/auth-client";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 export default function SignIn({ callbackURL = "/" }: { callbackURL?: string }) {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+  //const [password, setPassword] = useState("");
+ // const [rememberMe, setRememberMe] = useState(false);
 
   return (
     <Card className="max-w-md">
@@ -34,7 +34,7 @@ export default function SignIn({ callbackURL = "/" }: { callbackURL?: string }) 
               <Input
                 id="email"
                 type="email"
-                placeholder="m@example.com"
+                placeholder="dinMail@example.com"
                 required
                 onChange={(e) => {
                   setEmail(e.target.value);
@@ -51,20 +51,20 @@ export default function SignIn({ callbackURL = "/" }: { callbackURL?: string }) 
                     callbackURL
                   },
                   {
-                     onRequest: (ctx) => {
+                     onRequest: () => {
                         setLoading(true);
                       },
-                     onResponse: (ctx) => {
+                     onResponse: () => {
                          setLoading(false);
                      },
                    },
                   );
                  }}>
                   {loading ? (
-                    <Loader2 size={16} className="animate-spin" />
-                  ) : (
-                    <>Sign-in with Magic Link</>
-                  )}
+                     <Loader2 size={16} className="animate-spin" />
+                     ):(
+                         "Sign-in with Magic Link"
+                   )}
               </Button>
             </div>
 
@@ -87,13 +87,13 @@ export default function SignIn({ callbackURL = "/" }: { callbackURL?: string }) 
                     await signIn.social(
                     {
                       provider: "google",
-                      callbackURL: "/dashboard"
+                      callbackURL
                     },
                     {
-                      onRequest: (ctx) => {
+                      onRequest: () => {
                          setLoading(true);
                       },
-                      onResponse: (ctx) => {
+                      onResponse: () => {
                          setLoading(false);
                       },
                      },
@@ -117,14 +117,14 @@ export default function SignIn({ callbackURL = "/" }: { callbackURL?: string }) 
                   onClick={async () => {
                     await signIn.social(
                     {
-                      provider: "microsoft",
-                      callbackURL: "/dashboard"
+                      provider: "twitch",
+                      callbackURL
                     },
                     {
-                      onRequest: (ctx) => {
+                      onRequest: () => {
                          setLoading(true);
                       },
-                      onResponse: (ctx) => {
+                      onResponse: () => {
                          setLoading(false);
                       },
                      },
@@ -133,16 +133,16 @@ export default function SignIn({ callbackURL = "/" }: { callbackURL?: string }) 
                 >
                   <svg
 				xmlns="http://www.w3.org/2000/svg"
-				width="1em"
-				height="1em"
+				width="1.2em"
+				height="1.2em"
 				viewBox="0 0 24 24"
 			>
 				<path
 					fill="currentColor"
-					d="M2 3h9v9H2zm9 19H2v-9h9zM21 3v9h-9V3zm0 19h-9v-9h9z"
+					d="M11.64 5.93h1.43v4.28h-1.43m3.93-4.28H17v4.28h-1.43M7 2L3.43 5.57v12.86h4.28V22l3.58-3.57h2.85L20.57 12V2m-1.43 9.29l-2.85 2.85h-2.86l-2.5 2.5v-2.5H7.71V3.43h11.43Z"
 				></path>
 			</svg>
-                  Sign in with Microsoft
+                  Sign in with Twitch
                 </Button>
 				<Button
                   variant="outline"
@@ -154,13 +154,13 @@ export default function SignIn({ callbackURL = "/" }: { callbackURL?: string }) 
                     await signIn.social(
                     {
                       provider: "facebook",
-                      callbackURL: "/dashboard"
+                      callbackURL
                     },
                     {
-                      onRequest: (ctx) => {
+                      onRequest: () => {
                          setLoading(true);
                       },
-                      onResponse: (ctx) => {
+                      onResponse: () => {
                          setLoading(false);
                       },
                      },

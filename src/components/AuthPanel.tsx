@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import SignIn from "@/components/sign-in";
-import { SignUp } from "@/components/sign-up";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+//mport { SignUp } from "@/components/sign-up";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { usePathname } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
 
