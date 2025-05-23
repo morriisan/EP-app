@@ -7,6 +7,7 @@ import {
   BookingReviewedEmail,
   WaitlistEmail,
   SpotAvailableEmail,
+  BookingCanceledEmail,
 } from '@/components/email-templates/booking-emails';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -142,5 +143,45 @@ export const notificationService = {
         status: booking.status,
       }),
     });
+  },
+
+  // Send notification when a booking is canceled
+  async sendBookingCanceledNotification(booking: BookingWithUser) {
+    try {
+      await sendEmailWithRetry({
+        from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
+        to: booking.user.email,
+        subject: "Booking Cancellation Confirmation",
+        react: React.createElement(BookingCanceledEmail, {
+          userName: booking.user.name,
+          userEmail: booking.user.email,
+          date: booking.date,
+          status: booking.status,
+        }),
+      });
+
+      // Also notify admin about the cancellation
+      const adminEmail = "morrisan2001@gmail.com";
+      if (adminEmail) {
+        await delay(1000); // Add delay before sending admin email
+        await sendEmailWithRetry({
+          from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
+          to: adminEmail,
+          subject: `Booking Canceled - ${booking.user.name}`,
+          react: React.createElement(NewBookingEmailAdmin, {
+            userName: booking.user.name,
+            userEmail: booking.user.email,
+            date: booking.date,
+            status: booking.status,
+            description: "This booking has been canceled by the user.",
+          }),
+        });
+      }
+
+      console.log('Successfully sent cancellation emails to:', { user: booking.user.email, admin: adminEmail });
+    } catch (error) {
+      console.error('Failed to send cancellation emails:', error);
+      throw error;
+    }
   },
 }; 

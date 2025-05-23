@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth-middleware";
 import { bookingService } from "@/services/booking-service";
+import { notificationService } from "@/services/notification-service";
 
 // Admin: Get all bookings or booking history
 export const GET = requireAdmin(async (req: Request) => {
@@ -58,6 +59,14 @@ export const POST = requireAdmin(async (req: Request, session) => {
       status,
       reviewNote
     );
+
+    // Send notification to user about the review decision
+    try {
+      await notificationService.sendBookingReviewedNotification(booking);
+    } catch (error) {
+      console.error("Failed to send review notification:", error);
+      // Continue even if notification fails
+    }
 
     return NextResponse.json(booking);
   } catch (error) {

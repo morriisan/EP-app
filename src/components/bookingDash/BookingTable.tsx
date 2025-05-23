@@ -21,6 +21,8 @@ interface Booking {
   date: string;
   status: 'PENDING' | 'APPROVED' | 'REJECTED';
   description?: string;
+  eventType: string;
+  guestCount: number;
   reviewNote?: string;
   user: {
     name: string;
@@ -110,7 +112,7 @@ export function BookingTable() {
               <TableRow>
                 <TableHead>Date</TableHead>
                 <TableHead>User</TableHead>
-                <TableHead>Description</TableHead>
+                <TableHead>Event Details</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Review Note</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
@@ -136,13 +138,24 @@ export function BookingTable() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      {booking.description ? (
-                        <p className="text-sm max-w-[200px] break-words">
-                          {booking.description}
-                        </p>
-                      ) : (
-                        <span className="text-sm text-muted-foreground">-</span>
-                      )}
+                      <div className="flex flex-col gap-2">
+                        <div>
+                          <span className="font-medium">Event Type: </span>
+                          <span className="text-sm">{booking.eventType}</span>
+                        </div>
+                        <div>
+                          <span className="font-medium">Guests: </span>
+                          <span className="text-sm">{booking.guestCount}</span>
+                        </div>
+                        {booking.description && (
+                          <div>
+                            <span className="font-medium">Special Requirements: </span>
+                            <p className="text-sm max-w-[200px] break-words">
+                              {booking.description}
+                            </p>
+                          </div>
+                        )}
+                      </div>
                     </TableCell>
                     <TableCell>
                       <span className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${
