@@ -4,25 +4,25 @@ export default function Home() {
       <main className="container mx-auto px-6">
         {/* Hero Section */}
         <section className="flex flex-col items-center justify-center py-20">
-          <span className="text-pink-600 italic text-2xl mb-2 font-light">Velkommen til</span>
-          <h1 className="text-5xl md:text-7xl text-center font-extralight tracking-[0.2em] text-pink-800 mb-4">
+          <span className="text-theme-accent-primary italic text-2xl mb-2 font-light">Velkommen til</span>
+          <h1 className="text-5xl md:text-7xl text-center font-extralight tracking-[0.2em] text-theme-primary mb-4">
             Engel Paradis
           </h1>
-          <p className="text-lg text-pink-700 text-center mb-16 font-light">
+          <p className="text-lg text-theme-primary text-center mb-16 font-light">
             Elegant bryllupsplanlegging og arrangementer for alle
           </p>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto w-full">
             <a 
               href="/gallery" 
-              className="px-12 py-4 bg-pink-100 hover:bg-pink-200 text-pink-800 rounded-2xl border-2 border-pink-300 
+              className="px-12 py-4 bg-pink-100 hover:bg-pink-200 text-theme-primary rounded-2xl border-2 border-pink-300 
                        shadow-md transition duration-300 text-lg hover:scale-105 text-center"
             >
               Galleri
             </a>
             <a 
               href="/booking" 
-              className="px-12 py-4 bg-purple-100 hover:bg-purple-200 text-purple-800 rounded-2xl border-2 border-purple-300 
+              className="px-12 py-4 bg-purple-100 hover:bg-purple-200 text-theme-secondary rounded-2xl border-2 border-purple-300 
                        shadow-md transition duration-300 text-lg hover:scale-105 text-center"
             >
               Book Date
