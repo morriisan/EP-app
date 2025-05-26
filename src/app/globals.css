@@ -46,7 +46,10 @@
   /* Custom Theme Colors - Maps to CSS variables that change with light/dark mode */
   --color-theme-primary: var(--theme-primary);
   --color-theme-secondary: var(--theme-secondary);
-  --color-theme-hover: var(--theme-hover);
+  --color-theme-section-primary: var(--theme-section-primary);
+  --color-theme-section-secondary: var(--theme-section-secondary);
+  --color-theme-hover-primary: var(--theme-hover-primary);
+  --color-theme-hover-secondary: var(--theme-hover-secondary);
   --color-theme-hover-text: var(--theme-hover-text);
   --color-theme-default: var(--theme-default);
   --color-theme-accent-primary: var(--theme-accent-primary);
@@ -54,6 +57,7 @@
   --color-theme-text-light: var(--theme-text-light);
   --color-theme-text-dark: var(--theme-text-dark);
   --color-theme-border-default: var(--theme-border-default);
+  --color-theme-border-secondary: var(--theme-border-secondary);
   --color-theme-border-dark: var(--theme-border-dark);
 }
 
@@ -93,17 +97,21 @@
   --sidebar-ring: oklch(0.708 0 0);
 
 /* Custom Theme Colors - Light Mode Only */
---theme-primary: oklch(45.9% 0.187 3.815);     /* pink 800 */
---theme-secondary:oklch(43.8% 0.218 303.724);  /* purple 800 */
---theme-hover: #FFB6C1;             /* light pink for hover states */
---theme-hover-text: #000000;        /* deep pink for hover text */
---theme-default: #0b0809;           /* lavender blush for default bg */
---theme-accent-primary: oklch(59.2% 0.249 0.584);  /* pink-600*/
---theme-accent-secondary: #DB7093;  /* pale violet red for secondary accents */
---theme-text-light: #C71585;        /* medium violet red for light text */
---theme-text-dark: #E0E0E0;         /* will be overridden in dark mode */
---theme-border-default: #FFB6C1;    /* light pink for borders */
---theme-border-dark: #2A2A2A;       /* will be overridden in dark mode */
+--theme-primary: oklch(45.9% 0.187 3.815);            /* pink 800 */
+--theme-secondary:oklch(43.8% 0.218 303.724);         /* purple 800 */
+--theme-section-primary:oklch(94.8% 0.028 342.258);   /* pink 100 */
+--theme-section-secondary:oklch(94.6% 0.033 307.174); /* purple 100 */
+--theme-hover-primary: oklch(89.9% 0.061 343.231);    /* pink 200 */
+--theme-hover-secondary: oklch(90.2% 0.063 306.703);  /* purple 200 */
+--theme-hover-text: #000000;                        /* deep pink for hover text */
+--theme-default: #0b0809;                           /* lavender blush for default bg */
+--theme-accent-primary: oklch(59.2% 0.249 0.584);     /* pink-600*/
+--theme-accent-secondary: #ffffff;                  /* pale violet red for secondary accents */
+--theme-text-light: #C71585;                        /* medium violet red for light text */
+--theme-text-dark: #E0E0E0;                         /* will be overridden in dark mode */
+--theme-border-default: oklch(82.3% 0.12 346.018);    /* Pink 300*/
+--theme-border-secondary:oklch(82.7% 0.119 306.383);  /* purple 300*/
+--theme-border-dark: #2A2A2A;                       /* will be overridden in dark mode */
 
 
 }
@@ -144,14 +152,18 @@
 
     /* Custom Theme Colors - Dark Mode Overrides Only */
     --theme-primary: #E0E0E0;           /* Light text for dark backgrounds */
-    --theme-secondary: #1E1E1E;         /* Dark background */
-    --theme-hover: #3A3A3A;             /* Dark hover state */
+    --theme-secondary: #E0E0E0;         /*Light text for dark backgrounds */
+    --theme-section-primary: #1E1E1E;   /* Dark text for dark backgrounds */
+    --theme-section-secondary: #1E1E1E; /* Dark background */
+    --theme-hover-primary: #3A3A3A;             /* Dark hover state */
+    --theme-hover-secondary: #3A3A3A;          /* Dark hover state */
     --theme-hover-text: #c600fd;        /* Dark hover text */
     --theme-default: #121212;           /* Dark default background */
     --theme-accent-primary: #c600fd;    /* Dark mode accent (orange/red) */
-    --theme-accent-secondary: #00E5FF;  /* Dark mode secondary accent (cyan) */
+    --theme-accent-secondary: #0f0f0f;  /* Dark mode secondary accent (cyan) */
     --theme-text-dark: #E0E0E0;         /* Light text for dark mode */
     --theme-border-default: #2A2A2A;    /* Dark borders */
+    --theme-border-secondary: #2A2A2A;   /* Dark borders */
     --theme-border-dark: #2A2A2A;       /* Dark borders */
 
 }

@@ -50,7 +50,7 @@ export function MainNav() {
   }, []);
 
   const isActive = (path: string) => {
-    return pathname === path ? "border-b-2 border-pink-500" : "";
+    return pathname === path ? "border-b-2 border-theme-accent-primary" : "";
   };
 
   const navLinks = [
@@ -65,7 +65,7 @@ export function MainNav() {
       href: user ? "/myPage" : "#", 
       label: user ? "My Page" : "Login",
       component: !user ? <AuthPanel trigger={
-        <span className="text-pink-900 hover:text-pink-700 dark:text-pink-300 dark:hover:text-pink-400 w-full text-left">
+        <span className="text-theme-primary hover:text-theme-hover-text w-full text-left">
           Login
         </span>
       } /> : undefined
@@ -81,11 +81,11 @@ export function MainNav() {
   ];
 
   return (
-    <header className="w-full border-b bg-gradient-to-r from-pink-100 to-pink-200 border-pink-200 dark:border-0 dark:bg-gradient-to-r dark:from-pink-400  dark:to-rose-950 transition-colors duration-200">
+    <header className="w-full border-b bg-theme-section-primary border-theme-border-default" >
       <nav className="container mx-auto px-4 py-4 flex justify-between items-center" aria-label="Main navigation">
         <Link 
           href="/" 
-          className="text-2xl text-pink-800 dark:text-pink-200 font-light"
+          className="text-2xl text-theme-primary font-light"
           aria-label="Engel Paradis home"
         >
           Engel Paradis
@@ -103,7 +103,7 @@ export function MainNav() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`text-pink-900 hover:text-pink-700 dark:text-pink-300 dark:hover:text-pink-400 ${isActive(link.href)}`}
+                  className={`text-theme-primary hover:text-theme-hover-text  ${isActive(link.href)}`}
                   onClick={link.onClick}
                 >
                   {link.label}
@@ -119,9 +119,9 @@ export function MainNav() {
             >
               {mounted && (
                 theme === 'dark' ? (
-                  <Sun className="h-5 w-5 text-pink-300" />
+                  <Sun className="h-5 w-5 text-theme-primary" />
                 ) : (
-                  <Moon className="h-5 w-5 text-pink-800" />
+                  <Moon className="h-5 w-5 text-theme-primary" />
                 )
               )}
             </button>
@@ -139,15 +139,15 @@ export function MainNav() {
             >
               {mounted && (
                 theme === 'dark' ? (
-                  <Sun className="h-5 w-5 text-pink-300" />
+                  <Sun className="h-5 w-5 text-theme-primary" />
                 ) : (
-                  <Moon className="h-5 w-5 text-pink-800" />
+                  <Moon className="h-5 w-5 text-theme-primary" />
                 )
               )}
             </button>
             
             <button 
-              className="text-pink-900 dark:text-pink-300"
+              className="text-theme-primary"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={isMobileMenuOpen}
@@ -165,7 +165,7 @@ export function MainNav() {
         {isMobile && isMobileMenuOpen && (
           <div
             className="absolute top-16 left-0 right-0 w-full z-50
-              bg-white  dark:bg-slate-900 border-b shadow-lg
+              bg-theme-accent-secondary border-b shadow-lg
               transition-transform duration-300 ease-in-out"
             role="navigation"
             aria-label="Mobile menu"
@@ -185,7 +185,7 @@ export function MainNav() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`text-pink-900 hover:text-pink-700 dark:text-pink-300 dark:hover:text-pink-400 ${isActive(link.href)}`}
+                    className={`text-theme-primary hover:text-theme-hover-text ${isActive(link.href)}`}
                     onClick={() => {
                       setIsMobileMenuOpen(false);
                       if (link.onClick) link.onClick();
