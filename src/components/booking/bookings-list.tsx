@@ -83,15 +83,13 @@ export function BookingsList({ bookings: initialBookings }: BookingsListProps) {
         {bookings.map((booking) => (
           <div
             key={booking.id}
-            className={`border rounded-lg p-4 space-y-2 ${
-              isBookingInPast(booking.date) ? 'bg-gray-50' : ''
-            }`}
+            className={`border rounded-lg p-4 space-y-2 bg-theme-accent-secondary`}
           >
             <div className="flex items-center justify-between">
               <div className="text-lg font-medium">
                 {format(new Date(booking.date), "MMMM d, yyyy")}
                 {isBookingInPast(booking.date) && (
-                  <span className="ml-2 text-sm text-gray-500">(Past)</span>
+                  <span className="ml-2 text-sm text-theme-default">(Past)</span>
                 )}
               </div>
               <span className={`px-2 py-1 rounded-full text-sm font-medium ${getStatusColor(booking.status)}`}>
@@ -99,13 +97,13 @@ export function BookingsList({ bookings: initialBookings }: BookingsListProps) {
               </span>
             </div>
 
-            <div className="text-sm text-gray-600 space-y-1">
+            <div className="text-sm text-theme-default space-y-1">
               <div>Name: {booking.user.name}</div>
               <div>Email: {booking.user.email}</div>
             </div>
 
             {booking.description && (
-              <p className="text-sm text-gray-600 mt-2">
+              <p className="text-sm text-theme-default mt-2">
                 <div><span className="font-medium">Event Type:</span> <span className="capitalize">{booking.eventType.toLowerCase().replace('_', ' ')}</span></div>
                 <div><span className="font-medium">Number of Guests:</span> {booking.guestCount}</div>
                 <span className="font-medium">Special Requirements:</span> {booking.description}

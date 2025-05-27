@@ -91,7 +91,7 @@ export function BookingForm({ date, onSuccess, waitlistCount, isPending, isLogge
             onValueChange={setEventType}
             disabled={!isLoggedIn}
           >
-            <SelectTrigger className="w-full bg-theme-default bg-theme-accent-secondary">
+            <SelectTrigger className="w-full bg-theme-accent-secondary">
               <SelectValue placeholder="Select event type" />
             </SelectTrigger>
             <SelectContent>

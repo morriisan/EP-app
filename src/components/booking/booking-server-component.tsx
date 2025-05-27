@@ -68,9 +68,9 @@ export async function BookingServerComponent() {
         {/* User's Bookings Section - Only shown when logged in */}
         {session?.user ? (
           <div>
-            <div className="bg-white rounded-xl shadow-sm">
+            <div className="bg-theme-section-primary rounded-xl shadow-sm">
               <div className="p-6">
-                <h2 className="text-xl font-semibold text-pink-800 dark:text-pink-300">Your Bookings</h2>
+                <h2 className="text-xl font-semibold text-theme-primary">Your Bookings</h2>
               </div>
               <div className="p-6">
                 <BookingsList 
