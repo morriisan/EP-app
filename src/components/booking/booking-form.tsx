@@ -75,7 +75,7 @@ export function BookingForm({ date, onSuccess, waitlistCount, isPending, isLogge
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
-      {waitlistCount && waitlistCount > 0 && (
+      {waitlistCount && waitlistCount >= 0 && (
         <div className="text-sm text-yellow-600 dark:text-yellow-400 mb-6">
           Currently {waitlistCount} {waitlistCount === 1? 'person' : 'people'} on waitlist
         </div>

@@ -115,7 +115,7 @@ export function BookingsList({ bookings: initialBookings }: BookingsListProps) {
 
            
             {booking.reviewNote && (
-              <p className="text-sm bg-gray-50 p-2 rounded mt-2">
+              <p className="text-sm  p-2 rounded mt-2">
                 <span className="font-medium">Admin Note:</span> {booking.reviewNote}
               </p>
             )}
