@@ -18,7 +18,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { signIn } from "@/lib/auth-client";
@@ -30,7 +29,6 @@ export default function SignIn({ callbackURL = "/dashboard" }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
 
   return (
@@ -64,7 +62,6 @@ export default function SignIn({ callbackURL = "/dashboard" }) {
                 email: email.trim(),
                 password,
                 callbackURL,
-                rememberMe,
               });
 
               // If Better-Auth login was successful, ask Chrome to save the login
