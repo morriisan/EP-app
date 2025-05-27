@@ -36,7 +36,7 @@ export function Footer() {
           </div>
           
           <nav className={`flex ${isMobile ? 'flex-col space-y-4' : 'space-x-8'}`}>
-            <Link href="/" className="text-theme-primary hover:text-theme-accent-primary">
+            <Link href="/" className="text-theme-primary hover:text-theme-hover-text">
               Hjem
             </Link>
             <Link href="/gallery" className="text-theme-primary hover:text-theme-accent-primary">

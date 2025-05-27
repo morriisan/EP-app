@@ -89,7 +89,7 @@ export function BookingCalendar({ bookedDates: initialBookedDates, userBookings,
         mode="single"
         selected={selectedDate}
         onSelect={handleDateSelect}
-        className="rounded-md dark:bg-white dark:text-black"
+        className="rounded-md bg-white dark:bg-black text-theme-default"
         disabled={(date) => isDateInPast(date) || hasUserBooking(date)}
         modifiers={{
           userBooked: (date) => hasUserBooking(date) && !isDatePending(date),
@@ -99,20 +99,20 @@ export function BookingCalendar({ bookedDates: initialBookedDates, userBookings,
           waitlist: (date) => isDateWaitlist(date) && hasUserBooking(date) && !isDatePending(date),
         }}
         modifiersClassNames={{
-          userBooked: 'bg-red-300 cursor-not-allowed',
-          userBookedPending: 'bg-red-400 cursor-not-allowed',
-          booked: 'bg-red-100 text-gray-500 cursor-not-allowed',
-          pending: 'bg-yellow-100 text-gray-900 cursor-pointer',
-          waitlist: 'bg-blue-100 text-gray-500 cursor-not-allowed',
+          userBooked: 'bg-red-800 ',
+          userBookedPending: 'bg-red-800 cursor-not-allowed',
+          booked: 'bg-yellow-600  cursor-pointer',
+          pending: 'bg-yellow-600  cursor-pointer',
+          waitlist: 'bg-blue-800 cursor-not-allowed',
         }}
         onMonthChange={handleMonthChange}
       />
 
       {selectedDate && (
-        <div className="bg-gray-100 rounded-lg p-8 mt-6 dark:text-black">
-          <h3 className="text-xl font-medium mb-8 text-gray-900 dark:text-black">
+        <div className="bg-theme-section-primary rounded-lg p-8 mt-6 shadow-md">
+          <h3 className="text-xl font-medium mb-8 text-theme-primary">
             Book for {format(selectedDate, 'MMMM d, yyyy')}
-            {isDatePending(selectedDate) && !hasUserBooking(selectedDate) && (
+            {((isDatePending(selectedDate) && !hasUserBooking(selectedDate)) || isDateBooked(selectedDate)) && (
               <span className="ml-2 text-sm text-yellow-600 dark:text-yellow-400">(Will be waitlisted)</span>
             )}
           </h3>

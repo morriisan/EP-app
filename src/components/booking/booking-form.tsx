@@ -83,7 +83,7 @@ export function BookingForm({ date, onSuccess, waitlistCount, isPending, isLogge
       
       <div className="space-y-6">
         <div className="space-y-2">
-          <Label htmlFor="eventType" className="text-base font-medium text-gray-900 dark:text-black">
+          <Label htmlFor="eventType" className="text-base font-medium text-gray-900 dark:text-white ">
             Event Type <span className="text-red-500">*</span>
           </Label>
           <Select 
@@ -91,7 +91,7 @@ export function BookingForm({ date, onSuccess, waitlistCount, isPending, isLogge
             onValueChange={setEventType}
             disabled={!isLoggedIn}
           >
-            <SelectTrigger className="w-full bg-white">
+            <SelectTrigger className="w-full bg-theme-default bg-theme-accent-secondary">
               <SelectValue placeholder="Select event type" />
             </SelectTrigger>
             <SelectContent>
@@ -105,7 +105,7 @@ export function BookingForm({ date, onSuccess, waitlistCount, isPending, isLogge
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="guestCount" className="text-base font-medium text-gray-900 dark:text-black">
+          <Label htmlFor="guestCount" className="text-base font-medium text-gray-900 dark:text-white">
             Number of Guests <span className="text-red-500">*</span>
           </Label>
           <Input
@@ -116,12 +116,12 @@ export function BookingForm({ date, onSuccess, waitlistCount, isPending, isLogge
             onChange={(e) => setGuestCount(e.target.value)}
             placeholder="Enter expected number of guests"
             disabled={!isLoggedIn}
-            className="w-full bg-white text-gray-900 dark:text-gray-100"
+            className="w-full bg-theme-accent-secondary text-gray-900 dark:text-gray-100"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="description" className="text-base font-medium text-gray-900 dark:text-black">
+          <Label htmlFor="description" className="text-base font-medium text-gray-900 dark:text-white">
             Special Requirements and Notes
           </Label>
           <Textarea
@@ -130,7 +130,7 @@ export function BookingForm({ date, onSuccess, waitlistCount, isPending, isLogge
             onChange={(e) => setDescription(e.target.value)}
             placeholder={isLoggedIn ? "Please describe your event and any special requirements..." : "Please sign in to make a booking"}
             disabled={!isLoggedIn}
-            className="w-full min-h-[100px] text-base p-4 bg-white text-gray-900 dark:text-gray-100 border-0 focus:ring-2 focus:ring-pink-500 dark:focus:ring-pink-400 placeholder:text-gray-400 dark:placeholder:text-gray-500"
+            className="w-full min-h-[100px] text-base p-4 bg-theme-accent-secondary text-gray-900 dark:text-gray-100 border-0  placeholder:text-gray-500"
           />
         </div>
       </div>
@@ -139,7 +139,7 @@ export function BookingForm({ date, onSuccess, waitlistCount, isPending, isLogge
         <Button 
           type="submit" 
           disabled={isSubmitting || !isLoggedIn}
-          className={`px-8 py-2.5 text-base bg-pink-500 hover:bg-pink-600 dark:bg-pink-500 dark:hover:bg-pink-600 text-white ${!isLoggedIn ? 'opacity-50 dark:opacity-40 cursor-not-allowed' : ''}`}
+          className={`px-8 py-2.5 text-base bg-theme-accent-primary hover:bg-black/80 text-white ${!isLoggedIn ? 'opacity-50 dark:opacity-40 cursor-not-allowed' : ''}`}
         >
           {!isLoggedIn ? 'Please Sign In' : isSubmitting ? 'Submitting...' : isPending ? 'Join Waitlist' : 'Book Now'}
         </Button>

@@ -103,7 +103,7 @@
 --theme-section-secondary:oklch(94.6% 0.033 307.174); /* purple 100 */
 --theme-hover-primary: oklch(89.9% 0.061 343.231);    /* pink 200 */
 --theme-hover-secondary: oklch(90.2% 0.063 306.703);  /* purple 200 */
---theme-hover-text: #000000;                        /* deep pink for hover text */
+--theme-hover-text: #000000;                        /* */
 --theme-default: #0b0809;                           /* lavender blush for default bg */
 --theme-accent-primary: oklch(59.2% 0.249 0.584);     /* pink-600*/
 --theme-accent-secondary: #ffffff;                  /* pale violet red for secondary accents */
@@ -158,7 +158,7 @@
     --theme-hover-primary: #3A3A3A;             /* Dark hover state */
     --theme-hover-secondary: #3A3A3A;          /* Dark hover state */
     --theme-hover-text: #c600fd;        /* Dark hover text */
-    --theme-default: #121212;           /* Dark default background */
+    --theme-default: #ffffff;           /* Dark default background */
     --theme-accent-primary: #c600fd;    /* Dark mode accent (orange/red) */
     --theme-accent-secondary: #0f0f0f;  /* Dark mode secondary accent (cyan) */
     --theme-text-dark: #E0E0E0;         /* Light text for dark mode */

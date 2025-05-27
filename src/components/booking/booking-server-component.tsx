@@ -28,25 +28,21 @@ export async function BookingServerComponent() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* Calendar Section - Public */}
         <div>
-          <div className="bg-white dark:bg-pink-100 rounded-xl shadow-sm">
-            <div className="p-6 border-b border-pink-50/10">
-              <h2 className="text-xl font-semibold text-pink-800 dark:text-pink-300">Available Dates</h2>
-              <div className="mt-4 flex flex-wrap gap-3 text-sm text-gray-600 dark:text-gray-300">
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded bg-green-100 dark:bg-green-800/50"></div>
+          <div className="bg-theme-section-primary rounded-xl shadow-sm">
+            <div className="p-6 border-b border-theme-border-default">
+              <h2 className="text-xl font-semibold text-theme-primary">Available Dates</h2>
+              <div className="mt-4 flex flex-wrap gap-3 text-sm text-theme-primary">
+             {/*    <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded bg-white"></div>
                   <span>Available</span>
-                </div>
+                </div> */}
                 <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded bg-red-100 dark:bg-red-800/50"></div>
+                  <div className="w-4 h-4 rounded bg-red-800"></div>
                   <span>Booked</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded bg-orange-100 dark:bg-orange-800/50"></div>
+                  <div className="w-4 h-4 rounded bg-yellow-600"></div>
                   <span>Waitlist Available</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded bg-gray-50 dark:bg-gray-700/50"></div>
-                  <span>Past Dates</span>
                 </div>
               </div>
             </div>

@@ -19,10 +19,10 @@ export async function MediaGalleryServer({
   return (
     <div className="container mx-auto py-12 px-2">
       
-        <h1 className="text-4xl md:text-5xl text-center font-light tracking-wider text-pink-800 mb-8">
+        <h1 className="text-4xl md:text-5xl text-center font-light tracking-wider text-theme-primary mb-8">
           {isAdmin ? "Media Management" : "Gallery"}
         </h1>
-        <p className="text-lg text-pink-700 text-center mb-12 font-light">
+        <p className="text-lg text-theme-accent-primary text-center mb-12 font-light">
           Browse our gallery of magical moments and inspiring events
         </p>
 
