@@ -12,12 +12,12 @@ export default async function BookingsPage() {
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-semibold text-pink-800 dark:text-pink-300">
+        <h1 className="text-3xl font-semibold text-theme-primary">
           My Bookings
         </h1>
       </div>
 
-      <div className="bg-white dark:bg-gray-900/40 rounded-xl shadow-sm p-6">
+      <div className="rounded-xl shadow-sm p-6">
         <Suspense fallback={
           <div className="text-center py-8 text-gray-600 dark:text-gray-300">
             Loading bookings...

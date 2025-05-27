@@ -79,7 +79,7 @@ export function CreateUserForm({ onSubmit, loading }: CreateUserFormProps) {
           id="role"
           value={userData.role}
           onChange={(e) => setUserData({...userData, role: e.target.value})}
-          className="border rounded p-2"
+          className="border rounded p-2 bg-theme-accent-secondary"
         >
           <option value="user">User</option>
           <option value="admin">Admin</option>

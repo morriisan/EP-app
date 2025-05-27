@@ -33,7 +33,7 @@ function BookingHistoryList({ bookings }: { bookings: BookingHistory[] }) {
       {bookings.map((booking) => (
         <div
           key={booking.id}
-          className="border rounded-lg p-4 space-y-2 bg-gray-50 dark:bg-gray-800/50"
+          className="border rounded-lg p-4 space-y-2 bg-theme-accent-secondary"
         >
           <div className="flex items-center justify-between">
             <div className="text-lg font-medium">
@@ -53,18 +53,18 @@ function BookingHistoryList({ bookings }: { bookings: BookingHistory[] }) {
           </div>
 
           {booking.description && (
-            <p className="text-gray-600 dark:text-gray-300">
+            <p className="text-theme-default">
               <span className="font-medium">Description:</span> {booking.description}
             </p>
           )}
 
           {booking.reviewNote && (
-            <p className="text-sm bg-gray-100 dark:bg-gray-700/50 p-2 rounded">
+            <p className="text-sm rounded">
               <span className="font-medium">Admin Note:</span> {booking.reviewNote}
             </p>
           )}
 
-          <div className="text-sm text-gray-500 dark:text-gray-400">
+          <div className="text-sm text-theme-default">
             Original Status: {booking.status}
             {booking.waitlistPos && ` (Waitlist #${booking.waitlistPos})`}
           </div>
@@ -83,12 +83,12 @@ export default async function BookingHistoryPage() {
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-semibold text-pink-800 dark:text-pink-300">
+        <h1 className="text-3xl font-semibold text-theme-primary">
           Booking History
         </h1>
       </div>
 
-      <div className="bg-white dark:bg-gray-900/40 rounded-xl shadow-sm p-6">
+      <div className="rounded-xl shadow-sm p-6">
         <Suspense fallback={
           <div className="text-center py-8 text-gray-600 dark:text-gray-300">
             Loading booking history...

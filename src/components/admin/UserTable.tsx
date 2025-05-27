@@ -77,14 +77,14 @@ export function UserTable({
           </thead>
           <tbody>
             {users.map((user) => (
-              <tr key={user.id} className="border-b hover:bg-gray-50">
+              <tr key={user.id} className="border-b ">
                 <td className="py-2 px-4">{user.name}</td>
                 <td className="py-2 px-4">{user.email}</td>
                 <td className="py-2 px-4">
                   <select
                     value={user.role}
                     onChange={(e) => onChangeRole(user.id, e.target.value)}
-                    className="border rounded p-1"
+                    className="border rounded p-1 bg-theme-accent-secondary"
                   >
                     <option value="user">User</option>
                     <option value="admin">Admin</option>
