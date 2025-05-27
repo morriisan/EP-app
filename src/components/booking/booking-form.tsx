@@ -130,7 +130,7 @@ export function BookingForm({ date, onSuccess, waitlistCount, isPending, isLogge
             onChange={(e) => setDescription(e.target.value)}
             placeholder={isLoggedIn ? "Please describe your event and any special requirements..." : "Please sign in to make a booking"}
             disabled={!isLoggedIn}
-            className="w-full min-h-[100px] text-base p-4 bg-theme-accent-secondary text-gray-900 dark:text-gray-100 border-0  placeholder:text-gray-500"
+            className="w-full min-h-[100px]  text-base p-4 bg-theme-accent-secondary text-gray-900 dark:text-gray-100 border-0  placeholder:text-gray-500"
           />
         </div>
       </div>

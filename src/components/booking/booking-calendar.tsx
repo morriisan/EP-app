@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { Calendar } from "@/components/ui/calendar";
 import { format } from 'date-fns';
-import { BookingForm } from '@/components/booking/booking-form';
 
 
 interface BookingCalendarProps {
@@ -17,10 +16,13 @@ interface BookingCalendarProps {
     status: string;
   }>;
   isLoggedIn: boolean;
+  onDateSelect?: (date: Date | undefined) => void;
+  selectedDate?: Date | undefined;
 }
 
-export function BookingCalendar({ bookedDates: initialBookedDates, userBookings, isLoggedIn }: BookingCalendarProps) {
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+export function BookingCalendar({ bookedDates: initialBookedDates, userBookings, isLoggedIn, onDateSelect, selectedDate: externalSelectedDate }: BookingCalendarProps) {
+  const [internalSelectedDate, setInternalSelectedDate] = useState<Date | undefined>(undefined);
+  const selectedDate = externalSelectedDate ?? internalSelectedDate;
   const [bookedDates, setBookedDates] = useState(initialBookedDates);
 
   const handleMonthChange = async (month: Date) => {
@@ -47,7 +49,11 @@ export function BookingCalendar({ bookedDates: initialBookedDates, userBookings,
 
   const handleDateSelect = (date: Date | undefined) => {
     console.log('Selected date:', date ? format(date, 'yyyy-MM-dd') : 'none');
-    setSelectedDate(date);
+    if (onDateSelect) {
+      onDateSelect(date);
+    } else {
+      setInternalSelectedDate(date);
+    }
   };
 
   const getDateBooking = (date: Date) => {
@@ -108,25 +114,7 @@ export function BookingCalendar({ bookedDates: initialBookedDates, userBookings,
         onMonthChange={handleMonthChange}
       />
 
-      {selectedDate && (
-        <div className="bg-theme-section-primary rounded-lg p-8 mt-6 shadow-md">
-          <h3 className="text-xl font-medium mb-8 text-theme-primary">
-            Book for {format(selectedDate, 'MMMM d, yyyy')}
-            {((isDatePending(selectedDate) && !hasUserBooking(selectedDate)) || isDateBooked(selectedDate)) && (
-              <span className="ml-2 text-sm text-yellow-600 dark:text-yellow-400">(Will be waitlisted)</span>
-            )}
-          </h3>
-          <div className="w-full">
-            <BookingForm 
-              date={selectedDate}
-              onSuccess={() => setSelectedDate(undefined)}
-              waitlistCount={getDateBooking(selectedDate)?.waitlistCount}
-              isPending={isDatePending(selectedDate)}
-              isLoggedIn={isLoggedIn}
-            />
-          </div>
-        </div>
-      )}
+
     </div>
   );
 } 
