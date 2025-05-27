@@ -15,6 +15,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 
 interface BookmarkData {
   isBookmarked: boolean;
@@ -44,6 +45,7 @@ export function MediaCard({
 }: MediaCardProps) {
   const [showCollections, setShowCollections] = useState(false);
   const [showFullImage, setShowFullImage] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const { data: session } = useSession();
 
   // Debounce the mediaId to prevent multiple rapid requests
@@ -122,8 +124,8 @@ export function MediaCard({
         </div>
 
         {isAdmin && (
-          <div className="p-4 border-t">
-            <h3 className="font-semibold truncate mb-4">{media.title || "Untitled"}</h3>
+          <div className="p-4 border-t bg-theme-accent-secondary">
+            <h3 className="font-semibold truncate mb-4 text-theme-default">{media.title || "Untitled"}</h3>
             
             <div className="flex gap-2">
               {onEdit && (
@@ -138,7 +140,7 @@ export function MediaCard({
               )}
               {onDelete && (
                 <Button
-                  onClick={() => onDelete(media.id)}
+                  onClick={() => setShowDeleteConfirm(true)}
                   variant="destructive"
                   size="sm"
                   className="flex-1"
@@ -188,6 +190,21 @@ export function MediaCard({
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmationDialog
+        open={showDeleteConfirm}
+        onOpenChange={setShowDeleteConfirm}
+        onConfirm={() => {
+          onDelete?.(media.id);
+          setShowDeleteConfirm(false);
+        }}
+        title="Delete Media"
+        description={`Are you sure you want to delete "${media.title || 'this media'}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="destructive"
+      />
     </div>
   );
 } 

@@ -9,6 +9,7 @@ export function UploaderClient() {
     <div className="mb-8">
       <UploadDropzone
         endpoint="imageUploader"
+        className="bg-theme-section-primary"
         onClientUploadComplete={() => {
           toast.success("Upload completed successfully");
           

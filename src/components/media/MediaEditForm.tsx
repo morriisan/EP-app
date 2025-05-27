@@ -20,12 +20,12 @@ export function MediaEditForm({ media, onSave, onCancel }: MediaEditFormProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg p-6 max-w-lg w-full">
-        <h2 className="text-xl font-bold mb-4">Edit Media</h2>
+    <div className="fixed inset-0 bg-black/90 flex items-center justify-center p-4 z-50">
+      <div className="bg-theme-accent-secondary rounded-lg p-6 max-w-lg w-full">
+        <h2 className="text-xl font-bold mb-4 text-theme-primary">Edit Media</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block mb-1">Title</label>
+            <label className="block mb-1 text-theme-default">Title</label>
             <input
               type="text"
               value={title}
@@ -34,7 +34,7 @@ export function MediaEditForm({ media, onSave, onCancel }: MediaEditFormProps) {
             />
           </div>
           <div>
-            <label className="block mb-1">Tags (comma-separated)</label>
+            <label className="block mb-1 text-theme-default">Tags (comma-separated)</label>
             <input
               type="text"
               value={tagInput}
