@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 //import Image from "next/image";
 import { Loader2, /* X */ } from "lucide-react";
-import { signUp } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -45,6 +45,91 @@ export function SignUp({ callbackURL = "/dashboard" }: SignUpProps) {
 		}
 	}; */
 
+	const handleSubmit = async () => {
+		console.log("Form submitted!", { email, firstName, lastName, passwordLength: password.length });
+		console.log("authClient:", authClient);
+		console.log("NEXT_PUBLIC_APP_URL:", process.env.NEXT_PUBLIC_APP_URL);
+		
+		// Basic validation
+		if (!firstName.trim()) {
+			toast.error("Please enter your first name");
+			return;
+		}
+		
+		if (!lastName.trim()) {
+			toast.error("Please enter your last name");
+			return;
+		}
+		
+		if (!email.trim()) {
+			toast.error("Please enter your email address");
+			return;
+		}
+		
+		if (password.length < 6) {
+			toast.error("Password must be at least 6 characters long");
+			return;
+		}
+		
+		// Validate password confirmation
+		if (password !== passwordConfirmation) {
+			toast.error("Passwords do not match");
+			return;
+		}
+
+		// Check if environment variable is set
+		if (!process.env.NEXT_PUBLIC_APP_URL) {
+			toast.error("App configuration error: NEXT_PUBLIC_APP_URL not set");
+			console.error("NEXT_PUBLIC_APP_URL environment variable is not set");
+			return;
+		}
+
+		console.log("All validations passed, attempting sign up...");
+		setLoading(true);
+		
+		try {
+			console.log("Calling authClient.signUp.email...");
+			const { data, error } = await authClient.signUp.email({
+				email: email.trim(),
+				password,
+				name: `${firstName.trim()} ${lastName.trim()}`,
+				callbackURL: callbackURL,
+			}, {
+				onRequest: (ctx) => {
+					console.log("Sign up request:", ctx);
+					setLoading(true);
+				},
+				onSuccess: (ctx) => {
+					console.log("Sign up success:", ctx);
+					toast.success("Account created successfully!");
+					setLoading(false);
+					router.push("/dashboard");
+				},
+				onError: (ctx) => {
+					console.error("Sign up error:", ctx);
+					toast.error(ctx.error.message || "Failed to create account");
+					setLoading(false);
+				},
+			});
+			
+			console.log("SignUp result:", { data, error });
+			
+			if (error) {
+				console.error("SignUp error:", error);
+				toast.error(error.message || "Failed to create account");
+			} else if (data) {
+				console.log("SignUp successful!");
+				toast.success("Account created successfully!");
+				router.push("/dashboard");
+			}
+		} catch (error) {
+			console.error("Sign up error:", error);
+			toast.error("Failed to create account. Please try again.");
+		} finally {
+			setLoading(false);
+		}
+	};
+
 	return (
 		<Card className="z-50 rounded-md rounded-t-none max-w-md">
 			<CardHeader>
@@ -54,62 +139,29 @@ export function SignUp({ callbackURL = "/dashboard" }: SignUpProps) {
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
-				<form 
-					onSubmit={async (e) => {
-						e.preventDefault();
-						setLoading(true);
-						await signUp.email({
-							email,
-							password,
-							name: `${firstName} ${lastName}`,
-							//image: image ? await convertImageToBase64(image) : "",
-							callbackURL: callbackURL,
-							fetchOptions: {
-								onResponse: () => {
-									setLoading(false);
-								},
-								onRequest: () => {
-									setLoading(true);
-								},
-								onError: (ctx) => {
-									toast.error(ctx.error.message);
-								},
-								onSuccess: async () => {
-									router.push("/dashboard");
-								},
-							},
-						});
-					}}
-					className="grid gap-4"
-				>
+				<div className="grid gap-4">
 					<div className="grid grid-cols-2 gap-4">
 						<div className="grid gap-2">
 							<Label htmlFor="first-name">First name</Label>
 							<Input
 								id="first-name"
 								placeholder="Max"
-								required
 								onChange={(e) => {
 									setFirstName(e.target.value);
 								}}
 								value={firstName}
-								aria-describedby="first-name-description"
 							/>
-							<span id="first-name-description" className="sr-only">Enter your first name</span>
 						</div>
 						<div className="grid gap-2">
 							<Label htmlFor="last-name">Last name</Label>
 							<Input
 								id="last-name"
 								placeholder="Robinson"
-								required
 								onChange={(e) => {
 									setLastName(e.target.value);
 								}}
 								value={lastName}
-								aria-describedby="last-name-description"
 							/>
-							<span id="last-name-description" className="sr-only">Enter your last name</span>
 						</div>
 					</div>
 					<div className="grid gap-2">
@@ -118,14 +170,11 @@ export function SignUp({ callbackURL = "/dashboard" }: SignUpProps) {
 							id="email"
 							type="email"
 							placeholder="m@example.com"
-							required
 							onChange={(e) => {
 								setEmail(e.target.value);
 							}}
 							value={email}
-							aria-describedby="email-description"
 						/>
-						<span id="email-description" className="sr-only">Enter your email address for your account</span>
 					</div>
 					<div className="grid gap-2">
 						<Label htmlFor="password">Password</Label>
@@ -136,10 +185,7 @@ export function SignUp({ callbackURL = "/dashboard" }: SignUpProps) {
 							onChange={(e) => setPassword(e.target.value)}
 							autoComplete="new-password"
 							placeholder="Password"
-							required
-							aria-describedby="password-description"
 						/>
-						<span id="password-description" className="sr-only">Create a secure password for your account</span>
 					</div>
 					<div className="grid gap-2">
 						<Label htmlFor="password_confirmation">Confirm Password</Label>
@@ -150,48 +196,16 @@ export function SignUp({ callbackURL = "/dashboard" }: SignUpProps) {
 							onChange={(e) => setPasswordConfirmation(e.target.value)}
 							autoComplete="new-password"
 							placeholder="Confirm Password"
-							required
-							aria-describedby="confirm-password-description"
 						/>
-						<span id="confirm-password-description" className="sr-only">Re-enter your password to confirm</span>
 					</div>
-				{/* 	<div className="grid gap-2">
-						<Label htmlFor="image">Profile Image (optional)</Label>
-						<div className="flex items-end gap-4">
-							{imagePreview && (
-								<div className="relative w-16 h-16 rounded-sm overflow-hidden">
-									<Image
-										src={imagePreview}
-										alt="Profile preview"
-										layout="fill"
-										objectFit="cover"
-									/>
-								</div>
-							)}
-							<div className="flex items-center gap-2 w-full">
-								<Input
-									id="image"
-									type="file"
-									accept="image/*"
-									onChange={handleImageChange}
-									className="w-full"
-								/>
-								{imagePreview && (
-									<X
-										className="cursor-pointer"
-										onClick={() => {
-											setImage(null);
-											setImagePreview(null);
-										}}
-									/>
-								)}
-							</div>
-						</div>
-					</div> */}
+				
 					<Button 
-						type="submit" 
 						className="w-full" 
 						disabled={loading}
+						onClick={async () => {
+							console.log("Button clicked!");
+							await handleSubmit();
+						}}
 						aria-label={loading ? "Creating account..." : "Create your account"}
 					>
 						{loading ? (
@@ -200,24 +214,10 @@ export function SignUp({ callbackURL = "/dashboard" }: SignUpProps) {
 							"Create an account"
 						)}
 					</Button>
-				</form>
-			</CardContent>
-			<CardFooter>
-				<div className="flex justify-center w-full border-t py-4">
-					<p className="text-center text-xs text-neutral-500">
-						Secured by <span className="text-orange-400">better-auth.</span>
-					</p>
 				</div>
-			</CardFooter>
+			</CardContent>
+
 		</Card>
 	);
 }
 
-/* async function convertImageToBase64(file: File): Promise<string> {
-	return new Promise((resolve, reject) => {
-		const reader = new FileReader();
-		reader.onloadend = () => resolve(reader.result as string);
-		reader.onerror = reject;
-		reader.readAsDataURL(file);
-	});
-} */

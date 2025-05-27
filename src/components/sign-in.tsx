@@ -29,10 +29,62 @@ export default function SignIn({ callbackURL = "/dashboard" }) {
       </CardHeader>
       <CardContent>
         <form 
-          onSubmit={(e) => {
-            e.preventDefault(); // Prevent default form submission
+          onSubmit={async (e) => {
+            e.preventDefault();
+            console.log("Form submitted!"); // Debug log
+            setError("");
+            
+            if (!email.trim()) {
+              toast.error("Please enter your email address");
+              return;
+            }
+            
+            if (!password.trim()) {
+              toast.error("Please enter your password");
+              return;
+            }
+
+            setLoading(true);
+            try {
+              const result = await signIn.email({
+                email: email.trim(),
+                password,
+                callbackURL,
+                rememberMe,
+              });
+
+              // If Better-Auth login was successful, ask Chrome to save the login
+              if (!result.error && (window as any).PasswordCredential && navigator.credentials?.store) {
+                try {
+                  await navigator.credentials.store(
+                    new (window as any).PasswordCredential({
+                      id: email.trim(),
+                      password,
+                    })
+                  );
+                  console.log("✅ Credential store invoked—Chrome should offer 'Save password?'");
+                } catch (credErr) {
+                  console.warn("Credential store failed:", credErr);
+                }
+              }
+
+              // Handle any server-side error message
+              if (result.error) {
+                setError(result.error.message || "Login failed");
+                toast.error(result.error.message || "Login failed. Please check your credentials.");
+              }
+            } catch (err) {
+              console.error("Sign in error:", err);
+              const msg = err instanceof Error ? err.message : "Login failed. Please try again.";
+              setError(msg);
+              toast.error(msg);
+            } finally {
+              setLoading(false);
+            }
           }}
           className="grid gap-4"
+          method="post"
+          action="/api/auth/sign-in/email"
         >
           <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
@@ -66,7 +118,7 @@ export default function SignIn({ callbackURL = "/dashboard" }) {
               />
             </div>
 
-            <div className="flex items-center gap-2">
+           <div className="flex items-center gap-2">
                 <Checkbox
                   id="remember"
                   onClick={() => {
@@ -74,7 +126,7 @@ export default function SignIn({ callbackURL = "/dashboard" }) {
                   }}
                 />
                 <Label htmlFor="remember">Remember me</Label>
-              </div>
+              </div> 
 
           {error && (
             <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md dark:bg-red-900/20 dark:text-red-400 dark:border-red-800">
@@ -83,45 +135,16 @@ export default function SignIn({ callbackURL = "/dashboard" }) {
           )}
 
           <Button
-              type="button"
+              type="submit"
               className="w-full mb-2"
               disabled={loading}
-              onClick={async () => {
-                // Clear any previous errors
-                setError("");
-                
-                // Basic validation
-                if (!email.trim()) {
-                  toast.error("Please enter your email address");
-                  return;
-                }
-                
-                if (!password.trim()) {
-                  toast.error("Please enter your password");
-                  return;
-                }
-                
-                setLoading(true);
-                
-                try {
-                  const result = await signIn.email({ 
-                    email: email.trim(), 
-                    password,
-                    callbackURL: callbackURL
-                  });
-                  
-                  // Check if there was an error in the result
-                  if (result?.error) {
-                    setError(result.error.message || "Login failed");
-                    toast.error(result.error.message || "Login failed. Please check your credentials.");
-                  }
-                } catch (error) {
-                  console.error("Sign in error:", error);
-                  const errorMessage = error instanceof Error ? error.message : "Login failed. Please try again.";
-                  setError(errorMessage);
-                  toast.error(errorMessage);
-                } finally {
-                  setLoading(false);
+              onClick={(e) => {
+                console.log("Button clicked!"); // Debug log
+                // Manually trigger form submission
+                const form = e.currentTarget.closest('form');
+                if (form) {
+                  const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+                  form.dispatchEvent(submitEvent);
                 }
               }}
             >
@@ -186,7 +209,9 @@ export default function SignIn({ callbackURL = "/dashboard" }) {
 				></path>
 			</svg>
                   Sign in with Apple
-                </Button> */}<Button
+                </Button> */}
+                <Button
+                  type="button"
                   variant="outline"
                   className={cn(
                     "w-full gap-2"
