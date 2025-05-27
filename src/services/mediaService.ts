@@ -8,7 +8,7 @@ export const mediaService = {
           tags: {
             some: {
               name: {
-                in: tagFilter,
+                in: tagFilter.map(tag => tag.toLowerCase().trim()),
               },
             },
           },
@@ -60,8 +60,8 @@ export const mediaService = {
         tags: {
           set: [], // Clear existing tags
           connectOrCreate: tags.map((tag: string) => ({
-            where: { name: tag },
-            create: { name: tag },
+            where: { name: tag.toLowerCase().trim() },
+            create: { name: tag.toLowerCase().trim() },
           })),
         },
       },

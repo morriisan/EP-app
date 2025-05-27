@@ -97,12 +97,43 @@ export class TagService {
   }
 
   /**
+   * Find a tag by name (case-insensitive)
+   */
+  static async findTagByName(name: string): Promise<TagWithCount | null> {
+    try {
+      const tag = await prisma.tag.findUnique({
+        where: { name: name.toLowerCase().trim() },
+        include: {
+          _count: {
+            select: {
+              media: true
+            }
+          }
+        }
+      });
+
+      return tag;
+    } catch (error) {
+      console.error("Error finding tag by name:", error);
+      throw new Error("Failed to find tag");
+    }
+  }
+
+  /**
    * Create a new tag
    */
   static async createTag(name: string): Promise<TagWithCount> {
     try {
+      const normalizedName = name.toLowerCase().trim();
+      
+      // Check if tag already exists
+      const existingTag = await this.findTagByName(normalizedName);
+      if (existingTag) {
+        throw new Error(`Tag "${name}" already exists`);
+      }
+
       const tag = await prisma.tag.create({
-        data: { name },
+        data: { name: normalizedName },
         include: {
           _count: {
             select: {
@@ -115,6 +146,9 @@ export class TagService {
       return tag;
     } catch (error) {
       console.error("Error creating tag:", error);
+      if (error instanceof Error) {
+        throw error;
+      }
       throw new Error("Failed to create tag");
     }
   }

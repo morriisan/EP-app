@@ -50,7 +50,7 @@ export async function GET(request: Request) {
           tags: {
             some: {
               name: {
-                in: tags,
+                in: tags.map(tag => tag.toLowerCase().trim()),
               },
             },
           },
@@ -108,8 +108,8 @@ export async function PATCH(request: Request) {
         tags: {
           set: [], // Clear existing tags
           connectOrCreate: tags.map((tag: string) => ({
-            where: { name: tag },
-            create: { name: tag },
+            where: { name: tag.toLowerCase().trim() },
+            create: { name: tag.toLowerCase().trim() },
           })),
         },
       },

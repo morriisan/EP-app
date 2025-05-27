@@ -155,7 +155,7 @@ export function MediaCard({
                 onClick={() => setShowTagManager(true)}
                 variant="outline"
                 size="sm"
-                className="flex-1"
+                className="flex-1 "
               >
                 Manage Tags
               </Button>
