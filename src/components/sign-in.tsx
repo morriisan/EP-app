@@ -86,7 +86,7 @@ export default function SignIn({ callbackURL = "/dashboard" }) {
 
           <Button
             type="submit"
-            className="w-full"
+            className="w-full mb-1"
             disabled={loading}
             aria-label={loading ? "Signing in..." : "Sign in to your account"}
           >
