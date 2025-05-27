@@ -81,12 +81,12 @@ export async function BookingServerComponent() {
           </div>
         ) : (
           <div>
-            <div className="bg-white dark:bg-gray-900/40 rounded-xl shadow-sm">
+            <div className="bg-theme-section-primary rounded-xl shadow-sm">
               <div className="p-6  border-pink-50/10">
-                <h2 className="text-xl font-semibold text-pink-800 dark:text-pink-300">Make a Booking</h2>
+                <h2 className="text-xl font-semibold text-theme-primary">Make a Booking</h2>
               </div>
               <div className="p-6">
-                <p className="text-gray-600 dark:text-gray-300 mb-6">
+                <p className="text-theme-default mb-6">
                   Please sign in to make a booking or manage your existing bookings.
                 </p>
                 <AuthPanel 
