@@ -66,6 +66,9 @@ export function BookingForm({ date, onSuccess, waitlistCount, isPending, isLogge
       setEventType('');
       setGuestCount('');
       onSuccess();
+      
+      // Refresh the page to show updated data
+      window.location.reload();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to create booking');
     } finally {

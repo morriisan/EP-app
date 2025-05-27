@@ -34,6 +34,11 @@ export function BookingsList({ bookings: initialBookings }: BookingsListProps) {
       ));
       
       toast.success("Booking cancelled successfully");
+      
+      // Refresh the page to show updated data
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000); // Small delay to show the success message
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Failed to cancel booking");
     } finally {

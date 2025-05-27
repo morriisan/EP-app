@@ -1,7 +1,6 @@
 import { auth } from "@/lib/auth";
 import { bookingService } from "@/services/booking-service";
 import { addMonths, startOfMonth } from "date-fns";
-import { BookingCalendar } from "@/components/booking/booking-calendar";
 import { BookingsList } from "@/components/booking/bookings-list";
 import { calendarService } from "@/services/calendar-service";
 import { headers } from "next/headers";
