@@ -16,6 +16,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
+import { TagManager } from "./TagManager";
 
 interface BookmarkData {
   isBookmarked: boolean;
@@ -46,6 +47,7 @@ export function MediaCard({
   const [showCollections, setShowCollections] = useState(false);
   const [showFullImage, setShowFullImage] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showTagManager, setShowTagManager] = useState(false);
   const { data: session } = useSession();
 
   // Debounce the mediaId to prevent multiple rapid requests
@@ -138,6 +140,7 @@ export function MediaCard({
                   Edit
                 </Button>
               )}
+           
               {onDelete && (
                 <Button
                   onClick={() => setShowDeleteConfirm(true)}
@@ -148,6 +151,14 @@ export function MediaCard({
                   Delete
                 </Button>
               )}
+                 <Button
+                onClick={() => setShowTagManager(true)}
+                variant="outline"
+                size="sm"
+                className="flex-1"
+              >
+                Manage Tags
+              </Button>
             </div>
           </div>
         )}
@@ -205,6 +216,11 @@ export function MediaCard({
         cancelText="Cancel"
         variant="destructive"
       />
+
+      {/* Tag Manager Modal */}
+      {showTagManager && (
+        <TagManager onClose={() => setShowTagManager(false)} />
+      )}
     </div>
   );
 } 
