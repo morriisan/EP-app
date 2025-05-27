@@ -1,5 +1,19 @@
 "use client"
 
+// Type declarations for Credential Management API
+interface PasswordCredentialData {
+  id: string;
+  password: string;
+}
+
+declare global {
+  interface Window {
+    PasswordCredential?: {
+      new (data: PasswordCredentialData): Credential;
+    };
+  }
+}
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -54,10 +68,10 @@ export default function SignIn({ callbackURL = "/dashboard" }) {
               });
 
               // If Better-Auth login was successful, ask Chrome to save the login
-              if (!result.error && (window as any).PasswordCredential && navigator.credentials?.store) {
+              if (!result.error && window.PasswordCredential && navigator.credentials?.store) {
                 try {
                   await navigator.credentials.store(
-                    new (window as any).PasswordCredential({
+                    new window.PasswordCredential({
                       id: email.trim(),
                       password,
                     })
@@ -118,7 +132,7 @@ export default function SignIn({ callbackURL = "/dashboard" }) {
               />
             </div>
 
-           <div className="flex items-center gap-2">
+        {/*    <div className="flex items-center gap-2">
                 <Checkbox
                   id="remember"
                   onClick={() => {
@@ -126,7 +140,7 @@ export default function SignIn({ callbackURL = "/dashboard" }) {
                   }}
                 />
                 <Label htmlFor="remember">Remember me</Label>
-              </div> 
+              </div>  */}
 
           {error && (
             <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md dark:bg-red-900/20 dark:text-red-400 dark:border-red-800">

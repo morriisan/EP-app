@@ -5,7 +5,7 @@ import {
 	Card,
 	CardContent,
 	CardDescription,
-	CardFooter,
+
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
@@ -77,12 +77,7 @@ export function SignUp({ callbackURL = "/dashboard" }: SignUpProps) {
 			return;
 		}
 
-		// Check if environment variable is set
-		if (!process.env.NEXT_PUBLIC_APP_URL) {
-			toast.error("App configuration error: NEXT_PUBLIC_APP_URL not set");
-			console.error("NEXT_PUBLIC_APP_URL environment variable is not set");
-			return;
-		}
+		
 
 		console.log("All validations passed, attempting sign up...");
 		setLoading(true);
@@ -97,31 +92,20 @@ export function SignUp({ callbackURL = "/dashboard" }: SignUpProps) {
 			}, {
 				onRequest: (ctx) => {
 					console.log("Sign up request:", ctx);
-					setLoading(true);
 				},
 				onSuccess: (ctx) => {
 					console.log("Sign up success:", ctx);
 					toast.success("Account created successfully!");
-					setLoading(false);
-					router.push("/dashboard");
+					router.push("/");
 				},
 				onError: (ctx) => {
 					console.error("Sign up error:", ctx);
 					toast.error(ctx.error.message || "Failed to create account");
-					setLoading(false);
 				},
 			});
 			
 			console.log("SignUp result:", { data, error });
 			
-			if (error) {
-				console.error("SignUp error:", error);
-				toast.error(error.message || "Failed to create account");
-			} else if (data) {
-				console.log("SignUp successful!");
-				toast.success("Account created successfully!");
-				router.push("/dashboard");
-			}
 		} catch (error) {
 			console.error("Sign up error:", error);
 			toast.error("Failed to create account. Please try again.");
@@ -139,13 +123,24 @@ export function SignUp({ callbackURL = "/dashboard" }: SignUpProps) {
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
-				<div className="grid gap-4">
+				<form 
+					onSubmit={async (e) => {
+						e.preventDefault();
+						console.log("Form submitted!");
+						await handleSubmit();
+					}}
+					className="grid gap-4"
+					method="post"
+					action="/api/auth/sign-up/email"
+				>
 					<div className="grid grid-cols-2 gap-4">
 						<div className="grid gap-2">
 							<Label htmlFor="first-name">First name</Label>
 							<Input
 								id="first-name"
+								name="firstName"
 								placeholder="Max"
+								autoComplete="given-name"
 								onChange={(e) => {
 									setFirstName(e.target.value);
 								}}
@@ -156,7 +151,9 @@ export function SignUp({ callbackURL = "/dashboard" }: SignUpProps) {
 							<Label htmlFor="last-name">Last name</Label>
 							<Input
 								id="last-name"
+								name="lastName"
 								placeholder="Robinson"
+								autoComplete="family-name"
 								onChange={(e) => {
 									setLastName(e.target.value);
 								}}
@@ -168,8 +165,10 @@ export function SignUp({ callbackURL = "/dashboard" }: SignUpProps) {
 						<Label htmlFor="email">Email</Label>
 						<Input
 							id="email"
+							name="email"
 							type="email"
 							placeholder="m@example.com"
+							autoComplete="email"
 							onChange={(e) => {
 								setEmail(e.target.value);
 							}}
@@ -180,6 +179,7 @@ export function SignUp({ callbackURL = "/dashboard" }: SignUpProps) {
 						<Label htmlFor="password">Password</Label>
 						<Input
 							id="password"
+							name="password"
 							type="password"
 							value={password}
 							onChange={(e) => setPassword(e.target.value)}
@@ -191,6 +191,7 @@ export function SignUp({ callbackURL = "/dashboard" }: SignUpProps) {
 						<Label htmlFor="password_confirmation">Confirm Password</Label>
 						<Input
 							id="password_confirmation"
+							name="passwordConfirmation"
 							type="password"
 							value={passwordConfirmation}
 							onChange={(e) => setPasswordConfirmation(e.target.value)}
@@ -200,11 +201,17 @@ export function SignUp({ callbackURL = "/dashboard" }: SignUpProps) {
 					</div>
 				
 					<Button 
+						type="submit"
 						className="w-full" 
 						disabled={loading}
-						onClick={async () => {
+						onClick={(e) => {
 							console.log("Button clicked!");
-							await handleSubmit();
+							// Manually trigger form submission
+							const form = e.currentTarget.closest('form');
+							if (form) {
+								const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+								form.dispatchEvent(submitEvent);
+							}
 						}}
 						aria-label={loading ? "Creating account..." : "Create your account"}
 					>
@@ -214,7 +221,7 @@ export function SignUp({ callbackURL = "/dashboard" }: SignUpProps) {
 							"Create an account"
 						)}
 					</Button>
-				</div>
+				</form>
 			</CardContent>
 
 		</Card>
