@@ -185,20 +185,18 @@ export function MediaCard({
 
       {/* Full Image Dialog */}
       <Dialog open={showFullImage} onOpenChange={setShowFullImage}>
-        <DialogContent className="w-fit max-w-[95vw] flex items-center justify-center p-0 border-none ">
+        <DialogContent className="max-w-[95vw] max-h-[95vh] w-auto h-auto p-0 border-none bg-transparent shadow-none">
           <DialogHeader className="sr-only">
             <DialogTitle>{media.title || "Image Preview"}</DialogTitle>
           </DialogHeader>
-          <div className="relative">
-            <Image
-              src={media.url}
-              alt={media.title || "Uploaded media"}
-              width={1200}
-              height={800}
-              className="max-h-[95vh] object-contain"
-              priority
-            />
-          </div>
+          <Image
+            src={media.url}
+            alt={media.title || "Uploaded media"}
+            width={1200}
+            height={800}
+            className="max-w-[95vw] max-h-[95vh] min-h-[50vh] w-auto h-auto object-contain"
+            priority
+          />
         </DialogContent>
       </Dialog>
 
