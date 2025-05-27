@@ -151,20 +151,18 @@
   --sidebar-ring: oklch(0.439 0 0);
 
     /* Custom Theme Colors - Dark Mode Overrides Only */
-    --theme-primary: #E0E0E0;           /* Light text for dark backgrounds */
-    --theme-secondary: #E0E0E0;         /*Light text for dark backgrounds */
-    --theme-section-primary: #1E1E1E;   /* Dark text for dark backgrounds */
-    --theme-section-secondary: #1E1E1E; /* Dark background */
-    --theme-hover-primary: #3A3A3A;             /* Dark hover state */
-    --theme-hover-secondary: #3A3A3A;          /* Dark hover state */
-    --theme-hover-text: #c600fd;        /* Dark hover text */
-    --theme-default: #ffffff;           /* Dark default background */
-    --theme-accent-primary: #c600fd;    /* Dark mode accent (orange/red) */
-    --theme-accent-secondary: #0f0f0f;  /* Dark mode secondary accent (cyan) */
-    --theme-text-dark: #E0E0E0;         /* Light text for dark mode */
-    --theme-border-default: #2A2A2A;    /* Dark borders */
-    --theme-border-secondary: #2A2A2A;   /* Dark borders */
-    --theme-border-dark: #2A2A2A;       /* Dark borders */
+    --theme-primary: #E0E0E0;           
+    --theme-secondary: #E0E0E0;         
+    --theme-section-primary: #1E1E1E;   
+    --theme-section-secondary: #1E1E1E;
+    --theme-hover-primary: #3A3A3A;             
+    --theme-hover-secondary: #3A3A3A;          
+    --theme-hover-text: #c600fd;        
+    --theme-accent-primary: #c600fd;    
+    --theme-accent-secondary: #0f0f0f;  
+    --theme-text-dark: #E0E0E0;         
+    --theme-border-default: #2A2A2A;    
+    --theme-border-secondary: #2A2A2A;  
 
 }
 

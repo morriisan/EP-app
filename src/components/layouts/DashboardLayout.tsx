@@ -19,7 +19,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   ];
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-theme-accent-secondary">
       <Sidebar 
         links={sidebarLinks} 
         userName={user?.name} 
