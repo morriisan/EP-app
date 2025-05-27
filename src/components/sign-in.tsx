@@ -10,12 +10,14 @@ import { Loader2 } from "lucide-react";
 import { signIn } from "@/lib/auth-client";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 export default function SignIn({ callbackURL = "/dashboard" }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState("");
 
   return (
     <Card className="max-w-md">
@@ -26,14 +28,20 @@ export default function SignIn({ callbackURL = "/dashboard" }) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-4">
+        <form 
+          onSubmit={(e) => {
+            e.preventDefault(); // Prevent default form submission
+          }}
+          className="grid gap-4"
+        >
           <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
+                name="email"
                 type="email"
                 placeholder="m@example.com"
-                required
+                autoComplete="email"
                 onChange={(e) => {
                   setEmail(e.target.value);
                 }}
@@ -49,9 +57,10 @@ export default function SignIn({ callbackURL = "/dashboard" }) {
 
               <Input
                 id="password"
+                name="password"
                 type="password"
                 placeholder="password"
-                autoComplete="password"
+                autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -67,20 +76,53 @@ export default function SignIn({ callbackURL = "/dashboard" }) {
                 <Label htmlFor="remember">Remember me</Label>
               </div>
 
-          
+          {error && (
+            <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md dark:bg-red-900/20 dark:text-red-400 dark:border-red-800">
+              {error}
+            </div>
+          )}
 
           <Button
-              type="submit"
+              type="button"
               className="w-full mb-2"
               disabled={loading}
               onClick={async () => {
+                // Clear any previous errors
+                setError("");
+                
+                // Basic validation
+                if (!email.trim()) {
+                  toast.error("Please enter your email address");
+                  return;
+                }
+                
+                if (!password.trim()) {
+                  toast.error("Please enter your password");
+                  return;
+                }
+                
                 setLoading(true);
-                await signIn.email({ 
-                  email, 
-                  password,
-                  callbackURL: callbackURL
-                });
-                setLoading(false);
+                
+                try {
+                  const result = await signIn.email({ 
+                    email: email.trim(), 
+                    password,
+                    callbackURL: callbackURL
+                  });
+                  
+                  // Check if there was an error in the result
+                  if (result?.error) {
+                    setError(result.error.message || "Login failed");
+                    toast.error(result.error.message || "Login failed. Please check your credentials.");
+                  }
+                } catch (error) {
+                  console.error("Sign in error:", error);
+                  const errorMessage = error instanceof Error ? error.message : "Login failed. Please try again.";
+                  setError(errorMessage);
+                  toast.error(errorMessage);
+                } finally {
+                  setLoading(false);
+                }
               }}
             >
               {loading ? (
@@ -89,8 +131,7 @@ export default function SignIn({ callbackURL = "/dashboard" }) {
                 "Login"
               )}
             </Button>
-
-          </div>
+        </form>
 
         <div className={cn(
               "w-full gap-2 flex items-center",
@@ -151,12 +192,27 @@ export default function SignIn({ callbackURL = "/dashboard" }) {
                     "w-full gap-2"
                   )}
                   onClick={async () => {
-                    setLoading (true);
-                    await signIn.social({
-                      provider: "google",
-                      callbackURL: callbackURL
-                    });
-                    setLoading (false);
+                    setError("");
+                    setLoading(true);
+                    
+                    try {
+                      const result = await signIn.social({
+                        provider: "google",
+                        callbackURL: callbackURL
+                      });
+                      
+                      if (result?.error) {
+                        setError(result.error.message || "Google sign-in failed");
+                        toast.error(result.error.message || "Google sign-in failed. Please try again.");
+                      }
+                    } catch (error) {
+                      console.error("Google sign-in error:", error);
+                      const errorMessage = error instanceof Error ? error.message : "Google sign-in failed. Please try again.";
+                      setError(errorMessage);
+                      toast.error(errorMessage);
+                    } finally {
+                      setLoading(false);
+                    }
                   }}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="0.98em" height="1em" viewBox="0 0 256 262">
