@@ -28,20 +28,20 @@ export async function BookingServerComponent() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* Left Column: Calendar and Booking Form */}
         <div>
-          <BookingClientWrapper
-            bookedDates={calendarData
-              .filter(day => !day.isAvailable && day.status)
-              .map(day => ({
-                date: new Date(day.date),
-                status: day.status || 'PENDING',
-                waitlistCount: day.waitlistCount
-              }))}
-            userBookings={userBookings.map(booking => ({
-              date: new Date(booking.date),
-              status: booking.status
-            }))}
-            isLoggedIn={!!session?.user}
-          />
+                     <BookingClientWrapper
+             bookedDates={calendarData
+               .filter(day => !day.isAvailable && day.status)
+               .map(day => ({
+                 date: new Date(day.date),
+                 status: day.status || 'PENDING',
+                 waitlistCount: day.waitlistCount
+               }))}
+             userBookings={userBookings.map(booking => ({
+               date: new Date(booking.date),
+               status: booking.status
+             }))}
+             isLoggedIn={!!session?.user}
+           />
         </div>
 
         {/* Right Column: User's Bookings Section */}

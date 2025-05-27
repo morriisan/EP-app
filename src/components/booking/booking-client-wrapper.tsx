@@ -62,13 +62,12 @@ export function BookingClientWrapper({ bookedDates, userBookings, isLoggedIn }: 
           </div>
         </div>
         <div className="p-2 flex justify-center items-center">
-          <BookingCalendar 
-            bookedDates={bookedDates}
-            userBookings={userBookings}
-            isLoggedIn={isLoggedIn}
-            onDateSelect={setSelectedDate}
-            selectedDate={selectedDate}
-          />
+                      <BookingCalendar 
+              bookedDates={bookedDates}
+              userBookings={userBookings}
+              onDateSelect={setSelectedDate}
+              selectedDate={selectedDate}
+            />
         </div>
       </div>
 

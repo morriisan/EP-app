@@ -15,12 +15,11 @@ interface BookingCalendarProps {
     date: Date;
     status: string;
   }>;
-  isLoggedIn: boolean;
   onDateSelect?: (date: Date | undefined) => void;
   selectedDate?: Date | undefined;
 }
 
-export function BookingCalendar({ bookedDates: initialBookedDates, userBookings, isLoggedIn, onDateSelect, selectedDate: externalSelectedDate }: BookingCalendarProps) {
+export function BookingCalendar({ bookedDates: initialBookedDates, userBookings, onDateSelect, selectedDate: externalSelectedDate }: BookingCalendarProps) {
   const [internalSelectedDate, setInternalSelectedDate] = useState<Date | undefined>(undefined);
   const selectedDate = externalSelectedDate ?? internalSelectedDate;
   const [bookedDates, setBookedDates] = useState(initialBookedDates);

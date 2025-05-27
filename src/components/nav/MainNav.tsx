@@ -74,7 +74,13 @@ export function MainNav() {
       {
         href: "#",
         label: "Sign Out",
-        onClick: () => signOut(),
+        onClick: () => {
+          signOut();
+          // Refresh the page to clear user-specific data
+          setTimeout(() => {
+            window.location.reload();
+          }, 500); // Small delay to allow sign out to complete
+        },
         "aria-label": "Sign out of your account"
       }
     ] : [])
