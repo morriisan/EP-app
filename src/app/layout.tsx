@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   keywords: [
             "wedding planning", "bryllup", "wedding", "muslim wedding", "south asian wedding", "norwegian wedding", "selskapls lokale", 
             "bryllupslokale", "bryllupslokale i oslo", "bryllupslokale i bergen", "bryllupslokale i trondheim", "bryllupslokale i stavanger", 
-            "bryllupslokale i bergen", "bryllupslokale i trondheim", "bryllupslokale i stavanger", "bryllup i norge", 
+            "bryllupslokale i stavanger", "bryllup i norge", 
             "bryllups dekor"
           ],
   authors: [{ name: "Engel Paradis" }],
@@ -68,27 +68,27 @@ export default function RootLayout({
   return (
     <html lang="no" suppressHydrationWarning>
       <script type="application/ld+json" suppressHydrationWarning>
-{JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "EventVenue",
-  name: "Engel Paradis",
-  description: "Elegant bryllupsplanlegging og arrangementer i Oslo.",
-  url: "https://engelparadis.com",
-  telephone: "+47 900 52 670",
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: "haavard martinsens vei 19",
-    addressLocality: "Oslo",
-    postalCode: "0978",
-    addressCountry: "NO"
-  },
-  geo: {
-    "@type": "GeoCoordinates",
-    latitude: 59.9309,
-    longitude: 10.7676
-  }
-})}
-</script>
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "EventVenue",
+          name: "Engel Paradis",
+          description: "Elegant bryllupsplanlegging og arrangementer i Oslo.",
+          url: "https://engelparadis.com",
+          telephone: "+47 900 52 670",
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: "haavard martinsens vei 19",
+            addressLocality: "Oslo",
+            postalCode: "0978",
+            addressCountry: "NO"
+          },
+          geo: {
+            "@type": "GeoCoordinates",
+            latitude: 59.9309,
+            longitude: 10.7676
+          }
+        })}
+      </script>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="robots" content="index, follow" />
