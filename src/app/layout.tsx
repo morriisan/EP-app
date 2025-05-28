@@ -27,15 +27,23 @@ export const metadata: Metadata = {
     default: "Engel Paradis",
     template: "%s | Engel Paradis"
   },
-  description: "Elegant bryllupsplanlegging og arrangementer for alle. Spesialisert på sør-asiatiske og muslimske bryllupstradisjoner.",
-  keywords: ["wedding planning", "bryllup", "wedding", "muslim wedding", "south asian wedding", "norwegian wedding", "selskapls lokale", "bryllupslokale", 
-    "bryllupslokale i oslo", "bryllupslokale i bergen", "bryllupslokale i trondheim", "bryllupslokale i stavanger", "bryllupslokale i oslo", "bryllupslokale i bergen", 
-    "bryllupslokale i trondheim", "bryllupslokale i stavanger", "bryllup i norge", "bryllups dekor"],
+  description: "Elegant bryllupsplanlegging og arrangementer for alle. Spesialisert på elegant, kulturelt og autentisk bryllupstradisjon.",
+  keywords: [
+            "wedding planning", "bryllup", "wedding", "muslim wedding", "south asian wedding", "norwegian wedding", "selskapls lokale", 
+            "bryllupslokale", "bryllupslokale i oslo", "bryllupslokale i bergen", "bryllupslokale i trondheim", "bryllupslokale i stavanger", 
+            "bryllupslokale i oslo", "bryllupslokale i bergen", "bryllupslokale i trondheim", "bryllupslokale i stavanger", "bryllup i norge", 
+            "bryllups dekor"
+          ],
   authors: [{ name: "Engel Paradis" }],
   creator: "Engel Paradis",
   icons: {
-    icon: '/logo.png',
+    icon: [
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon.ico', sizes: 'any' }
+    ],
     apple: '/logo.png',
+    shortcut: '/favicon.ico',
   },
   openGraph: {
     type: "website",
@@ -55,6 +63,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
+        <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16" />
+        <link rel="apple-touch-icon" href="/logo.png" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-pink-50 dark:bg-black transition-colors duration-200`}

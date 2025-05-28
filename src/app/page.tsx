@@ -39,8 +39,8 @@ export default function Home() {
               Å skape <span className="text-theme-accent-primary border-b border-theme-accent-primary">tidløse</span> bryllupsopplevelser
             </h2>
             <p className="text-lg text-center text-theme-primary mb-8">
-              Hos Engel Paradis spesialiserer vi oss på å skape elegante, kulturelt autentiske sør-asiatiske og muslimske
-              bryllupsferinger som hedrer tradisjonene deres samtidig som de skaper uforglemmelige øyeblikk.
+              Hos Engel Paradis spesialiserer vi oss på å skape elegante, kulturelt autentiske
+              bryllupsferinger som hedrer tradisjonen samtidig som det skaper uforglemmelige minner.
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
@@ -80,7 +80,7 @@ export default function Home() {
                 </div>
                 <h3 className="text-xl text-rose-800 mb-2">Kulturell ekspertise</h3>
                 <p className="text-center text-rose-700">
-                  Spesialisert på sør-asiatiske og muslimske bryllupstradisjoner
+                  Spesialisert på kulturelle bryllupstradisjoner
                 </p>
               </div>
             </div>
