@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { Media } from "@/components/Interface/media";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { BookmarkButton } from "./BookmarkButton";
 import { CollectionManager } from "./CollectionManager";
 import { Button } from "@/components/ui/button";
@@ -48,10 +48,34 @@ export function MediaCard({
   const [showFullImage, setShowFullImage] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showTagManager, setShowTagManager] = useState(false);
+  const [shouldPreload, setShouldPreload] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
   const { data: session } = useSession();
 
   // Debounce the mediaId to prevent multiple rapid requests
   const debouncedMediaId = useDebounceValue(media.id, 300);
+
+  // Intersection Observer for viewport-based preloading
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Start preloading when image enters viewport
+            setShouldPreload(true);
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { rootMargin: '50px' } // Start preloading 50px before entering viewport
+    );
+
+    if (cardRef.current) {
+      observer.observe(cardRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   // Use SWR for bookmark status
   const { data: bookmarkData, mutate: mutateBookmark } = useSWR<BookmarkData>(
@@ -73,7 +97,11 @@ export function MediaCard({
   };
 
   return (
-    <div className="relative group">
+    <div 
+      ref={cardRef}
+      className="relative group"
+      onMouseEnter={() => setShouldPreload(true)}
+    >
       <div className="border rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow duration-200">
         <div className="relative aspect-square cursor-pointer" onClick={() => setShowFullImage(true)}>
           <Image
@@ -165,6 +193,23 @@ export function MediaCard({
           </div>
         )}
       </div>
+
+      {/* Hidden preload image for full-size version */}
+      {shouldPreload && (
+        <div className="absolute -z-10 opacity-0 pointer-events-none">
+          <Image
+            src={media.url}
+            alt=""
+            width={1200}
+            height={800}
+            priority
+            sizes="100vw"
+            placeholder="blur"
+            blurDataURL={media.blurDataURL || "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHZpZXdCb3g9IjAgMCAxMCAxMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjZjNmNGY2Ii8+Cjwvc3ZnPgo="}
+            style={{ display: 'none' }}
+          />
+        </div>
+      )}
 
       {/* Collections Dialog */}
       <Dialog open={showCollections} onOpenChange={setShowCollections}>
