@@ -44,7 +44,7 @@ export function MediaCard({
   const [isBookmarked, setIsBookmarked] = useState(media.isBookmarked ?? initialIsBookmarked);
   const [collections, setCollections] = useState(initialCollections);
   const cardRef = useRef<HTMLDivElement>(null);
-  const { data: session } = useSession();
+
 
   // Update bookmark state when media prop changes
   useEffect(() => {
