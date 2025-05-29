@@ -13,6 +13,7 @@ import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import useSWR from "swr";
 
 interface MediaGalleryClientProps {
+  initialMedia: Media[];
   initialTags: Tag[];
   initialSelectedTags: string[];
   isAdmin: boolean;
@@ -21,6 +22,7 @@ interface MediaGalleryClientProps {
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 export function MediaGalleryClient({ 
+  initialMedia,
   initialTags,
   initialSelectedTags,
   isAdmin 
@@ -43,8 +45,9 @@ export function MediaGalleryClient({
     isLoading, 
     mutate: mutateInfinite
   } = useSWRInfinite(getKey, fetcher, {
+    fallbackData: selectedTags.length === 0 ? [{ media: initialMedia, hasMore: true, totalCount: initialMedia.length }] : undefined,
     revalidateFirstPage: false,
-    revalidateOnFocus: false,
+    revalidateOnFocus: true, // Re-enable to sync bookmark changes
     revalidateOnReconnect: false,
     dedupingInterval: 10000
   });

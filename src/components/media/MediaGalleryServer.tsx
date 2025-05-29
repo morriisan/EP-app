@@ -12,6 +12,9 @@ export async function MediaGalleryServer({
 }: MediaGalleryServerProps) {
   // Fetch tags (server-side)
   const allTags = await mediaService.getAllTags();
+  
+  // Fetch media with tag filtering 
+  const media = await mediaService.getAllMedia(selectedTagsParam);
 
   return (
     <div className="container mx-auto py-12 px-2">
@@ -24,6 +27,7 @@ export async function MediaGalleryServer({
         </p>
 
         <MediaGalleryClient 
+          initialMedia={media}
           initialTags={allTags}
           initialSelectedTags={selectedTagsParam}
           isAdmin={isAdmin}
