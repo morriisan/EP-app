@@ -135,7 +135,7 @@ export function MediaGalleryClient({
         onTagSelect={handleTagSelect}
       />
 
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ">
         {allMedia.map((item: Media, index) => {
           // Attach ref to last item to trigger loading
           const isLastItem = index === allMedia.length - 1;
