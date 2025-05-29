@@ -6,7 +6,7 @@ import { BookmarkButton } from "./BookmarkButton";
 import { CollectionManager } from "./CollectionManager";
 import { Button } from "@/components/ui/button";
 import { FolderPlusIcon } from "lucide-react";
-import { useSession } from "@/lib/auth-client";
+
 import { mutate } from "swr";
 import {
   Dialog,
