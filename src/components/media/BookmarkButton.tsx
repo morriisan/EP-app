@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { BookmarkIcon, BookmarkPlusIcon } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
-import { useSWRConfig } from "swr";
 import { toast } from "sonner";
 
 interface BookmarkButtonProps {
@@ -22,7 +21,6 @@ export function BookmarkButton({
   onBookmarkChange 
 }: BookmarkButtonProps) {
   const { data: session } = useSession();
-  const { mutate } = useSWRConfig();
 
   const handleBookmark = async () => {
     if (!session) return;
@@ -43,13 +41,7 @@ export function BookmarkButton({
       if (!response.ok) throw new Error('Failed to update bookmark');
       const data = await response.json();
       
-      // Update all related SWR cache entries
-      await Promise.all([
-        mutate(`/api/bookmarks?mediaId=${mediaId}`),
-        mutate('/api/collections'),
-        mutate(`/api/collections/bookmarks/${mediaId}`)
-      ]);
-
+      // Update final state with real data from server (if needed)
       onBookmarkChange(data);
       toast.success(isBookmarked ? "Removed from bookmarks" : "Added to bookmarks");
     } catch (error) {

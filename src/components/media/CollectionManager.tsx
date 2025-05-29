@@ -39,12 +39,20 @@ export function CollectionManager({ mediaId, initialCollections, onCollectionCha
       });
 
       if (!response.ok) throw new Error('Failed to create collection');
-      await mutate('/api/collections'); // Revalidate collections data
+      
+      const newCollection = await response.json();
+      
+      // Optimistically update the cache with the new collection
+      mutate('/api/collections', [...collections, newCollection], false);
+      
       setNewCollectionName("");
       toast.success("Collection created successfully");
     } catch (error) {
       console.error('Error creating collection:', error);
       toast.error("Failed to create collection");
+      
+      // Revert on error
+      mutate('/api/collections');
     }
   };
 

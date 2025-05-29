@@ -77,6 +77,29 @@ export function MediaGalleryClient({
 
   const handleUpdate = async (mediaId: string, title: string, tags: string[]) => {
     try {
+      // Optimistic update - update UI immediately
+      const optimisticData = data?.map(page => ({
+        ...page,
+        media: page.media.map((item: Media) => 
+          item.id === mediaId 
+            ? { 
+                ...item, 
+                title, 
+                tags: tags.map(tagName => ({ 
+                  id: `temp-${tagName}`, // Temporary ID for optimistic update
+                  name: tagName 
+                }))
+              }
+            : item
+        )
+      }));
+      
+      // Update cache immediately (optimistic)
+      mutateInfinite(optimisticData, false);
+      toast.success("Media updated successfully");
+      setSelectedMedia(null);
+
+      // Sync with server in background - just make the API call, don't revalidate
       const response = await fetch(`/api/media?id=${mediaId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -85,18 +108,16 @@ export function MediaGalleryClient({
 
       if (!response.ok) throw new Error("Failed to update media");
       
-      // Mutate both media and tags data
-      await Promise.all([
-        mutateInfinite(),
-        mutate('/api/media'),
-        mutate('/api/media?type=tags')
-      ]);
+      // Only update tags if needed (this is a lightweight call)
+      mutate('/api/media?type=tags');
       
-      toast.success("Media updated successfully");
-      setSelectedMedia(null);
     } catch (err) {
       console.error(err instanceof Error ? err.message : "Failed to update media");
       toast.error("Failed to update media");
+      
+      // Revert optimistic update on error
+      mutateInfinite();
+      setSelectedMedia(null);
     }
   };
 
@@ -104,23 +125,32 @@ export function MediaGalleryClient({
     if (!confirm("Are you sure you want to delete this media?")) return;
 
     try {
+      // Optimistic delete - remove from UI immediately
+      const optimisticData = data?.map(page => ({
+        ...page,
+        media: page.media.filter((item: Media) => item.id !== mediaId)
+      }));
+      
+      // Update cache immediately (optimistic)
+      mutateInfinite(optimisticData, false);
+      toast.success("Media deleted successfully");
+
+      // Sync with server in background - just make the API call, don't revalidate
       const response = await fetch(`/api/media?id=${mediaId}`, {
         method: "DELETE",
       });
 
       if (!response.ok) throw new Error("Failed to delete media");
       
-      // Mutate both media and tags data
-      await Promise.all([
-        mutateInfinite(),
-        mutate('/api/media'),
-        mutate('/api/media?type=tags')
-      ]);
-
-      toast.success("Media deleted successfully");
+      // Only update tags if needed (this is a lightweight call)
+      mutate('/api/media?type=tags');
+      
     } catch (err) {
       console.error(err instanceof Error ? err.message : "Failed to delete media");
       toast.error("Failed to delete media");
+      
+      // Revert optimistic delete on error
+      mutateInfinite();
     }
   };
 
