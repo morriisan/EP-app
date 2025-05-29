@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { format } from 'date-fns';
 import { BookingCalendar } from '@/components/booking/booking-calendar';
 import { BookingForm } from '@/components/booking/booking-form';
