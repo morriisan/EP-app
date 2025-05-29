@@ -1,5 +1,4 @@
 import { BookingServerComponent } from "@/components/booking/booking-server-component";
-import { Suspense } from "react";
 
 export default function BookingPage() {
   return (
@@ -10,9 +9,7 @@ export default function BookingPage() {
           check for available dates and book your date
         </p>
       </div>
-      <Suspense fallback={<div>Loading calendar...</div>}>
-        <BookingServerComponent />
-      </Suspense>
+      <BookingServerComponent />
     </main>
   );
 } 

@@ -6,6 +6,8 @@ import { calendarService } from "@/services/calendar-service";
 import { headers } from "next/headers";
 import { AuthPanel } from "@/components/AuthPanel";
 import { BookingClientWrapper } from "@/components/booking/booking-client-wrapper";
+import { BookingSkeleton, BookingListSkeleton } from "@/components/booking/booking-skeleton";
+import { Suspense } from "react";
 
 export async function BookingServerComponent() {
   // Get the current session (if any) - but don't require it
@@ -28,20 +30,22 @@ export async function BookingServerComponent() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* Left Column: Calendar and Booking Form */}
         <div>
-                     <BookingClientWrapper
-             bookedDates={calendarData
-               .filter(day => !day.isAvailable && day.status)
-               .map(day => ({
-                 date: new Date(day.date),
-                 status: day.status || 'PENDING',
-                 waitlistCount: day.waitlistCount
-               }))}
-             userBookings={userBookings.map(booking => ({
-               date: new Date(booking.date),
-               status: booking.status
-             }))}
-             isLoggedIn={!!session?.user}
-           />
+          <Suspense fallback={<BookingSkeleton />}>
+            <BookingClientWrapper
+              bookedDates={calendarData
+                .filter(day => !day.isAvailable && day.status)
+                .map(day => ({
+                  date: new Date(day.date),
+                  status: day.status || 'PENDING',
+                  waitlistCount: day.waitlistCount
+                }))}
+              userBookings={userBookings.map(booking => ({
+                date: new Date(booking.date),
+                status: booking.status
+              }))}
+              isLoggedIn={!!session?.user}
+            />
+          </Suspense>
         </div>
 
         {/* Right Column: User's Bookings Section */}
@@ -52,9 +56,11 @@ export async function BookingServerComponent() {
                 <h2 className="text-xl font-semibold text-theme-primary">Your Bookings</h2>
               </div>
               <div className="p-6">
-                <BookingsList 
-                  bookings={userBookings}
-                />
+                <Suspense fallback={<BookingListSkeleton />}>
+                  <BookingsList 
+                    bookings={userBookings}
+                  />
+                </Suspense>
               </div>
             </div>
           ) : (
