@@ -37,7 +37,7 @@ export const ourFileRouter = {
   imageUploader: f({
     image: {
       maxFileSize: "4MB",
-      maxFileCount: 5,
+      maxFileCount: 12,
     },
   })
     // Set permissions and file types for this FileRoute
