@@ -91,6 +91,7 @@ model Media {
   url           String
   fileKey       String?
   title         String?
+  blurDataURL   String?    // Add blur placeholder field
   uploadedAt    DateTime   @default(now())
   uploadedById  String?
   uploadedBy    User?       @relation(fields: [uploadedById], references: [id], onDelete: SetNull)

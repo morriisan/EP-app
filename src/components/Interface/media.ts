@@ -7,6 +7,7 @@ export type Tag = {
     id: string;
     url: string;
     title: string | null;
+    blurDataURL?: string | null;
     tags: {
       id: string;
       name: string;
