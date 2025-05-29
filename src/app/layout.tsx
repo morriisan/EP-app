@@ -1,5 +1,3 @@
-
-
 import { Geist, Geist_Mono } from "next/font/google";
 import "@uploadthing/react/styles.css";
 import "./globals.css";
@@ -44,7 +42,7 @@ export const metadata: Metadata = {
       { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
       { url: '/favicon.ico', sizes: 'any' }
     ],
-    apple: '/logo.png',
+    apple: '/apple-touch-icon.png',
     shortcut: '/favicon.ico',
   },
   openGraph: {
@@ -76,10 +74,6 @@ export default function RootLayout({
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
-        <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16" />
-        <link rel="apple-touch-icon" href="/logo.png" />
         <script type="application/ld+json" suppressHydrationWarning>
           {JSON.stringify({
             "@context": "https://schema.org",

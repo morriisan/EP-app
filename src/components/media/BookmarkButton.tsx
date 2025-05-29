@@ -52,6 +52,7 @@ export function BookmarkButton({
       // Invalidate all relevant caches to ensure consistency across pages
       mutate('/api/collections');
       mutate(`/api/bookmarks?mediaId=${mediaId}`);
+      mutate('/api/bookmarks/all');
       
       toast.success(isBookmarked ? "Removed from bookmarks" : "Added to bookmarks");
     } catch (error) {
