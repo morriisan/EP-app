@@ -44,18 +44,24 @@ export async function GET(request: Request) {
     }
 
     // Otherwise, fetch all media with optional tag filtering
-    const media = await prisma.media.findMany({
-      where: {
-        ...(tags && {
-          tags: {
-            some: {
-              name: {
-                in: tags.map(tag => tag.toLowerCase().trim()),
-              },
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "12");
+    const skip = (page - 1) * limit;
+
+    const whereClause = {
+      ...(tags && {
+        tags: {
+          some: {
+            name: {
+              in: tags.map(tag => tag.toLowerCase().trim()),
             },
           },
-        }),
-      },
+        },
+      }),
+    };
+
+    const media = await prisma.media.findMany({
+      where: whereClause,
       include: {
         uploadedBy: {
           select: {
@@ -68,9 +74,20 @@ export async function GET(request: Request) {
       orderBy: {
         uploadedAt: "desc",
       },
+      take: limit,
+      skip: skip,
     });
 
-    return NextResponse.json(media);
+    const totalCount = await prisma.media.count({
+      where: whereClause,
+    });
+
+    return NextResponse.json({
+      media,
+      totalCount,
+      hasMore: skip + media.length < totalCount,
+      currentPage: page,
+    });
   } catch (error) {
     console.error("Error fetching media:", error);
     return NextResponse.json(
