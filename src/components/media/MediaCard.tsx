@@ -7,8 +7,7 @@ import { CollectionManager } from "./CollectionManager";
 import { Button } from "@/components/ui/button";
 import { FolderPlusIcon } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
-import { useDebounceValue } from "@/hooks/useDebounce";
-import useSWR from "swr";
+import { mutate } from "swr";
 import {
   Dialog,
   DialogContent,
@@ -17,11 +16,6 @@ import {
 } from "@/components/ui/dialog";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 import { TagManager } from "./TagManager";
-
-interface BookmarkData {
-  isBookmarked: boolean;
-  collections: { id: string; name: string; }[];
-}
 
 interface MediaCardProps {
   media: Media;
@@ -32,8 +26,6 @@ interface MediaCardProps {
   initialIsBookmarked?: boolean;
   initialCollections?: { id: string; name: string; }[];
 }
-
-const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 export function MediaCard({ 
   media, 
@@ -49,11 +41,15 @@ export function MediaCard({
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showTagManager, setShowTagManager] = useState(false);
   const [shouldPreload, setShouldPreload] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(media.isBookmarked ?? initialIsBookmarked);
+  const [collections, setCollections] = useState(initialCollections);
   const cardRef = useRef<HTMLDivElement>(null);
   const { data: session } = useSession();
 
-  // Debounce the mediaId to prevent multiple rapid requests
-  const debouncedMediaId = useDebounceValue(media.id, 300);
+  // Update bookmark state when media prop changes
+  useEffect(() => {
+    setIsBookmarked(media.isBookmarked ?? initialIsBookmarked);
+  }, [media.isBookmarked, initialIsBookmarked]);
 
   // Intersection Observer for viewport-based preloading
   useEffect(() => {
@@ -77,23 +73,17 @@ export function MediaCard({
     return () => observer.disconnect();
   }, []);
 
-  // Use SWR for bookmark status
-  const { data: bookmarkData, mutate: mutateBookmark } = useSWR<BookmarkData>(
-    session && debouncedMediaId ? `/api/bookmarks?mediaId=${debouncedMediaId}` : null,
-    fetcher,
-    {
-      fallbackData: {
-        isBookmarked: initialIsBookmarked,
-        collections: initialCollections
-      }
-    }
-  );
+  const handleBookmarkChange = (bookmarkData: { isBookmarked: boolean; collections: { id: string; name: string; }[] }) => {
+    setIsBookmarked(bookmarkData.isBookmarked);
+    setCollections(bookmarkData.collections);
+    // Invalidate collections cache
+    mutate('/api/collections');
+  };
 
-  const isBookmarked = bookmarkData?.isBookmarked ?? initialIsBookmarked;
-  const collections = bookmarkData?.collections ?? initialCollections;
-
-  const handleBookmarkChange = async (bookmarkData: BookmarkData) => {
-    mutateBookmark(bookmarkData, false); // Update local data immediately
+  const handleCollectionChange = (updatedCollections: { id: string; name: string; }[]) => {
+    setCollections(updatedCollections);
+    // Invalidate collections cache
+    mutate('/api/collections');
   };
 
   return (
@@ -220,12 +210,7 @@ export function MediaCard({
           <CollectionManager
             mediaId={media.id}
             initialCollections={collections}
-            onCollectionChange={(updatedCollections) => {
-              mutateBookmark({
-                isBookmarked,
-                collections: updatedCollections
-              }, false);
-            }}
+            onCollectionChange={handleCollectionChange}
           />
         </DialogContent>
       </Dialog>

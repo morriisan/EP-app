@@ -8,6 +8,9 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     
+    // Get user session for bookmark data
+    const session = await auth.api.getSession({ headers: request.headers });
+    
     // If requesting tags, return all unique tags from the database
     if (searchParams.get("type") === "tags") {
       const tags = await prisma.tag.findMany({
@@ -33,6 +36,10 @@ export async function GET(request: Request) {
             },
           },
           tags: true,
+          bookmarks: session ? {
+            where: { userId: session.user.id },
+            select: { id: true }
+          } : false,
         },
       });
 
@@ -40,7 +47,14 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: "Media not found" }, { status: 404 });
       }
 
-      return NextResponse.json(media);
+      // Transform to include isBookmarked field
+      const mediaWithBookmark = {
+        ...media,
+        isBookmarked: Boolean(session && media.bookmarks && media.bookmarks.length > 0),
+        bookmarks: undefined // Remove bookmarks array from response
+      };
+
+      return NextResponse.json(mediaWithBookmark);
     }
 
     // Otherwise, fetch all media with optional tag filtering
@@ -70,6 +84,10 @@ export async function GET(request: Request) {
           },
         },
         tags: true,
+        bookmarks: session ? {
+          where: { userId: session.user.id },
+          select: { id: true }
+        } : false,
       },
       orderBy: {
         uploadedAt: "desc",
@@ -82,8 +100,15 @@ export async function GET(request: Request) {
       where: whereClause,
     });
 
+    // Transform media to include isBookmarked field
+    const mediaWithBookmarks = media.map(item => ({
+      ...item,
+      isBookmarked: Boolean(session && item.bookmarks && item.bookmarks.length > 0),
+      bookmarks: undefined // Remove bookmarks array from response
+    }));
+
     return NextResponse.json({
-      media,
+      media: mediaWithBookmarks,
       totalCount,
       hasMore: skip + media.length < totalCount,
       currentPage: page,

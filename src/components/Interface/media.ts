@@ -8,6 +8,7 @@ export type Tag = {
     url: string;
     title: string | null;
     blurDataURL?: string | null;
+    isBookmarked?: boolean;
     tags: {
       id: string;
       name: string;
