@@ -67,13 +67,19 @@ export const DELETE = requireAuth(async (req: Request, session) => {
     const exists = await bookmarkService.checkBookmarkStatus(session.user.id, mediaId);
     
     if (!exists.isBookmarked) {
-      // If bookmark doesn't exist, return success (already deleted)
-      return NextResponse.json({ message: "Bookmark already removed" }, { status: 200 });
+      // If bookmark doesn't exist, return false status
+      return NextResponse.json({ 
+        isBookmarked: false, 
+        collections: [] 
+      });
     }
     
     // Only try to delete if it exists
     await bookmarkService.deleteBookmark(session.user.id, mediaId);
-    return NextResponse.json({ message: "Bookmark removed" }, { status: 200 });
+    return NextResponse.json({ 
+      isBookmarked: false, 
+      collections: [] 
+    });
   } catch (error) {
     console.error("Error deleting bookmark:", error);
     return NextResponse.json("Error deleting bookmark", { status: 500 });

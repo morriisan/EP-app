@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { BookmarkIcon, BookmarkPlusIcon } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
 import { toast } from "sonner";
+import { mutate } from "swr";
 
 interface BookmarkButtonProps {
   mediaId: string;
@@ -25,11 +26,13 @@ export function BookmarkButton({
   const handleBookmark = async () => {
     if (!session) return;
 
-    // Optimistically update UI
-    onBookmarkChange({
+    const newBookmarkState = {
       isBookmarked: !isBookmarked,
       collections: []
-    });
+    };
+
+    // Optimistically update UI
+    onBookmarkChange(newBookmarkState);
 
     try {
       const response = await fetch('/api/bookmarks', {
@@ -41,8 +44,15 @@ export function BookmarkButton({
       if (!response.ok) throw new Error('Failed to update bookmark');
       const data = await response.json();
       
-      // Update final state with real data from server (if needed)
-      onBookmarkChange(data);
+      // Only update if server response differs from optimistic update
+      if (data.isBookmarked !== newBookmarkState.isBookmarked) {
+        onBookmarkChange(data);
+      }
+      
+      // Invalidate all relevant caches to ensure consistency across pages
+      mutate('/api/collections');
+      mutate(`/api/bookmarks?mediaId=${mediaId}`);
+      
       toast.success(isBookmarked ? "Removed from bookmarks" : "Added to bookmarks");
     } catch (error) {
       console.error('Error updating bookmark:', error);
