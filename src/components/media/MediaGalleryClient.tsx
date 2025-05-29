@@ -45,7 +45,9 @@ export function MediaGalleryClient({
     isLoading, 
     mutate: mutateInfinite
   } = useSWRInfinite(getKey, fetcher, {
-    fallbackData: [{ media: initialMedia, hasMore: true, totalCount: initialMedia.length }]
+    fallbackData: selectedTags.length === 0 ? [{ media: initialMedia, hasMore: true, totalCount: initialMedia.length }] : undefined,
+    revalidateFirstPage: false,
+    revalidateOnFocus: false
   });
 
   // Flatten all pages into single array
@@ -63,15 +65,12 @@ export function MediaGalleryClient({
   // Tags data (separate from infinite media)
   const { data: allTags = initialTags, error: tagsError } = useSWR('/api/media?type=tags', fetcher);
 
-  const handleTagSelect = async (tagName: string) => {
+  const handleTagSelect = (tagName: string) => {
     const newSelectedTags = selectedTags.includes(tagName)
       ? selectedTags.filter(t => t !== tagName)
       : [...selectedTags, tagName];
     
     setSelectedTags(newSelectedTags);
-    
-    // Reset pagination when filters change
-    mutateInfinite();
     setSize(1);
   };
 
