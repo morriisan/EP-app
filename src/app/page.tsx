@@ -9,7 +9,7 @@ export default function Home() {
             Engel Paradis
           </h1>
           <p className="text-lg text-theme-primary text-center mb-16 font-light">
-            Elegant bryllupsplanlegging og arrangementer for alle
+            Elegant bryllupsplanlegging og arrangementer i Oslo
           </p>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto w-full">

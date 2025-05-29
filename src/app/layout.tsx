@@ -1,5 +1,3 @@
-
-
 import { Geist, Geist_Mono } from "next/font/google";
 import "@uploadthing/react/styles.css";
 import "./globals.css";
@@ -67,28 +65,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="no" suppressHydrationWarning>
-      <script type="application/ld+json" suppressHydrationWarning>
-        {JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "EventVenue",
-          name: "Engel Paradis",
-          description: "Elegant bryllupsplanlegging og arrangementer i Oslo.",
-          url: "https://engelparadis.com",
-          telephone: "+47 900 52 670",
-          address: {
-            "@type": "PostalAddress",
-            streetAddress: "haavard martinsens vei 19",
-            addressLocality: "Oslo",
-            postalCode: "0978",
-            addressCountry: "NO"
-          },
-          geo: {
-            "@type": "GeoCoordinates",
-            latitude: 59.9309,
-            longitude: 10.7676
-          }
-        })}
-      </script>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="robots" content="index, follow" />
@@ -102,6 +78,28 @@ export default function RootLayout({
         <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
         <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16" />
         <link rel="apple-touch-icon" href="/logo.png" />
+        <script type="application/ld+json" suppressHydrationWarning>
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "EventVenue",
+            name: "Engel Paradis",
+            description: "Elegant bryllupsplanlegging og arrangementer i Oslo.",
+            url: "https://engelparadis.com",
+            telephone: "+47 900 52 670",
+            address: {
+              "@type": "PostalAddress",
+              streetAddress: "haavard martinsens vei 19",
+              addressLocality: "Oslo",
+              postalCode: "0978",
+              addressCountry: "NO"
+            },
+            geo: {
+              "@type": "GeoCoordinates",
+              latitude: 59.9309,
+              longitude: 10.7676
+            }
+          })}
+        </script>
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-pink-50 dark:bg-black transition-colors duration-200`}
