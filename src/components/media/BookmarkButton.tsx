@@ -5,6 +5,7 @@ import { BookmarkIcon, BookmarkPlusIcon } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { mutate } from "swr";
+import { Media } from "@/components/Interface/media";
 
 interface BookmarkButtonProps {
   mediaId: string;
@@ -14,6 +15,14 @@ interface BookmarkButtonProps {
     isBookmarked: boolean; 
     collections: { id: string; name: string; }[] 
   }) => void;
+}
+
+// Define types for the cache data structure
+interface MediaPageData {
+  media: Media[];
+  hasMore: boolean;
+  totalCount: number;
+  currentPage: number;
 }
 
 export function BookmarkButton({ 
@@ -49,10 +58,33 @@ export function BookmarkButton({
         onBookmarkChange(data);
       }
       
-      // Invalidate all relevant caches to ensure consistency across pages
-      mutate('/api/collections');
-      mutate(`/api/bookmarks?mediaId=${mediaId}`);
+      // Optimistically update all caches instead of invalidating
+      
+      // Update media gallery cache optimistically with better error handling
+      mutate(
+        key => typeof key === 'string' && key.includes('/api/media?page='),
+        (data: MediaPageData | undefined) => {
+          if (!data || !data.media || !Array.isArray(data.media)) return data;
+          // Update the media item's bookmark status in this page's cache
+          return {
+            ...data,
+            media: data.media.map((item: Media) => 
+              item.id === mediaId 
+                ? { ...item, isBookmarked: newBookmarkState.isBookmarked }
+                : item
+            )
+          };
+        },
+        { 
+          revalidate: false, // Don't revalidate, just update cache
+          populateCache: true, // Ensure the cache is populated
+          rollbackOnError: true // Automatically rollback on error
+        }
+      );
+
+      // Update bookmarks cache
       mutate('/api/bookmarks/all');
+      mutate('/api/collections');
       
       toast.success(isBookmarked ? "Removed from bookmarks" : "Added to bookmarks");
     } catch (error) {
@@ -62,6 +94,8 @@ export function BookmarkButton({
         isBookmarked: isBookmarked,
         collections: []
       });
+      // Also revert cache changes on error
+      mutate(key => typeof key === 'string' && key.includes('/api/media?page='));
       toast.error("Failed to update bookmark");
     }
   };

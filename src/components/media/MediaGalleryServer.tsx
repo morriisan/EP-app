@@ -27,7 +27,6 @@ export async function MediaGalleryServer({
         </p>
 
         <MediaGalleryClient 
-          initialMedia={media} 
           initialTags={allTags}
           initialSelectedTags={selectedTagsParam}
           isAdmin={isAdmin}
