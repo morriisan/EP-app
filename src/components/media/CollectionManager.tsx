@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSession } from "@/lib/auth-client";
@@ -23,11 +23,35 @@ const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 export function CollectionManager({ mediaId, initialCollections, onCollectionChange }: CollectionManagerProps) {
   const { data: session } = useSession();
-  const { data: collections = [], isLoading } = useSWR<Collection[]>('/api/collections', fetcher);
+  const { data: collections = [], isLoading } = useSWR<Collection[]>('/api/collections', fetcher, {
+    refreshInterval: 30000, // Refresh every 30 seconds instead of 5
+    revalidateOnFocus: true,
+    dedupingInterval: 10000 // Cache for 10 seconds
+  });
+  
+  // Fetch current collections for this specific media item
+  const { data: mediaCollections = [] } = useSWR<{ id: string; name: string; }[]>(
+    `/api/bookmarks/${mediaId}/collections`,
+    fetcher,
+    {
+      revalidateOnFocus: true,
+      dedupingInterval: 5000 // Cache for 5 seconds to prevent duplicate requests
+    }
+  );
+  
   const [selectedCollections, setSelectedCollections] = useState<string[]>(
     initialCollections?.map(c => c.id) || []
   );
   const [newCollectionName, setNewCollectionName] = useState("");
+
+  // Sync selectedCollections with both initialCollections prop changes and server data
+  useEffect(() => {
+    if (mediaCollections.length > 0) {
+      setSelectedCollections(mediaCollections.map(c => c.id));
+    } else if (initialCollections) {
+      setSelectedCollections(initialCollections.map(c => c.id));
+    }
+  }, [mediaCollections, initialCollections]);
 
   const createCollection = async () => {
     if (!newCollectionName.trim()) return;
@@ -81,6 +105,9 @@ export function CollectionManager({ mediaId, initialCollections, onCollectionCha
         updatedCollections.includes(c.id)
       ) || [];
       onCollectionChange(updatedCollectionObjects);
+
+      // Refresh both the main collections and media-specific collections
+      mutate(`/api/bookmarks/${mediaId}/collections`);
 
       toast.success(isRemoving 
         ? `Removed from ${collectionName}`

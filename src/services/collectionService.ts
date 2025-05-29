@@ -83,5 +83,50 @@ export const collectionService = {
         }
       }
     });
+  },
+
+  async deleteCollection(userId: string, collectionId: string) {
+    // First verify the user owns this collection
+    const collection = await prisma.collection.findFirst({
+      where: {
+        id: collectionId,
+        userId
+      }
+    });
+
+    if (!collection) {
+      throw new Error('Collection not found or access denied');
+    }
+
+    // Delete all collection bookmarks first, then the collection
+    await prisma.$transaction([
+      prisma.bookmarkCollection.deleteMany({
+        where: { collectionId }
+      }),
+      prisma.collection.delete({
+        where: { id: collectionId }
+      })
+    ]);
+
+    return { success: true };
+  },
+
+  async renameCollection(userId: string, collectionId: string, newName: string) {
+    // First verify the user owns this collection
+    const collection = await prisma.collection.findFirst({
+      where: {
+        id: collectionId,
+        userId
+      }
+    });
+
+    if (!collection) {
+      throw new Error('Collection not found or access denied');
+    }
+
+    return await prisma.collection.update({
+      where: { id: collectionId },
+      data: { name: newName }
+    });
   }
 }; 
