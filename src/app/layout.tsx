@@ -114,13 +114,14 @@ export default function RootLayout({
           />
           <main>
             {children}
-          </main>
+          </main> 
+          <Analytics />
+          <SpeedInsights />
           <ImpersonationFloatingButton />
           <Toaster />
           <Footer />
         </ThemeProvider>
-        <Analytics />
-        <SpeedInsights />
+        
       </body>
     </html>
   );
