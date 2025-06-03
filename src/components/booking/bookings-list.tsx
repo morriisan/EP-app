@@ -108,14 +108,11 @@ export function BookingsList({ bookings: initialBookings }: BookingsListProps) {
             </div>
 
             {booking.description && (
-              <p className="text-sm text-theme-default mt-2">
+              <div className="text-sm text-theme-default mt-2 space-y-1">
                 <div><span className="font-medium">Event Type:</span> <span className="capitalize">{booking.eventType.toLowerCase().replace('_', ' ')}</span></div>
                 <div><span className="font-medium">Number of Guests:</span> {booking.guestCount}</div>
-                <span className="font-medium">Special Requirements:</span> {booking.description}
-                
-                
-              </p>
-              
+                <div><span className="font-medium">Special Requirements:</span> {booking.description}</div>
+              </div>
             )}
 
            

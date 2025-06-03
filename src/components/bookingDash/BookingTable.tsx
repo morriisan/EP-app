@@ -35,6 +35,7 @@ export function BookingTable() {
   const [reviewNotes, setReviewNotes] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [bookingToReject, setBookingToReject] = useState<string | null>(null);
+  const [expandedDescriptions, setExpandedDescriptions] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     fetchBookings();
@@ -80,6 +81,18 @@ export function BookingTable() {
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to review booking');
     }
+  };
+
+  const toggleDescription = (bookingId: string) => {
+    setExpandedDescriptions(prev => ({
+      ...prev,
+      [bookingId]: !prev[bookingId]
+    }));
+  };
+
+  const truncateText = (text: string, maxLength: number = 100) => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
   };
 
   if (loading) {
@@ -138,7 +151,7 @@ export function BookingTable() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="flex flex-col gap-2">
+                      <div className="flex flex-col gap-2 max-w-[300px]">
                         <div>
                           <span className="font-medium">Event Type: </span>
                           <span className="text-sm">{booking.eventType}</span>
@@ -149,10 +162,22 @@ export function BookingTable() {
                         </div>
                         {booking.description && (
                           <div>
-                            <span className="font-medium">Special Requirements: </span>
-                            <p className="text-sm max-w-[200px] break-words">
-                              {booking.description}
-                            </p>
+                            <span className="font-medium">Special Requirements:</span>
+                            <div className="mt-1">
+                              <p className="text-sm break-words whitespace-pre-wrap">
+                                {expandedDescriptions[booking.id] 
+                                  ? booking.description 
+                                  : truncateText(booking.description, 100)}
+                              </p>
+                              {booking.description.length > 100 && (
+                                <button
+                                  onClick={() => toggleDescription(booking.id)}
+                                  className="text-xs text-blue-600 hover:text-blue-800 mt-1 underline"
+                                >
+                                  {expandedDescriptions[booking.id] ? 'Show less' : 'Show more'}
+                                </button>
+                              )}
+                            </div>
                           </div>
                         )}
                       </div>
