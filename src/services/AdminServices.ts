@@ -62,9 +62,7 @@ export async function changeRole(userId: string, role: string): Promise<void> {
 
 // Delete user
 export async function deleteUser(userId: string): Promise<void> {
-  if (!confirm("Are you sure you want to delete this user? This action cannot be undone.")) {
-    return;
-  }
+
 
   await authClient.admin.removeUser({ userId });
 }

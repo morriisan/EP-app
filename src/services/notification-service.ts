@@ -57,7 +57,7 @@ async function sendEmailWithRetry(emailConfig: EmailConfig, retries = 3, delayMs
 export const notificationService = {
   // Send notification when a booking is created
   async sendBookingCreatedNotification(booking: BookingWithUser) {
-    const adminEmail = "morrisan2001@gmail.com";
+    const adminEmail = process.env.ADMIN_EMAIL;
     if (!adminEmail) throw new Error("Admin email not configured");
 
     try {

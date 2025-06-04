@@ -14,13 +14,14 @@ import { toast } from "sonner";
 
 interface BookingHistory {
   id: string;
-  userId: string;
+  userId?: string;
   date: string;
   status: 'PENDING' | 'WAITLISTED' | 'APPROVED' | 'REJECTED' | 'CANCELLED';
   reason: 'CANCELLED' | 'PAST_DATE' | 'REJECTED';
   reviewNote?: string;
   movedToHistoryAt: string;
-  user: {
+  user?: {
+    id?: string;
     name: string;
     email: string;
   };
@@ -111,8 +112,8 @@ export function BookingHistoryTable() {
                   </TableCell>
                   <TableCell>
                     <div className="flex flex-col">
-                      <span className="font-medium">{booking.user.name}</span>
-                      <span className="text-sm text-muted-foreground">{booking.user.email}</span>
+                      <span className="font-medium">{booking.user?.name || '-'}</span>
+                      <span className="text-sm text-muted-foreground">{booking.user?.email || '-'}</span>
                     </div>
                   </TableCell>
                   <TableCell>

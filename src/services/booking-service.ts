@@ -214,11 +214,16 @@ export const bookingService = {
   },
 
   // Move a booking to history
-  async moveToHistory(booking: Booking, reason: "CANCELLED" | "PAST_DATE" | "REJECTED") {
+  async moveToHistory(
+    booking: Booking & { user?: { name: string; email: string } }, 
+    reason: "CANCELLED" | "PAST_DATE" | "REJECTED"
+  ) {
     return prisma.$transaction([
       prisma.bookingHistory.create({
         data: {
           userId: booking.userId,
+          userName: booking.user?.name,      
+          userEmail: booking.user?.email,   
           date: booking.date,
           eventType: booking.eventType,
           guestCount: booking.guestCount,
@@ -269,7 +274,15 @@ export const bookingService = {
         date: {
           lt: today
         }
-      }
+      },
+      include: {
+        user: {
+          select: {
+            name: true,
+            email: true,
+          },
+        },
+      },
     });
 
     for (const booking of pastBookings) {
@@ -293,7 +306,7 @@ export const bookingService = {
 
   // Get all booking history records (admin only)
   async getAllBookingHistory() {
-    return prisma.bookingHistory.findMany({
+    const historyRecords = await prisma.bookingHistory.findMany({
       include: {
         user: {
           select: {
@@ -307,6 +320,16 @@ export const bookingService = {
         { movedToHistoryAt: 'desc' },
       ],
     });
+
+    // Transform the records to handle deleted users
+    return historyRecords.map(record => ({
+      ...record,
+      user: record.user || {
+        id: null,
+        name: record.userName || 'Deleted User',
+        email: record.userEmail || 'N/A',
+      }
+    }));
   },
 
   // Get all history for a specific date
