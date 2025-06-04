@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { Media } from "@/components/Interface/media";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect} from "react";
 import { BookmarkButton } from "./BookmarkButton";
 import { CollectionManager } from "./CollectionManager";
 import { Button } from "@/components/ui/button";
@@ -40,38 +40,13 @@ export function MediaCard({
   const [showFullImage, setShowFullImage] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showTagManager, setShowTagManager] = useState(false);
-  const [shouldPreload, setShouldPreload] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(media.isBookmarked ?? initialIsBookmarked);
   const [collections, setCollections] = useState(initialCollections);
-  const cardRef = useRef<HTMLDivElement>(null);
-
 
   // Update bookmark state when media prop changes
   useEffect(() => {
     setIsBookmarked(media.isBookmarked ?? initialIsBookmarked);
   }, [media.isBookmarked, initialIsBookmarked]);
-
-  // Intersection Observer for viewport-based preloading
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            // Start preloading when image enters viewport
-            setShouldPreload(true);
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { rootMargin: '50px' } // Start preloading 50px before entering viewport
-    );
-
-    if (cardRef.current) {
-      observer.observe(cardRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
 
   const handleBookmarkChange = (bookmarkData: { isBookmarked: boolean; collections: { id: string; name: string; }[] }) => {
     setIsBookmarked(bookmarkData.isBookmarked);
@@ -88,9 +63,7 @@ export function MediaCard({
 
   return (
     <div 
-      ref={cardRef}
       className="relative group"
-      onMouseEnter={() => setShouldPreload(true)}
     >
       <div className="border rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow duration-200">
         <div className="relative aspect-square cursor-pointer" onClick={() => setShowFullImage(true)}>
@@ -99,7 +72,7 @@ export function MediaCard({
             alt={media.title || "Uploaded media"}
             fill
             className="object-cover"
-            priority
+            
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             placeholder="blur"
             blurDataURL={media.blurDataURL || "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHZpZXdCb3g9IjAgMCAxMCAxMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjZjNmNGY2Ii8+Cjwvc3ZnPgo="}
@@ -184,23 +157,6 @@ export function MediaCard({
         )}
       </div>
 
-      {/* Hidden preload image for full-size version */}
-      {shouldPreload && (
-        <div className="absolute -z-10 opacity-0 pointer-events-none">
-          <Image
-            src={media.url}
-            alt=""
-            width={1200}
-            height={800}
-            priority
-            sizes="100vw"
-            placeholder="blur"
-            blurDataURL={media.blurDataURL || "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHZpZXdCb3g9IjAgMCAxMCAxMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjZjNmNGY2Ii8+Cjwvc3ZnPgo="}
-            style={{ display: 'none' }}
-          />
-        </div>
-      )}
-
       {/* Collections Dialog */}
       <Dialog open={showCollections} onOpenChange={setShowCollections}>
         <DialogContent className="sm:max-w-md">
@@ -227,7 +183,6 @@ export function MediaCard({
             width={1200}
             height={800}
             className="max-w-[95vw] max-h-[95vh] min-h-[50vh] w-auto h-auto object-contain"
-            priority
             placeholder="blur"
             blurDataURL={media.blurDataURL || "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHZpZXdCb3g9IjAgMCAxMCAxMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjZjNmNGY2Ii8+Cjwvc3ZnPgo="}
           />
