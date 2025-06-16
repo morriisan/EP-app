@@ -10,12 +10,13 @@ const nextConfig: NextConfig = {
         hostname: "**.ufs.sh", // Allows any UploadThing-hosted images
       },
     ],
-    // Optimize image generation to reduce cache writes while maintaining quality
-    deviceSizes: [640, 768, 1024, 1280, 1920],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384, 512, 640],
-    minimumCacheTTL: 31536000, // Cache for 1 year (31536000 seconds)
+    // MINIMAL config: 640px for thumbnails + 1200px for dialogs + 1280px for high-DPI thumbnails
+    deviceSizes: [640, 1200], 
+    imageSizes: [], // Empty array = no additional image sizes
+    minimumCacheTTL: 2678400, // Cache for 1 year
     formats: ['image/webp'],
-  },
-};
+    
+    },
+  };
 
 export default nextConfig;

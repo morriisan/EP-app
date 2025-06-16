@@ -72,8 +72,7 @@ export function MediaCard({
             alt={media.title || "Uploaded media"}
             fill
             className="object-cover"
-            sizes="(max-width: 640px) 320px, (max-width: 768px) 384px, (max-width: 1024px) 512px, 640px"
-            quality={75}
+            sizes="640px"
             placeholder="blur"
             blurDataURL={media.blurDataURL || "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHZpZXdCb3g9IjAgMCAxMCAxMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjZjNmNGY2Ii8+Cjwvc3ZnPgo="}
           />
