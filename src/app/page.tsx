@@ -1,9 +1,24 @@
-export default function Home() {
+import Image from "next/image";
+import Link from "next/link";
+import { mediaService } from "@/services/mediaService";
+
+export default async function Home() {
+  const featuredMedia = (await mediaService.getAllMedia()).slice(0, 3);
+
   return (
     <>
-      <main className="container mx-auto px-6">
+      <div className="relative isolate overflow-x-clip">
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 h-[40rem] opacity-60 blur-3xl"
+          style={{
+            background:
+              "radial-gradient(circle at 20% 20%, rgba(236, 72, 153, 0.18), transparent 45%), radial-gradient(circle at 80% 10%, rgba(139, 92, 246, 0.15), transparent 45%)",
+          }}
+        />
+        <main className="container mx-auto px-6 relative z-10">
+
         {/* Hero Section */}
-        <section className="flex flex-col items-center justify-center py-20">
+        <section className="relative flex flex-col items-center justify-center py-20">
           <span className="text-theme-accent-primary italic text-2xl mb-2 font-light">Velkommen til</span>
           <h1 className="text-5xl md:text-7xl text-center font-extralight tracking-[0.2em] text-theme-primary mb-4">
             Engel Paradis
@@ -13,24 +28,68 @@ export default function Home() {
           </p>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto w-full">
-            <a 
-              href="/gallery" 
+            <Link
+              href="/gallery"
               className="px-12 py-4 bg-theme-section-primary hover:bg-theme-hover-primary text-theme-primary rounded-2xl border-2 border-theme-border-default 
                        shadow-md transition duration-300 text-lg hover:scale-105 text-center"
             >
               Gallery
-            </a>
-            <a 
-              href="/booking" 
+            </Link>
+            <Link
+              href="/booking"
               className="px-12 py-4 bg-theme-section-primary hover:bg-theme-hover-secondary text-theme-secondary rounded-2xl border-2 border-theme-border-secondary
                        shadow-md transition duration-300 text-lg hover:scale-105 text-center"
             >
               Book Date
-            </a>
+            </Link>
           </div>
         </section>
 
         <div className="divider"></div>
+
+        <section className="mt-16">
+          <div className="flex items-end justify-between mb-6">
+            <div>
+              <h2 className="text-3xl font-light text-theme-primary">Featured Moments</h2>
+              <p className="text-theme-accent-primary font-light mt-1">
+                Et lite glimt av kjærlighet
+              </p>
+            </div>
+            <Link
+              href="/gallery"
+              className="text-sm md:text-base text-theme-primary border-b border-theme-border-default hover:border-theme-accent-primary transition-colors"
+            >
+              Se hele galleriet
+            </Link>
+          </div>
+
+          {featuredMedia.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {featuredMedia.map((item, index) => (
+                <Link
+                  key={item.id}
+                  href="/gallery"
+                  className="group relative block overflow-hidden rounded-2xl border border-theme-border-default bg-theme-section-primary shadow-md"
+                >
+                  <div className="relative aspect-[4/5]">
+                    <Image
+                      src={item.url}
+                      alt={item.title || "Gallery image"}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover transition-transform duration-500 "
+                    />
+                   
+                  </div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-theme-border-default bg-theme-section-primary p-8 text-center text-theme-primary">
+              Ingen bilder enda - legg til media i galleriet for aa vise highlights her.
+            </div>
+          )}
+        </section>
         
         {/* Features Section */}
         <section className="mt-20 py-12 bg-theme-section-primary rounded-lg shadow-xl">
@@ -86,7 +145,8 @@ export default function Home() {
             </div>
           </div>
         </section>
-      </main>
+        </main>
+      </div>
 
       
     </>
