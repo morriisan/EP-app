@@ -20,17 +20,18 @@ interface CollectionManagerProps {
 }
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
+const EMPTY_COLLECTIONS: { id: string; name: string; }[] = [];
 
 export function CollectionManager({ mediaId, initialCollections, onCollectionChange }: CollectionManagerProps) {
   const { data: session } = useSession();
-  const { data: collections = [], isLoading } = useSWR<Collection[]>('/api/collections', fetcher, {
+  const { data: collectionsData, isLoading } = useSWR<Collection[]>('/api/collections', fetcher, {
     refreshInterval: 30000, // Refresh every 30 seconds instead of 5
     revalidateOnFocus: true,
     dedupingInterval: 10000 // Cache for 10 seconds
   });
   
   // Fetch current collections for this specific media item
-  const { data: mediaCollections = [] } = useSWR<{ id: string; name: string; }[]>(
+  const { data: mediaCollectionsData } = useSWR<{ id: string; name: string; }[]>(
     `/api/bookmarks/${mediaId}/collections`,
     fetcher,
     {
@@ -38,6 +39,9 @@ export function CollectionManager({ mediaId, initialCollections, onCollectionCha
       dedupingInterval: 5000 // Cache for 5 seconds to prevent duplicate requests
     }
   );
+
+  const collections = collectionsData ?? EMPTY_COLLECTIONS;
+  const mediaCollections = mediaCollectionsData ?? EMPTY_COLLECTIONS;
   
   const [selectedCollections, setSelectedCollections] = useState<string[]>(
     initialCollections?.map(c => c.id) || []
@@ -46,11 +50,20 @@ export function CollectionManager({ mediaId, initialCollections, onCollectionCha
 
   // Sync selectedCollections with both initialCollections prop changes and server data
   useEffect(() => {
-    if (mediaCollections.length > 0) {
-      setSelectedCollections(mediaCollections.map(c => c.id));
-    } else if (initialCollections) {
-      setSelectedCollections(initialCollections.map(c => c.id));
-    }
+    const nextSelected = mediaCollections.length > 0
+      ? mediaCollections.map(c => c.id)
+      : (initialCollections?.map(c => c.id) ?? []);
+
+    setSelectedCollections((prevSelected) => {
+      if (
+        prevSelected.length === nextSelected.length &&
+        prevSelected.every((id, index) => id === nextSelected[index])
+      ) {
+        return prevSelected;
+      }
+
+      return nextSelected;
+    });
   }, [mediaCollections, initialCollections]);
 
   const createCollection = async () => {
