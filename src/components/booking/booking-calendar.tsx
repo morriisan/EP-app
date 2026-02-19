@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Calendar } from "@/components/ui/calendar";
 import { format } from 'date-fns';
 
@@ -23,8 +23,24 @@ export function BookingCalendar({ bookedDates: initialBookedDates, userBookings,
   const [internalSelectedDate, setInternalSelectedDate] = useState<Date | undefined>(undefined);
   const selectedDate = externalSelectedDate ?? internalSelectedDate;
   const [bookedDates, setBookedDates] = useState(initialBookedDates);
+  const [displayMonth, setDisplayMonth] = useState<Date>(selectedDate ?? new Date());
+
+  const monthRange = useMemo(() => {
+    const today = new Date();
+    return {
+      startMonth: new Date(today.getFullYear(), today.getMonth(), 1),
+      endMonth: new Date(today.getFullYear() + 10, 11, 1),
+    };
+  }, []);
+
+  useEffect(() => {
+    if (selectedDate) {
+      setDisplayMonth(selectedDate);
+    }
+  }, [selectedDate]);
 
   const handleMonthChange = async (month: Date) => {
+    setDisplayMonth(month);
     try {
       const response = await fetch(`/api/calendar?month=${month.toISOString()}`);
       if (!response.ok) throw new Error('Failed to fetch calendar data');
@@ -84,7 +100,11 @@ export function BookingCalendar({ bookedDates: initialBookedDates, userBookings,
         mode="single"
         selected={selectedDate}
         onSelect={handleDateSelect}
+        
         className="rounded-md bg-white dark:bg-black text-theme-default"
+        captionLayout="dropdown"
+        startMonth={monthRange.startMonth}
+        endMonth={monthRange.endMonth}
         disabled={(date) => isDateInPast(date) || hasUserBooking(date)}
         modifiers={{
           userBooked: (date) => hasUserBooking(date) && !isDatePending(date),
