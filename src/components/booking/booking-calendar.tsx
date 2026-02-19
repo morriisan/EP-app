@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Calendar } from "@/components/ui/calendar";
 import { format } from 'date-fns';
+import { enUS } from 'date-fns/locale';
 
 
 interface BookingCalendarProps {
@@ -100,7 +101,8 @@ export function BookingCalendar({ bookedDates: initialBookedDates, userBookings,
         mode="single"
         selected={selectedDate}
         onSelect={handleDateSelect}
-        
+        month={displayMonth}
+        locale={enUS}
         className="rounded-md bg-white dark:bg-black text-theme-default"
         captionLayout="dropdown"
         startMonth={monthRange.startMonth}
