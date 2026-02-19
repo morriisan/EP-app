@@ -13,7 +13,7 @@ export function TagFilter({ tags, selectedTags, onTagSelect }: TagFilterProps) {
         <button
           key={tag.id}
           onClick={() => onTagSelect(tag.name)}
-          className={`px-5 py-2 rounded-md text-sm transition duration-200 hover:scale-105 ${
+          className={`px-5 py-2 rounded-md text-sm transition duration-200 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent-primary focus-visible:ring-offset-2 ${
             selectedTags.includes(tag.name)
               ? "bg-theme-accent-primary text-white shadow-md"
               : "bg-theme-section-primary text-theme-primary hover:bg-theme-hover-primary border border-theme-border-default"

@@ -74,9 +74,9 @@ export function BookingForm({ date, onSuccess, isLoggedIn }: BookingFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
-      <div className="space-y-6">
-        <div className="space-y-2">
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="space-y-4">
+        <div className="space-y-1.5">
           <Label htmlFor="eventType" className="text-base font-medium text-gray-900 dark:text-white ">
             Event Type <span className="text-red-500">*</span>
           </Label>
@@ -85,7 +85,7 @@ export function BookingForm({ date, onSuccess, isLoggedIn }: BookingFormProps) {
             onValueChange={setEventType}
             disabled={!isLoggedIn}
           >
-            <SelectTrigger className="w-full bg-theme-accent-secondary">
+            <SelectTrigger className="w-full bg-theme-accent-secondary focus-visible:ring-2 focus-visible:ring-theme-accent-primary focus-visible:ring-offset-2">
               <SelectValue placeholder="Select event type" />
             </SelectTrigger>
             <SelectContent>
@@ -98,7 +98,7 @@ export function BookingForm({ date, onSuccess, isLoggedIn }: BookingFormProps) {
           </Select>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           <Label htmlFor="guestCount" className="text-base font-medium text-gray-900 dark:text-white">
             Number of Guests <span className="text-red-500">*</span>
           </Label>
@@ -110,11 +110,11 @@ export function BookingForm({ date, onSuccess, isLoggedIn }: BookingFormProps) {
             onChange={(e) => setGuestCount(e.target.value)}
             placeholder="Enter expected number of guests"
             disabled={!isLoggedIn}
-            className="w-full bg-theme-accent-secondary text-gray-900 dark:text-gray-100"
+            className="w-full bg-theme-accent-secondary text-gray-900 dark:text-gray-100 focus-visible:ring-2 focus-visible:ring-theme-accent-primary focus-visible:ring-offset-2"
           />
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           <Label htmlFor="phoneNumber" className="text-base font-medium text-gray-900 dark:text-white">
             Phone Number <span className="text-red-500">*</span>
           </Label>
@@ -125,11 +125,11 @@ export function BookingForm({ date, onSuccess, isLoggedIn }: BookingFormProps) {
             onChange={(e) => setPhoneNumber(e.target.value)}
             placeholder="Enter your phone number"
             disabled={!isLoggedIn}
-            className="w-full bg-theme-accent-secondary text-gray-900 dark:text-gray-100"
+            className="w-full bg-theme-accent-secondary text-gray-900 dark:text-gray-100 focus-visible:ring-2 focus-visible:ring-theme-accent-primary focus-visible:ring-offset-2"
           />
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           <Label htmlFor="description" className="text-base font-medium text-gray-900 dark:text-white">
             Special Requirements and Notes
           </Label>
@@ -139,7 +139,7 @@ export function BookingForm({ date, onSuccess, isLoggedIn }: BookingFormProps) {
             onChange={(e) => setDescription(e.target.value)}
             placeholder={isLoggedIn ? "Please describe your event and any special requirements or multiple dates..." : "Please sign in to make a booking"}
             disabled={!isLoggedIn}
-            className="w-full min-h-[100px]  text-base p-4 bg-theme-accent-secondary text-gray-900 dark:text-gray-100 border-0  placeholder:text-gray-500"
+            className="w-full min-h-[100px] text-base p-4 bg-theme-accent-secondary text-gray-900 dark:text-gray-100 border-0 placeholder:text-gray-500 focus-visible:ring-2 focus-visible:ring-theme-accent-primary focus-visible:ring-offset-2"
           />
         </div>
       </div>
@@ -148,7 +148,7 @@ export function BookingForm({ date, onSuccess, isLoggedIn }: BookingFormProps) {
         <Button 
           type="submit" 
           disabled={isSubmitting || !isLoggedIn}
-          className={`px-8 py-2.5 text-base bg-theme-accent-primary hover:bg-black/80 text-white ${!isLoggedIn ? 'opacity-50 dark:opacity-40 cursor-not-allowed' : ''}`}
+          className="px-8 py-2.5 text-base bg-theme-accent-primary hover:bg-black/80 text-white disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none focus-visible:ring-2 focus-visible:ring-theme-accent-primary focus-visible:ring-offset-2"
         >
           {!isLoggedIn ? 'Please Sign In' : isSubmitting ? 'Submitting...' : 'Submit Request'}
         </Button>

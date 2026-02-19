@@ -14,7 +14,7 @@ export async function MediaGalleryServer({
   const allTags = await mediaService.getAllTags();
   
   // Fetch media with tag filtering 
-  const media = await mediaService.getAllMedia(selectedTagsParam);
+  const media = await mediaService.getAllMedia(selectedTagsParam, 12);
 
   return (
     <div className="container mx-auto py-12 px-2">

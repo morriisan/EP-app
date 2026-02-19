@@ -91,7 +91,7 @@ export function MainNav() {
       <nav className="container mx-auto px-4 py-4 flex justify-between items-center" aria-label="Main navigation">
         <Link 
           href="/" 
-          className="text-2xl text-theme-primary font-light"
+          className="text-2xl text-theme-primary font-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent-primary focus-visible:ring-offset-2 rounded-sm"
           aria-label="Engel Paradis home"
         >
           Engel Paradis
@@ -109,7 +109,7 @@ export function MainNav() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`text-theme-primary hover:text-theme-hover-text  ${isActive(link.href)}`}
+                  className={`text-theme-primary hover:text-theme-hover-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent-primary focus-visible:ring-offset-2 rounded-sm ${isActive(link.href)}`}
                   onClick={link.onClick}
                 >
                   {link.label}
@@ -120,7 +120,7 @@ export function MainNav() {
             {/* Dark Mode Toggle Button */}
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent-primary focus-visible:ring-offset-2"
               aria-label="Toggle Dark Mode"
             >
               {mounted && (
@@ -140,7 +140,7 @@ export function MainNav() {
             {/* Dark Mode Toggle Button */}
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent-primary focus-visible:ring-offset-2"
               aria-label="Toggle Dark Mode"
             >
               {mounted && (
@@ -153,7 +153,7 @@ export function MainNav() {
             </button>
             
             <button 
-              className="text-theme-primary"
+              className="text-theme-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent-primary focus-visible:ring-offset-2 rounded-sm"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={isMobileMenuOpen}
@@ -191,7 +191,7 @@ export function MainNav() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`text-theme-primary hover:text-theme-hover-text ${isActive(link.href)}`}
+                    className={`text-theme-primary hover:text-theme-hover-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent-primary focus-visible:ring-offset-2 rounded-sm ${isActive(link.href)}`}
                     onClick={() => {
                       setIsMobileMenuOpen(false);
                       if (link.onClick) link.onClick();

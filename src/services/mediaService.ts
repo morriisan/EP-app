@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 
 export const mediaService = {
-  async getAllMedia(tagFilter?: string[]) {
+  async getAllMedia(tagFilter?: string[], take?: number) {
     return await prisma.media.findMany({
       where: {
         ...(tagFilter && tagFilter.length > 0 && {
@@ -26,6 +26,7 @@ export const mediaService = {
       orderBy: {
         uploadedAt: "desc",
       },
+      ...(typeof take === "number" ? { take } : {}),
     });
   },
 

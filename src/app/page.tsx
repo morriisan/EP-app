@@ -31,14 +31,16 @@ export default async function Home() {
             <Link
               href="/gallery"
               className="px-12 py-4 bg-theme-section-primary hover:bg-theme-hover-primary text-theme-primary rounded-2xl border-2 border-theme-border-default 
-                       shadow-md transition duration-300 text-lg hover:scale-105 text-center"
+                       shadow-md transition duration-300 text-lg hover:scale-105 text-center
+                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent-primary focus-visible:ring-offset-2"
             >
               Gallery
             </Link>
             <Link
               href="/booking"
               className="px-12 py-4 bg-theme-section-primary hover:bg-theme-hover-secondary text-theme-secondary rounded-2xl border-2 border-theme-border-secondary
-                       shadow-md transition duration-300 text-lg hover:scale-105 text-center"
+                       shadow-md transition duration-300 text-lg hover:scale-105 text-center
+                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent-primary focus-visible:ring-offset-2"
             >
               Book Date
             </Link>
@@ -57,19 +59,21 @@ export default async function Home() {
             </div>
             <Link
               href="/gallery"
-              className="text-sm md:text-base text-theme-primary border-b border-theme-border-default hover:border-theme-accent-primary transition-colors"
+              className="text-sm md:text-base text-theme-primary border-b border-theme-border-default hover:border-theme-accent-primary transition-colors
+                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent-primary focus-visible:ring-offset-2"
             >
               Se hele galleriet
             </Link>
           </div>
 
           {featuredMedia.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
               {featuredMedia.map((item, index) => (
                 <Link
                   key={item.id}
                   href="/gallery"
-                  className="group relative block overflow-hidden rounded-2xl border border-theme-border-default bg-theme-section-primary shadow-md"
+                  className="group relative block overflow-hidden rounded-2xl border border-theme-border-default bg-theme-section-primary shadow-md
+                             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent-primary focus-visible:ring-offset-2"
                 >
                   <div className="relative aspect-[4/5]">
                     <Image
@@ -82,8 +86,11 @@ export default async function Home() {
                    
                   </div>
                 </Link>
+                
               ))}
+              
             </div>
+            
           ) : (
             <div className="rounded-2xl border border-theme-border-default bg-theme-section-primary p-8 text-center text-theme-primary">
               Ingen bilder enda - legg til media i galleriet for aa vise highlights her.
@@ -106,12 +113,12 @@ export default async function Home() {
               {/* Personal Planning Feature */}
               <div className="flex flex-col items-center">
                 <div className="w-20 h-20 rounded-full flex items-center justify-center mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-pink-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-theme-accent-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
                 </div>
-                <h3 className="text-xl text-pink-800 mb-2">Personlig planlegging</h3>
-                <p className="text-center text-pink-700">
+                <h3 className="text-xl text-theme-primary mb-2">Personlig planlegging</h3>
+                <p className="text-center text-theme-primary">
                   Skreddersydd bryllupsdesign som gjenspeiler deres unike kjærlighetshistorie
                 </p>
               </div>
@@ -119,13 +126,13 @@ export default async function Home() {
               {/* Venue Feature */}
               <div className="flex flex-col items-center">
                 <div className="w-20 h-20 rounded-full flex items-center justify-center mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-theme-accent-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 22V12h6v10" />
                   </svg>
                 </div>
-                <h3 className="text-xl text-purple-800 mb-2">Utsøkt sted</h3>
-                <p className="text-center text-purple-700">
+                <h3 className="text-xl text-theme-primary mb-2">Utsøkt sted</h3>
+                <p className="text-center text-theme-primary">
                   Et fantastisk, tilpassbart rom for din spesielle dag
                 </p>
               </div>
@@ -133,12 +140,12 @@ export default async function Home() {
               {/* Cultural Expertise Feature */}
               <div className="flex flex-col items-center">
                 <div className="w-20 h-20 rounded-full flex items-center justify-center mb-4 ">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-theme-accent-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                   </svg>
                 </div>
-                <h3 className="text-xl text-rose-800 mb-2">Kulturell ekspertise</h3>
-                <p className="text-center text-rose-700">
+                <h3 className="text-xl text-theme-primary mb-2">Kulturell ekspertise</h3>
+                <p className="text-center text-theme-primary">
                   Spesialisert på kulturelle bryllupstradisjoner
                 </p>
               </div>
