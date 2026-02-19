@@ -1,9 +1,25 @@
 import Image from "next/image";
 import Link from "next/link";
-import { mediaService } from "@/services/mediaService";
 
-export default async function Home() {
-  const featuredMedia = (await mediaService.getAllMedia()).slice(0, 3);
+const featuredMedia = [
+  {
+    id: "manual-1",
+    url: "https://wfiadop71w.ufs.sh/f/W4XJeOQccmxRs3nvJ9U0Gnk2T8BrhaV5iHmA4pcelbx6PyK9",
+    title: "Featured moment 1",
+  },
+  {
+    id: "manual-2",
+    url: "https://wfiadop71w.ufs.sh/f/W4XJeOQccmxRUl1ReHdUAI634sblYp7Vc8Wh2NPZGOjwLzeD",
+    title: "Featured moment 2",
+  },
+  {
+    id: "manual-3",
+    url: "https://wfiadop71w.ufs.sh/f/W4XJeOQccmxRWmuwBaccmxRj0AvdJN76seMVo5wp32XfybBL",
+    title: "Featured moment 3",
+  },
+].filter((item) => item.url.trim().length > 0);
+
+export default function Home() {
 
   return (
     <>
