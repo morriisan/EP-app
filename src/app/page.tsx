@@ -68,7 +68,7 @@ export default async function Home() {
 
           {featuredMedia.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-              {featuredMedia.map((item, index) => (
+              {featuredMedia.map((item) => (
                 <Link
                   key={item.id}
                   href="/gallery"
