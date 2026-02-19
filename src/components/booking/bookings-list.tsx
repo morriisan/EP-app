@@ -48,14 +48,19 @@ export function BookingsList({ bookings: initialBookings }: BookingsListProps) {
   };
 
   const getStatusColor = (status: string) => {
-    switch (status) {
+    const normalizedStatus = status === "WAITLISTED" ? "PENDING" : status;
+
+    switch (normalizedStatus) {
       case "APPROVED": return "text-green-600 bg-green-100";
       case "PENDING": return "text-yellow-600 bg-yellow-100";
-      case "WAITLISTED": return "text-purple-600 bg-purple-100";
       case "REJECTED": return "text-red-600 bg-red-100";
       case "CANCELLED": return "text-gray-600 bg-gray-100";
       default: return "text-gray-600 bg-gray-100";
     }
+  };
+
+  const getDisplayStatus = (status: string) => {
+    return status === "WAITLISTED" ? "PENDING" : status;
   };
 
   const isBookingInPast = (date: Date | string) => {
@@ -98,7 +103,7 @@ export function BookingsList({ bookings: initialBookings }: BookingsListProps) {
                 )}
               </div>
               <span className={`px-2 py-1 rounded-full text-sm font-medium ${getStatusColor(booking.status)}`}>
-                {booking.status}
+                {getDisplayStatus(booking.status)}
               </span>
             </div>
 
@@ -122,12 +127,6 @@ export function BookingsList({ bookings: initialBookings }: BookingsListProps) {
               </p>
             )}
 
-            {booking.waitlistPos && (
-              <p className="text-sm text-purple-600">
-                Waitlist Position: #{booking.waitlistPos}
-              </p>
-            )}
-
             {booking.status !== "CANCELLED" && (
               <div className="pt-2">
                 <Button
@@ -145,4 +144,4 @@ export function BookingsList({ bookings: initialBookings }: BookingsListProps) {
       </div>
     </>
   );
-} 
+}

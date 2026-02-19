@@ -19,6 +19,10 @@ interface BookingHistory {
   reviewNote: string | null;
 }
 
+const getDisplayStatus = (status: BookingStatus) => {
+  return status === "WAITLISTED" ? "PENDING" : status;
+};
+
 function BookingHistoryList({ bookings }: { bookings: BookingHistory[] }) {
   if (bookings.length === 0) {
     return (
@@ -65,8 +69,7 @@ function BookingHistoryList({ bookings }: { bookings: BookingHistory[] }) {
           )}
 
           <div className="text-sm text-theme-default">
-            Original Status: {booking.status}
-            {booking.waitlistPos && ` (Waitlist #${booking.waitlistPos})`}
+            Original Status: {getDisplayStatus(booking.status)}
           </div>
         </div>
       ))}

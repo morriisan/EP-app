@@ -61,19 +61,9 @@ export function BookingCalendar({ bookedDates: initialBookedDates, userBookings,
     );
   };
 
-  const isDateBooked = (date: Date) => {
-    const booking = getDateBooking(date);
-    return booking?.status === 'APPROVED';
-  };
-
   const isDatePending = (date: Date) => {
     const booking = getDateBooking(date);
     return booking?.status === 'PENDING' ;
-  };
-
-  const isDateWaitlist = (date: Date) => {
-    const booking = getDateBooking(date);
-    return booking?.status === 'WAITLISTED';
   };
 
   const hasUserBooking = (date: Date) => {
@@ -99,16 +89,10 @@ export function BookingCalendar({ bookedDates: initialBookedDates, userBookings,
         modifiers={{
           userBooked: (date) => hasUserBooking(date) && !isDatePending(date),
           userBookedPending: (date) => hasUserBooking(date) && isDatePending(date),
-          booked: (date) => isDateBooked(date) && !hasUserBooking(date),
-          pending: (date) => isDatePending(date) && !hasUserBooking(date),
-          waitlist: (date) => isDateWaitlist(date) && hasUserBooking(date) && !isDatePending(date),
         }}
         modifiersClassNames={{
           userBooked: 'bg-red-800 ',
           userBookedPending: 'bg-red-800 cursor-not-allowed',
-          booked: 'bg-yellow-600  cursor-pointer',
-          pending: 'bg-yellow-600  cursor-pointer',
-          waitlist: 'bg-blue-800 cursor-not-allowed',
         }}
         onMonthChange={handleMonthChange}
       />

@@ -7,7 +7,7 @@ import { notificationService } from "@/services/notification-service";
 export const POST = requireAuth(async (req: Request, session) => {
   try {
     const body = await req.json();
-    const { date, eventType, guestCount, description } = body;
+    const { date, eventType, guestCount, description, phoneNumber } = body;
 
     if (!date) {
       return NextResponse.json(
@@ -30,21 +30,33 @@ export const POST = requireAuth(async (req: Request, session) => {
       );
     }
 
+    if (!phoneNumber || !String(phoneNumber).trim()) {
+      return NextResponse.json(
+        { error: "Phone number is required" },
+        { status: 400 }
+      );
+    }
+
+    const composedDescription = [
+      `Phone: ${String(phoneNumber).trim()}`,
+      description?.trim(),
+    ]
+      .filter(Boolean)
+      .join("\n\n");
+
     const booking = await bookingService.createBooking(
       session.user.id,
       new Date(date),
       eventType,
       guestCount,
-      description
+      composedDescription
     );
 
     // Send notifications based on booking status
     try {
-      if (booking.status === 'WAITLISTED') {
-        await notificationService.sendWaitlistNotification(booking);
-      } else {
+    
         await notificationService.sendBookingCreatedNotification(booking);
-      }
+      
     } catch (error) {
       console.error("Error sending notifications:", error);
     }

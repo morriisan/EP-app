@@ -11,22 +11,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 interface BookingFormProps {
   date: Date;
   onSuccess: () => void;
-  waitlistCount?: number;
-  isPending: boolean;
   isLoggedIn: boolean;
 }
 
-export function BookingForm({ date, onSuccess, waitlistCount, isPending, isLoggedIn }: BookingFormProps) {
+export function BookingForm({ date, onSuccess, isLoggedIn }: BookingFormProps) {
   const [description, setDescription] = useState('');
   const [eventType, setEventType] = useState('');
   const [guestCount, setGuestCount] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isLoggedIn) return;
     
-    if (!eventType || !guestCount) {
+    if (!eventType || !guestCount || !phoneNumber.trim()) {
       toast.error('Please fill in all required fields');
       return;
     }
@@ -45,7 +44,8 @@ export function BookingForm({ date, onSuccess, waitlistCount, isPending, isLogge
           date: bookingDate,
           eventType,
           guestCount: parseInt(guestCount),
-          description
+          description,
+          phoneNumber: phoneNumber.trim(),
         })
       });
 
@@ -54,17 +54,14 @@ export function BookingForm({ date, onSuccess, waitlistCount, isPending, isLogge
         throw new Error(error.error || 'Failed to create booking');
       }
 
-      const booking = await res.json();
+      await res.json();
       
-      if (booking.status === 'WAITLISTED') {
-        toast.success(`Added to waitlist! You are #${booking.waitlistPos} in line.`);
-      } else {
-        toast.success('Booking submitted successfully!');
-      }
+      toast.success('Request submitted successfully!');
 
       setDescription('');
       setEventType('');
       setGuestCount('');
+      setPhoneNumber('');
       onSuccess();
       
       // Refresh the page to show updated data
@@ -78,12 +75,6 @@ export function BookingForm({ date, onSuccess, waitlistCount, isPending, isLogge
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
-      {waitlistCount && waitlistCount >= 0 && (
-        <div className="text-sm text-yellow-600 dark:text-yellow-400 mb-6">
-          Currently {waitlistCount} {waitlistCount === 1? 'person' : 'people'} on waitlist
-        </div>
-      )}
-      
       <div className="space-y-6">
         <div className="space-y-2">
           <Label htmlFor="eventType" className="text-base font-medium text-gray-900 dark:text-white ">
@@ -124,6 +115,21 @@ export function BookingForm({ date, onSuccess, waitlistCount, isPending, isLogge
         </div>
 
         <div className="space-y-2">
+          <Label htmlFor="phoneNumber" className="text-base font-medium text-gray-900 dark:text-white">
+            Phone Number <span className="text-red-500">*</span>
+          </Label>
+          <Input
+            id="phoneNumber"
+            type="tel"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            placeholder="Enter your phone number"
+            disabled={!isLoggedIn}
+            className="w-full bg-theme-accent-secondary text-gray-900 dark:text-gray-100"
+          />
+        </div>
+
+        <div className="space-y-2">
           <Label htmlFor="description" className="text-base font-medium text-gray-900 dark:text-white">
             Special Requirements and Notes
           </Label>
@@ -131,7 +137,7 @@ export function BookingForm({ date, onSuccess, waitlistCount, isPending, isLogge
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder={isLoggedIn ? "Please describe your event and any special requirements..." : "Please sign in to make a booking"}
+            placeholder={isLoggedIn ? "Please describe your event and any special requirements or multiple dates..." : "Please sign in to make a booking"}
             disabled={!isLoggedIn}
             className="w-full min-h-[100px]  text-base p-4 bg-theme-accent-secondary text-gray-900 dark:text-gray-100 border-0  placeholder:text-gray-500"
           />
@@ -144,7 +150,7 @@ export function BookingForm({ date, onSuccess, waitlistCount, isPending, isLogge
           disabled={isSubmitting || !isLoggedIn}
           className={`px-8 py-2.5 text-base bg-theme-accent-primary hover:bg-black/80 text-white ${!isLoggedIn ? 'opacity-50 dark:opacity-40 cursor-not-allowed' : ''}`}
         >
-          {!isLoggedIn ? 'Please Sign In' : isSubmitting ? 'Submitting...' : isPending ? 'Join Waitlist' : 'Book Now'}
+          {!isLoggedIn ? 'Please Sign In' : isSubmitting ? 'Submitting...' : 'Submit Request'}
         </Button>
       </div>
     </form>

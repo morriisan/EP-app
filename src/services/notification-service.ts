@@ -114,7 +114,7 @@ export const notificationService = {
     });
   },
 
-  // Send notification when someone joins waitlist
+  // Send notification when someone joins waitlist -- not in use yet
   async sendWaitlistNotification(booking: BookingWithUser) {
     await sendEmailWithRetry({
       from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
@@ -130,7 +130,7 @@ export const notificationService = {
     });
   },
 
-  // Send notification when a spot becomes available
+  // Send notification when a spot becomes available -- not in use yet
   async sendSpotAvailableNotification(booking: BookingWithUser) {
     await sendEmailWithRetry({
       from: process.env.EMAIL_FROM || 'onboarding@resend.dev',

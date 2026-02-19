@@ -60,12 +60,14 @@ export const POST = requireAdmin(async (req: Request, session) => {
       reviewNote
     );
 
-    // Send notification to user about the review decision
-    try {
-      await notificationService.sendBookingReviewedNotification(booking);
-    } catch (error) {
-      console.error("Failed to send review notification:", error);
-      // Continue even if notification fails
+    // Only send email for approved bookings
+    if (booking.status === "APPROVED") {
+      try {
+        await notificationService.sendBookingReviewedNotification(booking);
+      } catch (error) {
+        console.error("Failed to send review notification:", error);
+        // Continue even if notification fails
+      }
     }
 
     return NextResponse.json(booking);

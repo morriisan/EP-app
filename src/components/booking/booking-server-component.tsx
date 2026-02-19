@@ -54,6 +54,8 @@ export async function BookingServerComponent() {
             <div className="bg-theme-section-primary rounded-xl shadow-sm">
               <div className="p-6 border-b border-theme-border-default">
                 <h2 className="text-xl font-semibold text-theme-primary">Your Bookings</h2>
+                <h3 className="text-sm text-theme-primary"> We will try to contact you as soon as possible, you can aslo try to contact us 
+                  <br /> by phone at <span className="font-semibold text-theme-accent-primary">+47 900 52 670</span> </h3>
               </div>
               <div className="p-6">
                 <Suspense fallback={<BookingListSkeleton />}>
@@ -66,11 +68,11 @@ export async function BookingServerComponent() {
           ) : (
             <div className="bg-theme-section-primary rounded-xl shadow-sm">
               <div className="p-6 border-b border-theme-border-default">
-                <h2 className="text-xl font-semibold text-theme-primary">Make a Booking</h2>
+                <h2 className="text-xl font-semibold text-theme-primary">Request a Booking</h2>
               </div>
               <div className="p-6">
                 <p className="text-theme-primary mb-6">
-                  Please sign in to make a booking or manage your existing bookings.
+                  Please sign in to submit a booking request or manage your existing bookings.
                 </p>
                 <AuthPanel 
                   trigger={
