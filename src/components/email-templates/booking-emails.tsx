@@ -118,7 +118,7 @@ export const NewBookingEmailAdmin: React.FC<Readonly<BookingEmailProps>> = ({
       {description && (
         <div style={{ marginTop: '15px', padding: '15px', backgroundColor: '#fff', borderRadius: '6px', border: '1px solid #eee' }}>
           <strong>Description:</strong>
-          <p style={{ margin: '10px 0', lineHeight: '1.5' }}>{description}</p>
+          <p style={{ margin: '10px 0', lineHeight: '1.5', whiteSpace: 'pre-line' }}>{description}</p>
         </div>
       )}
     </div>
