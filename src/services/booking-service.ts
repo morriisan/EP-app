@@ -21,7 +21,7 @@ export const bookingService = {
       },
       orderBy: [
         { status: 'asc' },
-        { date: 'desc' },
+        { createdAt: 'desc' },
       ],
     });
   },
@@ -32,14 +32,11 @@ export const bookingService = {
       where: {
         date: date,
       },
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
+      select:{
+        id: true,
+        date: true,
+        status: true,
+        waitlistPos: true,
       },
       orderBy: {
         createdAt: 'asc',
@@ -56,14 +53,12 @@ export const bookingService = {
           lte: endDate,
         },
       },
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
+      select:{
+        id: true,
+        date: true,
+        status: true,
+        waitlistPos: true,
+        createdAt: true,
       },
       orderBy: {
         date: 'asc',

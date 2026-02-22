@@ -1,4 +1,4 @@
-import { Booking, BookingStatus } from "@prisma/client";
+import { BookingStatus } from "@prisma/client";
 import { bookingService } from "@/services/booking-service";
 import { addDays, isSameDay } from "date-fns";
 
@@ -19,12 +19,12 @@ export const calendarService = {
 
     // Generate calendar days until we reach the end date
     while (currentDate <= endDate) {
-      const dayBookings = bookings.filter((booking: Booking) => 
+      const dayBookings = bookings.filter((booking) => 
         isSameDay(new Date(booking.date), currentDate)
       );
 
       const waitlistedBookings = dayBookings.filter(
-        (booking: Booking) => booking.status === "WAITLISTED"
+        (booking) => booking.status === "WAITLISTED"
       );
 
       calendarDays.push({
@@ -49,7 +49,7 @@ export const calendarService = {
   }> {
     const dayBookings = await bookingService.getBookingsByDate(date);
     const waitlistedBookings = dayBookings.filter(
-      (booking: Booking) => booking.status === "WAITLISTED"
+      (booking) => booking.status === "WAITLISTED"
     );
 
     return {

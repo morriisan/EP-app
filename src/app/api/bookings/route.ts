@@ -75,8 +75,6 @@ export const POST = requireAuth(async (req: Request, session) => {
 export const GET = requireAuth(async (req: Request, session) => {
   try {
     const { searchParams } = new URL(req.url);
-    const startDate = searchParams.get("startDate");
-    const endDate = searchParams.get("endDate");
     const date = searchParams.get("date");
     const userOnly = searchParams.get("userOnly") === "true";
 
@@ -86,14 +84,7 @@ export const GET = requireAuth(async (req: Request, session) => {
       return NextResponse.json(bookings);
     }
 
-    // Get bookings for a date range
-    if (startDate && endDate) {
-      const bookings = await bookingService.getBookingsInRange(
-        new Date(startDate),
-        new Date(endDate)
-      );
-      return NextResponse.json(bookings);
-    }
+   
 
     // Get bookings for a specific date
     if (date) {

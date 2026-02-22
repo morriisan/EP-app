@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { utapi } from "@/lib/uploadthing";
+import { requireAdmin } from "@/lib/auth-middleware";
 
 // GET: Fetch all media or filter by tags
 export async function GET(request: Request) {
@@ -123,13 +124,8 @@ export async function GET(request: Request) {
 }
 
 // Update media (title and tags)
-export async function PATCH(request: Request) {
+export const PATCH = requireAdmin(async (request: Request) => {
   try {
-    const session = await auth.api.getSession({ headers: request.headers });
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
     const { searchParams } = new URL(request.url);
     const mediaId = searchParams.get("id");
 
@@ -174,15 +170,11 @@ export async function PATCH(request: Request) {
       { status: 500 }
     );
   }
-}
+});
 
 // DELETE: Delete media
-export async function DELETE(request: Request) {
+export const DELETE = requireAdmin(async (request: Request) => {
   try {
-    const session = await auth.api.getSession({ headers: request.headers });
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
     // Get mediaId from request
     const { searchParams } = new URL(request.url);
     const mediaId = searchParams.get("id");
@@ -220,4 +212,4 @@ export async function DELETE(request: Request) {
       { status: 500 }
     );
   }
-}
+});
