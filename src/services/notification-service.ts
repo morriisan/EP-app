@@ -161,12 +161,12 @@ export const notificationService = {
       });
 
       // Also notify admin about the cancellation
-      const adminEmail = "morrisan2001@gmail.com";
-      if (adminEmail) {
+      
+      if (process.env.ADMIN_EMAIL) {
         await delay(1000); // Add delay before sending admin email
         await sendEmailWithRetry({
           from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
-          to: adminEmail,
+          to: process.env.ADMIN_EMAIL,
           subject: `Booking Canceled - ${booking.user.name}`,
           react: React.createElement(NewBookingEmailAdmin, {
             userName: booking.user.name,
@@ -178,7 +178,7 @@ export const notificationService = {
         });
       }
 
-      console.log('Successfully sent cancellation emails to:', { user: booking.user.email, admin: adminEmail });
+      console.log('Successfully sent cancellation emails to:', { user: booking.user.email, admin: process.env.ADMIN_EMAIL });
     } catch (error) {
       console.error('Failed to send cancellation emails:', error);
       throw error;
